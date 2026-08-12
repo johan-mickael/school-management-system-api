@@ -13,8 +13,12 @@ public final class Student {
     private StudentStatus status;
     private final Instant enrolledAt;
 
-    private Student(StudentId id, StudentNumber number, FullName name,
-            EmailAddress email, StudentStatus status, Instant enrolledAt) {
+    private Student(StudentId id,
+            StudentNumber number,
+            FullName name,
+            EmailAddress email,
+            StudentStatus status,
+            Instant enrolledAt) {
         this.id = id;
         this.number = number;
         this.name = name;
@@ -23,8 +27,11 @@ public final class Student {
         this.enrolledAt = enrolledAt;
     }
 
-    public static Student enroll(StudentId id, StudentNumber number,
-            FullName name, EmailAddress email, Instant enrolledAt) {
+    public static Student enroll(StudentId id,
+            StudentNumber number,
+            FullName name,
+            EmailAddress email,
+            Instant enrolledAt) {
         return new Student(id, number, name, email, StudentStatus.ENROLLED, enrolledAt);
     }
 
@@ -37,6 +44,15 @@ public final class Student {
 
     public boolean isArchived() {
         return status == StudentStatus.ARCHIVED;
+    }
+
+    public static Student reconstitute(StudentId id,
+            StudentNumber number,
+            FullName name,
+            EmailAddress email,
+            StudentStatus status,
+            Instant enrolledAt) {
+        return new Student(id, number, name, email, status, enrolledAt);
     }
 
     public StudentId id() {

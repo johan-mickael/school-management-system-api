@@ -8,5 +8,5 @@ public interface StudentRepository {
     /**
      * @throws StudentNotFound
      */
-    Student findById(StudentId id);
+    Student getById(StudentId id);
 }
