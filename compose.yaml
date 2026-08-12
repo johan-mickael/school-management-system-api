@@ -1,0 +1,39 @@
+# compose.yaml
+services:
+  db:
+    image: postgres:17
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    ports:
+      - "${DB_HOST_PORT:-5432}:5432"
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+  app:
+    image: maven:3.9-eclipse-temurin-25
+    working_dir: /workspace
+    command: mvn spring-boot:run
+    ports:
+      - "${APP_HOST_PORT:-8080}:8080"
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - ./:/workspace
+      - maven-repo:/root/.m2
+    environment:
+      DB_HOST: ${DB_HOST}
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+
+volumes:
+  db-data:
+  maven-repo:
