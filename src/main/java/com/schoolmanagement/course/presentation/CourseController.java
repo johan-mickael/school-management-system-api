@@ -25,10 +25,12 @@ import com.schoolmanagement.course.presentation.dto.AssignTeacherToCourseRequest
 import com.schoolmanagement.course.presentation.dto.CourseResponse;
 import com.schoolmanagement.course.presentation.dto.CreateCourseRequest;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/api/v1/courses")
+@Tag(name = "Courses")
 public class CourseController {
 
   private final CreateCourseHandler create;

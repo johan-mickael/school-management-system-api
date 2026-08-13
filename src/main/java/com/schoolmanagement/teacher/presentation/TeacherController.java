@@ -23,10 +23,12 @@ import com.schoolmanagement.teacher.application.view.TeacherView;
 import com.schoolmanagement.teacher.presentation.dto.HireTeacherRequest;
 import com.schoolmanagement.teacher.presentation.dto.TeacherResponse;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/api/v1/teachers")
+@Tag(name = "Teachers")
 public class TeacherController {
 
   private final HireTeacherHandler hire;

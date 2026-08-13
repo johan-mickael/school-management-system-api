@@ -18,10 +18,12 @@ import com.schoolmanagement.iam.presentation.dto.RegisterUserRequest;
 import com.schoolmanagement.iam.presentation.dto.TokenResponse;
 import com.schoolmanagement.iam.presentation.dto.UserResponse;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/api/v1/auth")
+@Tag(name = "Authentication")
 public class AuthController {
 
   private final LoginHandler login;
