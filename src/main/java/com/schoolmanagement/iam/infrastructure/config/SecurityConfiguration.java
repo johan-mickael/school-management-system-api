@@ -43,6 +43,9 @@ public class SecurityConfiguration {
             .requestMatchers(HttpMethod.POST, "/api/v1/sessions/*/attendance/sign").hasRole("STUDENT")
             .requestMatchers(HttpMethod.POST, "/api/v1/sessions/*/attendance/*/justify").hasAnyRole("ADMIN", "TEACHER")
             .requestMatchers(HttpMethod.POST, "/api/v1/grades/*/correct").hasAnyRole("ADMIN", "TEACHER")
+            .requestMatchers(HttpMethod.POST, "/api/v1/exams/*/open").hasAnyRole("ADMIN", "TEACHER")
+            .requestMatchers(HttpMethod.POST, "/api/v1/exams/*/close").hasAnyRole("ADMIN", "TEACHER")
+            .requestMatchers(HttpMethod.POST, "/api/v1/exams").hasRole("ADMIN")
             .anyRequest().authenticated())
         .exceptionHandling(ex -> ex
             .authenticationEntryPoint((req, res, e) -> writeError(res, 401, "Unauthorized"))
