@@ -120,7 +120,7 @@ class ReportingIT extends AbstractIntegrationTest {
 
   private Teacher aTeacher() {
     Teacher teacher = Teacher.hire(
-        TeacherId.generate(), new StaffNumber("STAFF-0001"),
+        TeacherId.generate(), new StaffNumber("TCH-2025-0001"),
         new FullName("Alan", "Turing"), new EmailAddress("alan@example.com"), Instant.parse("2025-08-01T00:00:00Z"));
     teachers.save(teacher);
     return teacher;
