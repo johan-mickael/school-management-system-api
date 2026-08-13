@@ -10,6 +10,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import com.schoolmanagement.course.domain.exception.CourseNotFound;
 import com.schoolmanagement.promotion.domain.exception.PromotionFull;
 import com.schoolmanagement.promotion.domain.exception.PromotionNotFound;
 import com.schoolmanagement.shared.domain.DomainException;
@@ -34,6 +35,11 @@ public class DomainExceptionHandler {
 
   @ExceptionHandler(TeacherNotFound.class)
   public ResponseEntity<ApiError> notFound(TeacherNotFound ex) {
+    return build(HttpStatus.NOT_FOUND, ex.getMessage());
+  }
+
+  @ExceptionHandler(CourseNotFound.class)
+  public ResponseEntity<ApiError> notFound(CourseNotFound ex) {
     return build(HttpStatus.NOT_FOUND, ex.getMessage());
   }
 
