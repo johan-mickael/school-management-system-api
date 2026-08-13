@@ -1,6 +1,7 @@
 package com.schoolmanagement.examination.infrastructure.persistence;
 
 import java.time.Instant;
+import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -61,7 +62,7 @@ class ExamAttemptRepositoryAdapterIT extends AbstractIntegrationTest {
         PromotionId.generate(), new PromotionName("MSE 2025"), new AcademicYear("2025-2026"), new Capacity(30));
     promotions.save(promotion);
     Course course = Course.create(
-        CourseId.generate(), new CourseCode("CS801"), new CourseTitle("Cryptography"),
+        CourseId.generate(), new CourseCode("CS-EXAMATTEMPTIT-" + UUID.randomUUID()), new CourseTitle("Cryptography"),
         new Coefficient(2.0), promotion.id(), null);
     courses.save(course);
     Exam exam = Exam.schedule(
@@ -72,9 +73,10 @@ class ExamAttemptRepositoryAdapterIT extends AbstractIntegrationTest {
   }
 
   private Student aStudent() {
+    String uniqueSuffix = "%04d".formatted(Math.abs(UUID.randomUUID().hashCode()) % 10000);
     Student student = Student.enroll(
-        com.schoolmanagement.student.domain.StudentId.generate(), new StudentNumber("STU-2025-0501"),
-        new FullName("Ada", "Lovelace"), new EmailAddress("ada.attempt@example.com"),
+        com.schoolmanagement.student.domain.StudentId.generate(), new StudentNumber("STU-2025-" + uniqueSuffix),
+        new FullName("Ada", "Lovelace"), new EmailAddress("ada.attempt-" + uniqueSuffix + "@example.com"),
         Instant.parse("2025-09-01T00:00:00Z"));
     students.save(student);
     return student;

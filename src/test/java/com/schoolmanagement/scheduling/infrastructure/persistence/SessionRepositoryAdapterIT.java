@@ -37,6 +37,7 @@ import com.schoolmanagement.teacher.domain.TeacherId;
 import com.schoolmanagement.teacher.domain.TeacherRepository;
 
 import java.time.Duration;
+import java.util.UUID;
 
 class SessionRepositoryAdapterIT extends AbstractIntegrationTest {
 
@@ -53,15 +54,16 @@ class SessionRepositoryAdapterIT extends AbstractIntegrationTest {
   private TeacherRepository teachers;
 
   private Session aScheduledSession() {
+    String uniqueSuffix = "%04d".formatted(Math.abs(UUID.randomUUID().hashCode()) % 10000);
     Promotion promotion = Promotion.create(
         PromotionId.generate(), new PromotionName("MSE 2025"), new AcademicYear("2025-2026"), new Capacity(30));
     promotions.save(promotion);
     Teacher teacher = Teacher.hire(
-        TeacherId.generate(), new StaffNumber("TCH-2025-0099"), new FullName("Grace", "Hopper"),
-        new EmailAddress("grace.session@example.com"), Instant.parse("2025-09-01T08:00:00Z"));
+        TeacherId.generate(), new StaffNumber("TCH-2025-" + uniqueSuffix), new FullName("Grace", "Hopper"),
+        new EmailAddress("grace.session-" + uniqueSuffix + "@example.com"), Instant.parse("2025-09-01T08:00:00Z"));
     teachers.save(teacher);
     Course course = Course.create(
-        CourseId.generate(), new CourseCode("CS201"), new CourseTitle("Databases"),
+        CourseId.generate(), new CourseCode("CS-SESSIONADAPTERIT-" + UUID.randomUUID()), new CourseTitle("Databases"),
         new Coefficient(2.0), promotion.id(), teacher.id());
     courses.save(course);
 
