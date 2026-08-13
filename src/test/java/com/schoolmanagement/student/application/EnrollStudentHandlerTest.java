@@ -4,12 +4,14 @@ import java.time.Clock;
 import java.time.Instant;
 import java.time.ZoneOffset;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import org.junit.jupiter.api.Test;
 
+import com.schoolmanagement.promotion.domain.PromotionId;
 import com.schoolmanagement.student.application.command.enrollstudent.EnrollStudentCommand;
 import com.schoolmanagement.student.application.command.enrollstudent.EnrollStudentHandler;
 import com.schoolmanagement.student.application.view.StudentView;
@@ -32,6 +34,12 @@ class EnrollStudentHandlerTest {
       if (s == null)
         throw new StudentNotFound(id);
       return s;
+    }
+
+    public List<Student> findByPromotionId(PromotionId promotionId) {
+      return db.values().stream()
+          .filter(s -> promotionId.equals(s.promotionId()))
+          .toList();
     }
   }
 
