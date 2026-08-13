@@ -15,6 +15,8 @@ import com.schoolmanagement.iam.domain.exception.InvalidCredentials;
 import com.schoolmanagement.iam.domain.exception.UsernameAlreadyTaken;
 import com.schoolmanagement.promotion.domain.exception.PromotionFull;
 import com.schoolmanagement.promotion.domain.exception.PromotionNotFound;
+import com.schoolmanagement.scheduling.domain.exception.InvalidSessionTransition;
+import com.schoolmanagement.scheduling.domain.exception.SessionNotFound;
 import com.schoolmanagement.shared.domain.DomainException;
 import com.schoolmanagement.student.domain.exception.StudentAlreadyArchived;
 import com.schoolmanagement.student.domain.exception.StudentAlreadyAssignedToPromotion;
@@ -45,6 +47,11 @@ public class DomainExceptionHandler {
     return build(HttpStatus.NOT_FOUND, ex.getMessage());
   }
 
+  @ExceptionHandler(SessionNotFound.class)
+  public ResponseEntity<ApiError> notFound(SessionNotFound ex) {
+    return build(HttpStatus.NOT_FOUND, ex.getMessage());
+  }
+
   @ExceptionHandler(InvalidCredentials.class)
   public ResponseEntity<ApiError> unauthorized(InvalidCredentials ex) {
     return build(HttpStatus.UNAUTHORIZED, ex.getMessage());
@@ -72,6 +79,11 @@ public class DomainExceptionHandler {
 
   @ExceptionHandler(UsernameAlreadyTaken.class)
   public ResponseEntity<ApiError> conflict(UsernameAlreadyTaken ex) {
+    return build(HttpStatus.CONFLICT, ex.getMessage());
+  }
+
+  @ExceptionHandler(InvalidSessionTransition.class)
+  public ResponseEntity<ApiError> conflict(InvalidSessionTransition ex) {
     return build(HttpStatus.CONFLICT, ex.getMessage());
   }
 
