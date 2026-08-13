@@ -6,9 +6,9 @@ import java.time.Instant;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.schoolmanagement.shared.domain.EmailAddress;
+import com.schoolmanagement.shared.domain.FullName;
 import com.schoolmanagement.student.application.view.StudentView;
-import com.schoolmanagement.student.domain.EmailAddress;
-import com.schoolmanagement.student.domain.FullName;
 import com.schoolmanagement.student.domain.Student;
 import com.schoolmanagement.student.domain.StudentId;
 import com.schoolmanagement.student.domain.StudentNumber;

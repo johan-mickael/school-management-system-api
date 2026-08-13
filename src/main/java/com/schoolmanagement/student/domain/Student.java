@@ -4,6 +4,8 @@ import java.time.Instant;
 import java.util.Objects;
 
 import com.schoolmanagement.promotion.domain.PromotionId;
+import com.schoolmanagement.shared.domain.EmailAddress;
+import com.schoolmanagement.shared.domain.FullName;
 import com.schoolmanagement.student.domain.exception.StudentAlreadyArchived;
 import com.schoolmanagement.student.domain.exception.StudentAlreadyAssignedToPromotion;
 
