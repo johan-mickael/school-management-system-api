@@ -17,7 +17,8 @@ public class PromotionMapper {
         p.name().value(),
         p.academicYear().value(),
         p.capacity().value(),
-        p.occupancy());
+        p.occupancy(),
+        p.version());
   }
 
   public Promotion toDomain(PromotionEntity e) {
@@ -26,6 +27,7 @@ public class PromotionMapper {
         new PromotionName(e.getName()),
         new AcademicYear(e.getAcademicYear()),
         new Capacity(e.getCapacity()),
-        e.getOccupancy());
+        e.getOccupancy(),
+        e.getVersion());
   }
 }

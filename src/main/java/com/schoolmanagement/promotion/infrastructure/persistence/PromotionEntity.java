@@ -6,6 +6,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.persistence.Version;
 
 @Entity
 @Table(name = "promotions")
@@ -26,6 +27,10 @@ public class PromotionEntity {
   @Column(nullable = false)
   private int occupancy;
 
+  @Version
+  @Column(nullable = false)
+  private long version;
+
   protected PromotionEntity() {}
 
   public PromotionEntity(
@@ -33,12 +38,14 @@ public class PromotionEntity {
       String name,
       String academicYear,
       int capacity,
-      int occupancy) {
+      int occupancy,
+      long version) {
     this.id = id;
     this.name = name;
     this.academicYear = academicYear;
     this.capacity = capacity;
     this.occupancy = occupancy;
+    this.version = version;
   }
 
   public UUID getId() {
@@ -59,5 +66,9 @@ public class PromotionEntity {
 
   public int getOccupancy() {
     return occupancy;
+  }
+
+  public long getVersion() {
+    return version;
   }
 }
