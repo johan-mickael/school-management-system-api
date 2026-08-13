@@ -24,3 +24,6 @@ app:
       password: ${SEED_ADMIN_PASSWORD:}
   exam:
     integrity-threshold: ${EXAM_INTEGRITY_THRESHOLD:5}
+  reporting:
+    attendance-risk-threshold: ${REPORTING_ATTENDANCE_RISK_THRESHOLD:0.75}
+    grade-risk-threshold: ${REPORTING_GRADE_RISK_THRESHOLD:10.0}
