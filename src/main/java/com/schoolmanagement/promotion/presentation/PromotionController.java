@@ -26,10 +26,12 @@ import com.schoolmanagement.promotion.presentation.dto.PromotionResponse;
 import com.schoolmanagement.student.application.view.StudentView;
 import com.schoolmanagement.student.presentation.dto.StudentResponse;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/api/v1/promotions")
+@Tag(name = "Promotions")
 public class PromotionController {
 
   private final CreatePromotionHandler create;
