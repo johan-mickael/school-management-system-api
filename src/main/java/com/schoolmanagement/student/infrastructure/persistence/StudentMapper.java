@@ -2,6 +2,7 @@ package com.schoolmanagement.student.infrastructure.persistence;
 
 import org.springframework.stereotype.Component;
 
+import com.schoolmanagement.promotion.domain.PromotionId;
 import com.schoolmanagement.student.domain.EmailAddress;
 import com.schoolmanagement.student.domain.FullName;
 import com.schoolmanagement.student.domain.Student;
@@ -19,7 +20,8 @@ public class StudentMapper {
         s.name().lastName(),
         s.email().value(),
         s.status(),
-        s.enrolledAt());
+        s.enrolledAt(),
+        s.promotionId() == null ? null : s.promotionId().value());
   }
 
   public Student toDomain(StudentEntity e) {
@@ -29,6 +31,7 @@ public class StudentMapper {
         new FullName(e.getFirstName(), e.getLastName()),
         new EmailAddress(e.getEmail()),
         e.getStatus(),
-        e.getEnrolledAt());
+        e.getEnrolledAt(),
+        e.getPromotionId() == null ? null : new PromotionId(e.getPromotionId()));
   }
 }

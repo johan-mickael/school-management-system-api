@@ -10,8 +10,11 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import com.schoolmanagement.promotion.domain.exception.PromotionFull;
+import com.schoolmanagement.promotion.domain.exception.PromotionNotFound;
 import com.schoolmanagement.shared.domain.DomainException;
 import com.schoolmanagement.student.domain.exception.StudentAlreadyArchived;
+import com.schoolmanagement.student.domain.exception.StudentAlreadyAssignedToPromotion;
 import com.schoolmanagement.student.domain.exception.StudentNotFound;
 
 @RestControllerAdvice
@@ -22,8 +25,23 @@ public class DomainExceptionHandler {
     return build(HttpStatus.NOT_FOUND, ex.getMessage());
   }
 
+  @ExceptionHandler(PromotionNotFound.class)
+  public ResponseEntity<ApiError> notFound(PromotionNotFound ex) {
+    return build(HttpStatus.NOT_FOUND, ex.getMessage());
+  }
+
   @ExceptionHandler(StudentAlreadyArchived.class)
   public ResponseEntity<ApiError> conflict(StudentAlreadyArchived ex) {
+    return build(HttpStatus.CONFLICT, ex.getMessage());
+  }
+
+  @ExceptionHandler(PromotionFull.class)
+  public ResponseEntity<ApiError> conflict(PromotionFull ex) {
+    return build(HttpStatus.CONFLICT, ex.getMessage());
+  }
+
+  @ExceptionHandler(StudentAlreadyAssignedToPromotion.class)
+  public ResponseEntity<ApiError> conflict(StudentAlreadyAssignedToPromotion ex) {
     return build(HttpStatus.CONFLICT, ex.getMessage());
   }
 

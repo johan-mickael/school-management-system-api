@@ -1,7 +1,10 @@
 package com.schoolmanagement.student.infrastructure.persistence;
 
+import java.util.List;
+
 import org.springframework.stereotype.Repository;
 
+import com.schoolmanagement.promotion.domain.PromotionId;
 import com.schoolmanagement.student.domain.Student;
 import com.schoolmanagement.student.domain.StudentId;
 import com.schoolmanagement.student.domain.StudentRepository;
@@ -27,5 +30,12 @@ public class StudentRepositoryAdapter implements StudentRepository {
     return studentRepository.findById(id.value())
         .map(studentMapper::toDomain)
         .orElseThrow(() -> new StudentNotFound(id));
+  }
+
+  @Override
+  public List<Student> findByPromotionId(PromotionId promotionId) {
+    return studentRepository.findByPromotionId(promotionId.value()).stream()
+        .map(studentMapper::toDomain)
+        .toList();
   }
 }

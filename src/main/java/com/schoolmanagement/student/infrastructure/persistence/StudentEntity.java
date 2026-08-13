@@ -38,6 +38,9 @@ public class StudentEntity {
   @Column(name = "enrolled_at", nullable = false)
   private Instant enrolledAt;
 
+  @Column(name = "promotion_id")
+  private UUID promotionId;
+
   protected StudentEntity() {}
 
   public StudentEntity(
@@ -47,7 +50,8 @@ public class StudentEntity {
       String lastName,
       String email,
       StudentStatus status,
-      Instant enrolledAt) {
+      Instant enrolledAt,
+      UUID promotionId) {
     this.id = id;
     this.number = number;
     this.firstName = firstName;
@@ -55,6 +59,7 @@ public class StudentEntity {
     this.email = email;
     this.status = status;
     this.enrolledAt = enrolledAt;
+    this.promotionId = promotionId;
   }
 
   public UUID getId() {
@@ -83,5 +88,9 @@ public class StudentEntity {
 
   public Instant getEnrolledAt() {
     return enrolledAt;
+  }
+
+  public UUID getPromotionId() {
+    return promotionId;
   }
 }
