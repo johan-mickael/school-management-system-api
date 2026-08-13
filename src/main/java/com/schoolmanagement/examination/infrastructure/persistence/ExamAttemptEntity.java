@@ -12,6 +12,7 @@ import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OrderColumn;
@@ -35,7 +36,7 @@ public class ExamAttemptEntity {
   @Column(nullable = false)
   private AttemptStatus status;
 
-  @ElementCollection
+  @ElementCollection(fetch = FetchType.EAGER)
   @CollectionTable(name = "integrity_events", joinColumns = @JoinColumn(name = "attempt_id"))
   @OrderColumn(name = "event_order")
   private List<IntegrityEventEmbeddable> events = new ArrayList<>();
