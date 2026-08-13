@@ -15,7 +15,11 @@ import com.schoolmanagement.attendance.domain.exception.AttendanceRecordNotFound
 import com.schoolmanagement.attendance.domain.exception.InvalidAttendanceTransition;
 import com.schoolmanagement.attendance.domain.exception.SessionSigningNotOpen;
 import com.schoolmanagement.course.domain.exception.CourseNotFound;
+import com.schoolmanagement.examination.domain.exception.AttemptAlreadyExists;
+import com.schoolmanagement.examination.domain.exception.AttemptNotFound;
 import com.schoolmanagement.examination.domain.exception.ExamNotFound;
+import com.schoolmanagement.examination.domain.exception.ExamNotOpenForAttempt;
+import com.schoolmanagement.examination.domain.exception.InvalidAttemptTransition;
 import com.schoolmanagement.examination.domain.exception.InvalidExamTransition;
 import com.schoolmanagement.grading.domain.exception.GradeNotFound;
 import com.schoolmanagement.iam.domain.exception.InvalidCredentials;
@@ -74,6 +78,11 @@ public class DomainExceptionHandler {
     return build(HttpStatus.NOT_FOUND, ex.getMessage());
   }
 
+  @ExceptionHandler(AttemptNotFound.class)
+  public ResponseEntity<ApiError> notFound(AttemptNotFound ex) {
+    return build(HttpStatus.NOT_FOUND, ex.getMessage());
+  }
+
   @ExceptionHandler(InvalidCredentials.class)
   public ResponseEntity<ApiError> unauthorized(InvalidCredentials ex) {
     return build(HttpStatus.UNAUTHORIZED, ex.getMessage());
@@ -126,6 +135,21 @@ public class DomainExceptionHandler {
 
   @ExceptionHandler(InvalidExamTransition.class)
   public ResponseEntity<ApiError> conflict(InvalidExamTransition ex) {
+    return build(HttpStatus.CONFLICT, ex.getMessage());
+  }
+
+  @ExceptionHandler(ExamNotOpenForAttempt.class)
+  public ResponseEntity<ApiError> conflict(ExamNotOpenForAttempt ex) {
+    return build(HttpStatus.CONFLICT, ex.getMessage());
+  }
+
+  @ExceptionHandler(AttemptAlreadyExists.class)
+  public ResponseEntity<ApiError> conflict(AttemptAlreadyExists ex) {
+    return build(HttpStatus.CONFLICT, ex.getMessage());
+  }
+
+  @ExceptionHandler(InvalidAttemptTransition.class)
+  public ResponseEntity<ApiError> conflict(InvalidAttemptTransition ex) {
     return build(HttpStatus.CONFLICT, ex.getMessage());
   }
 
