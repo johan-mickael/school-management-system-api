@@ -6,6 +6,8 @@ import java.util.List;
 
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -61,6 +63,7 @@ public class SessionController {
   }
 
   @PostMapping
+  @PreAuthorize("hasRole('ADMIN')")
   public ResponseEntity<SessionResponse> schedule(@Valid @RequestBody ScheduleSessionRequest request) {
     ScheduleSessionCommand scheduleSessionCommand = new ScheduleSessionCommand(
         request.courseId(),
@@ -91,17 +94,20 @@ public class SessionController {
   }
 
   @PostMapping("/{id}/open")
-  public SessionResponse openSigning(@PathVariable String id) {
+  @PreAuthorize("hasRole('ADMIN') or (hasRole('TEACHER') and @sessionAccessPolicy.canManage(#id, authentication))")
+  public SessionResponse openSigning(@P("id") @PathVariable String id) {
     return SessionResponse.from(open.handle(new OpenSessionSigningCommand(id)));
   }
 
   @PostMapping("/{id}/close")
-  public SessionResponse closeSigning(@PathVariable String id) {
+  @PreAuthorize("hasRole('ADMIN') or (hasRole('TEACHER') and @sessionAccessPolicy.canManage(#id, authentication))")
+  public SessionResponse closeSigning(@P("id") @PathVariable String id) {
     return SessionResponse.from(close.handle(new CloseSessionSigningCommand(id)));
   }
 
   @PostMapping("/{id}/cancel")
-  public SessionResponse cancel(@PathVariable String id) {
+  @PreAuthorize("hasRole('ADMIN') or (hasRole('TEACHER') and @sessionAccessPolicy.canManage(#id, authentication))")
+  public SessionResponse cancel(@P("id") @PathVariable String id) {
     return SessionResponse.from(cancel.handle(new CancelSessionCommand(id)));
   }
 }

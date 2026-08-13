@@ -2,6 +2,8 @@ package com.schoolmanagement.attendance.presentation;
 
 import java.util.List;
 
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.parameters.P;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -44,14 +46,16 @@ public class AttendanceController {
   }
 
   @PostMapping("/api/v1/sessions/{sessionId}/attendance/sign")
+  @PreAuthorize("hasRole('STUDENT')")
   public AttendanceRecordResponse sign(@PathVariable String sessionId, Authentication authentication) {
     return AttendanceRecordResponse.from(
         sign.handle(new SignAttendanceCommand(sessionId, authentication.getName())));
   }
 
   @PostMapping("/api/v1/sessions/{sessionId}/attendance/{studentId}/justify")
+  @PreAuthorize("hasRole('ADMIN') or (hasRole('TEACHER') and @sessionAccessPolicy.canManage(#sessionId, authentication))")
   public AttendanceRecordResponse justify(
-      @PathVariable String sessionId,
+      @P("sessionId") @PathVariable String sessionId,
       @PathVariable String studentId,
       @Valid @RequestBody JustifyAttendanceRequest request) {
     return AttendanceRecordResponse.from(

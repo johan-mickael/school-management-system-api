@@ -2,6 +2,8 @@ package com.schoolmanagement.examination.presentation;
 
 import java.util.List;
 
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.parameters.P;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -50,11 +52,13 @@ public class ExamAttemptController {
   }
 
   @PostMapping("/api/v1/exams/{examId}/attempts/start")
+  @PreAuthorize("hasRole('STUDENT')")
   public ExamAttemptResponse start(@PathVariable String examId, Authentication authentication) {
     return ExamAttemptResponse.from(start.handle(new StartAttemptCommand(examId, authentication.getName())));
   }
 
   @PostMapping("/api/v1/attempts/{attemptId}/events")
+  @PreAuthorize("hasRole('STUDENT')")
   public ExamAttemptResponse recordEvent(
       @PathVariable String attemptId,
       @Valid @RequestBody RecordIntegrityEventRequest request) {
@@ -63,6 +67,7 @@ public class ExamAttemptController {
   }
 
   @PostMapping("/api/v1/attempts/{attemptId}/submit")
+  @PreAuthorize("hasRole('STUDENT')")
   public ExamAttemptResponse submit(@PathVariable String attemptId) {
     return ExamAttemptResponse.from(submit.handle(new SubmitAttemptCommand(attemptId)));
   }
@@ -73,8 +78,9 @@ public class ExamAttemptController {
   }
 
   @GetMapping("/api/v1/exams/{examId}/attempts")
+  @PreAuthorize("hasRole('ADMIN') or (hasRole('TEACHER') and @examAccessPolicy.canManage(#examId, authentication))")
   public List<ExamAttemptResponse> getByExam(
-      @PathVariable String examId,
+      @P("examId") @PathVariable String examId,
       @RequestParam(required = false, defaultValue = "false") boolean flagged) {
     return listByExam.handle(new ListExamAttemptsQuery(examId, flagged)).stream()
         .map(ExamAttemptResponse::from)

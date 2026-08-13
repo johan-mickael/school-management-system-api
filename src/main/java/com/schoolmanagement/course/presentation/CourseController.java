@@ -4,6 +4,7 @@ import java.net.URI;
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -50,6 +51,7 @@ public class CourseController {
   }
 
   @PostMapping
+  @PreAuthorize("hasRole('ADMIN')")
   public ResponseEntity<CourseResponse> create(@Valid @RequestBody CreateCourseRequest request) {
     CreateCourseCommand createCourseCommand = new CreateCourseCommand(
         request.code(),
@@ -77,6 +79,7 @@ public class CourseController {
   }
 
   @PostMapping("/{id}/assign-teacher")
+  @PreAuthorize("hasRole('ADMIN')")
   public CourseResponse assignTeacher(
       @PathVariable String id,
       @Valid @RequestBody AssignTeacherToCourseRequest request) {

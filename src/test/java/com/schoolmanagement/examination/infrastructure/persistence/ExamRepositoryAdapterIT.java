@@ -29,6 +29,8 @@ import com.schoolmanagement.promotion.domain.PromotionRepository;
 import com.schoolmanagement.shared.AbstractIntegrationTest;
 import com.schoolmanagement.shared.domain.TimeWindow;
 
+import java.util.UUID;
+
 class ExamRepositoryAdapterIT extends AbstractIntegrationTest {
 
   @Autowired
@@ -41,11 +43,12 @@ class ExamRepositoryAdapterIT extends AbstractIntegrationTest {
   private PromotionRepository promotions;
 
   private Exam aScheduledExam() {
+    String uniqueSuffix = "%04d".formatted(Math.abs(UUID.randomUUID().hashCode()) % 10000);
     Promotion promotion = Promotion.create(
         PromotionId.generate(), new PromotionName("MSE 2025"), new AcademicYear("2025-2026"), new Capacity(30));
     promotions.save(promotion);
     Course course = Course.create(
-        CourseId.generate(), new CourseCode("CS701"), new CourseTitle("Distributed Systems"),
+        CourseId.generate(), new CourseCode("CS" + uniqueSuffix), new CourseTitle("Distributed Systems"),
         new Coefficient(2.0), promotion.id(), null);
     courses.save(course);
 

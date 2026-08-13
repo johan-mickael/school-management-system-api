@@ -4,6 +4,8 @@ import java.net.URI;
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -54,8 +56,9 @@ public class GradeController {
   }
 
   @PostMapping("/api/v1/courses/{courseId}/grades")
+  @PreAuthorize("hasRole('ADMIN') or (hasRole('TEACHER') and @courseAccessPolicy.canManage(#courseId, authentication))")
   public ResponseEntity<GradeResponse> record(
-      @PathVariable String courseId,
+      @P("courseId") @PathVariable String courseId,
       @Valid @RequestBody RecordGradeRequest request) {
     RecordGradeCommand recordGradeCommand = new RecordGradeCommand(
         courseId,
@@ -78,7 +81,8 @@ public class GradeController {
   }
 
   @PostMapping("/api/v1/grades/{id}/correct")
-  public GradeResponse correct(@PathVariable String id, @Valid @RequestBody CorrectGradeRequest request) {
+  @PreAuthorize("hasRole('ADMIN') or (hasRole('TEACHER') and @gradeAccessPolicy.canCorrect(#id, authentication))")
+  public GradeResponse correct(@P("id") @PathVariable String id, @Valid @RequestBody CorrectGradeRequest request) {
     return GradeResponse.from(correct.handle(new CorrectGradeCommand(id, request.score())));
   }
 

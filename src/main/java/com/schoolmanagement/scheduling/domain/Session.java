@@ -81,6 +81,10 @@ public final class Session {
         return status == SessionStatus.SIGNING_OPEN;
     }
 
+    public boolean isTaughtBy(TeacherId teacherId) {
+        return this.teacherId.equals(teacherId);
+    }
+
     public SessionId id() {
         return id;
     }

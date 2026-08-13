@@ -4,6 +4,7 @@ import java.net.URI;
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -48,6 +49,7 @@ public class TeacherController {
   }
 
   @PostMapping
+  @PreAuthorize("hasRole('ADMIN')")
   public ResponseEntity<TeacherResponse> hire(@Valid @RequestBody HireTeacherRequest request) {
     HireTeacherCommand hireTeacherCommand = new HireTeacherCommand(
         request.staffNumber(),
@@ -74,6 +76,7 @@ public class TeacherController {
   }
 
   @PostMapping("/{id}/archive")
+  @PreAuthorize("hasRole('ADMIN')")
   public TeacherResponse archiveTeacher(@PathVariable String id) {
     return TeacherResponse.from(archive.handle(new ArchiveTeacherCommand(id)));
   }
