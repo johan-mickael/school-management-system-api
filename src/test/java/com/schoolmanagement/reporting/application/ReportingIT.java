@@ -158,6 +158,12 @@ class ReportingIT extends AbstractIntegrationTest {
 
     aStudent("STU-2025-0503", promotion);
 
+    Student archived = aStudent("STU-2025-0506", promotion);
+    attendanceRecords.save(AttendanceRecord.absent(AttendanceId.generate(), session.id(), archived.id()));
+    recordGrade.handle(new RecordGradeCommand(course.id().toString(), archived.id().toString(), null, 2.0, 1.0));
+    archived.archive();
+    students.save(archived);
+
     PromotionSummaryView summary =
         promotionSummary.handle(new GetPromotionSummaryQuery(promotion.id().toString()));
 

@@ -3,6 +3,7 @@ package com.schoolmanagement.examination.domain;
 import java.util.Objects;
 
 import com.schoolmanagement.course.domain.CourseId;
+import com.schoolmanagement.examination.domain.exception.ExamNotOpenForAttempt;
 import com.schoolmanagement.examination.domain.exception.InvalidExamTransition;
 import com.schoolmanagement.promotion.domain.PromotionId;
 import com.schoolmanagement.shared.domain.TimeWindow;
@@ -57,6 +58,15 @@ public final class Exam {
             throw new InvalidExamTransition(id, status, "close");
         }
         status = ExamStatus.CLOSED;
+    }
+
+    /**
+     * @throws ExamNotOpenForAttempt if this exam is not OPEN
+     */
+    public void ensureOpenForAttempt() {
+        if (status != ExamStatus.OPEN) {
+            throw new ExamNotOpenForAttempt(id);
+        }
     }
 
     public ExamId id() {

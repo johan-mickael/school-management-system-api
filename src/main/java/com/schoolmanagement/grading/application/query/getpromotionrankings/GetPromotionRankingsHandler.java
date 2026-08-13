@@ -36,7 +36,7 @@ public class GetPromotionRankingsHandler {
 
     record StudentAverage(Student student, double average) {}
 
-    List<StudentAverage> ranked = students.findByPromotionId(promotionId).stream()
+    List<StudentAverage> ranked = students.findActiveByPromotionId(promotionId).stream()
         .map(student -> new StudentAverage(
             student,
             gradeStatistics.overallAverageForStudent(student.id()).orElse(0.0)))

@@ -13,7 +13,6 @@ import com.schoolmanagement.iam.domain.User;
 import com.schoolmanagement.iam.domain.UserId;
 import com.schoolmanagement.iam.domain.UserRepository;
 import com.schoolmanagement.iam.domain.Username;
-import com.schoolmanagement.iam.domain.exception.InvalidRole;
 import com.schoolmanagement.iam.domain.exception.UsernameAlreadyTaken;
 
 @Service
@@ -37,7 +36,7 @@ public class RegisterUserHandler {
         UserId.generate(),
         username,
         passwordHasher.hash(command.password()),
-        parseRole(command.role()),
+        Role.of(command.role()),
         command.personId() == null || command.personId().isBlank()
             ? null
             : new PersonId(UUID.fromString(command.personId())));
@@ -45,13 +44,5 @@ public class RegisterUserHandler {
     users.save(user);
 
     return UserView.from(user);
-  }
-
-  private static Role parseRole(String raw) {
-    try {
-      return Role.valueOf(raw == null ? "" : raw.trim().toUpperCase());
-    } catch (IllegalArgumentException e) {
-      throw new InvalidRole(raw);
-    }
   }
 }

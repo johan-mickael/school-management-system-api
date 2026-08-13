@@ -72,6 +72,10 @@ class GetAtRiskStudentsHandlerTest {
           .filter(s -> promotionId.equals(s.promotionId()))
           .toList();
     }
+
+    public List<Student> findActiveByPromotionId(PromotionId promotionId) {
+      return findByPromotionId(promotionId).stream().filter(s -> !s.isArchived()).toList();
+    }
   }
 
   static class FakeAttendanceStatistics implements AttendanceStatisticsRepository {
@@ -159,6 +163,22 @@ class GetAtRiskStudentsHandlerTest {
     Student student = aStudent("STU-2025-0004", promotion);
     attendanceStatistics.rates.put(student.id(), 0.95);
     gradeStatistics.averages.put(student.id(), 16.0);
+
+    List<AtRiskStudentView> atRisk = handler.handle(new GetAtRiskStudentsQuery(promotion.id().toString()));
+
+    assertThat(atRisk).isEmpty();
+  }
+
+  @Test
+  void excludes_an_archived_student_even_if_otherwise_at_risk() {
+    Promotion promotion = Promotion.create(
+        PromotionId.generate(), new PromotionName("MSE 2025"), new AcademicYear("2025-2026"), new Capacity(30));
+    promotions.save(promotion);
+    Student student = aStudent("STU-2025-0005", promotion);
+    attendanceStatistics.rates.put(student.id(), 0.2);
+    gradeStatistics.averages.put(student.id(), 3.0);
+    student.archive();
+    students.save(student);
 
     List<AtRiskStudentView> atRisk = handler.handle(new GetAtRiskStudentsQuery(promotion.id().toString()));
 

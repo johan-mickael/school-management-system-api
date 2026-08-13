@@ -41,6 +41,10 @@ class EnrollStudentHandlerTest {
           .filter(s -> promotionId.equals(s.promotionId()))
           .toList();
     }
+
+    public List<Student> findActiveByPromotionId(PromotionId promotionId) {
+      return findByPromotionId(promotionId).stream().filter(s -> !s.isArchived()).toList();
+    }
   }
 
   private final InMemoryStudents repo = new InMemoryStudents();

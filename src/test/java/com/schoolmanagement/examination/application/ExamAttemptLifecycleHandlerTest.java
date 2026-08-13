@@ -3,7 +3,6 @@ package com.schoolmanagement.examination.application;
 import java.time.Clock;
 import java.time.Instant;
 import java.time.ZoneOffset;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -39,8 +38,15 @@ import com.schoolmanagement.iam.domain.UserId;
 import com.schoolmanagement.iam.domain.UserRepository;
 import com.schoolmanagement.iam.domain.Username;
 import com.schoolmanagement.promotion.domain.PromotionId;
+import com.schoolmanagement.shared.domain.EmailAddress;
+import com.schoolmanagement.shared.domain.FullName;
 import com.schoolmanagement.shared.domain.TimeWindow;
+import com.schoolmanagement.student.domain.Student;
 import com.schoolmanagement.student.domain.StudentId;
+import com.schoolmanagement.student.domain.StudentNumber;
+import com.schoolmanagement.student.domain.StudentRepository;
+import com.schoolmanagement.student.domain.exception.StudentAlreadyArchived;
+import com.schoolmanagement.student.domain.exception.StudentNotFound;
 
 class ExamAttemptLifecycleHandlerTest {
   static class InMemoryAttempts implements ExamAttemptRepository {
@@ -100,12 +106,38 @@ class ExamAttemptLifecycleHandlerTest {
     }
   }
 
+  static class InMemoryStudents implements StudentRepository {
+    final Map<java.util.UUID, Student> db = new HashMap<>();
+
+    public void save(Student s) {
+      db.put(s.id().value(), s);
+    }
+
+    public Student getById(StudentId id) {
+      Student s = db.get(id.value());
+      if (s == null)
+        throw new StudentNotFound(id);
+      return s;
+    }
+
+    public List<Student> findByPromotionId(PromotionId promotionId) {
+      return db.values().stream().filter(s -> promotionId.equals(s.promotionId())).toList();
+    }
+
+    public List<Student> findActiveByPromotionId(PromotionId promotionId) {
+      return findByPromotionId(promotionId).stream().filter(s -> !s.isArchived()).toList();
+    }
+  }
+
   private final InMemoryAttempts attempts = new InMemoryAttempts();
   private final InMemoryExams exams = new InMemoryExams();
   private final InMemoryUsers users = new InMemoryUsers();
+  private final InMemoryStudents students = new InMemoryStudents();
   private final Clock clock = Clock.fixed(Instant.parse("2025-12-01T09:00:00Z"), ZoneOffset.UTC);
-  private final StartAttemptHandler startHandler = new StartAttemptHandler(attempts, exams, users);
+  private final StartAttemptHandler startHandler = new StartAttemptHandler(attempts, exams, users, students);
   private final SubmitAttemptHandler submitHandler = new SubmitAttemptHandler(attempts);
+  private final java.util.concurrent.atomic.AtomicInteger studentNumberSequence =
+      new java.util.concurrent.atomic.AtomicInteger();
 
   private RecordIntegrityEventHandler recordHandler(int threshold) {
     return new RecordIntegrityEventHandler(attempts, clock, threshold);
@@ -125,6 +157,10 @@ class ExamAttemptLifecycleHandlerTest {
         UserId.generate(), new Username("student" + studentId.value()), new PasswordHash("hashed:x"),
         Role.STUDENT, new PersonId(studentId.value()));
     users.save(user);
+    students.save(Student.enroll(
+        studentId, new StudentNumber("STU-2025-%04d".formatted(studentNumberSequence.incrementAndGet())),
+        new FullName("Ada", "Lovelace"), new EmailAddress(studentId.value() + "@example.com"),
+        Instant.parse("2025-09-01T00:00:00Z")));
     return user;
   }
 
@@ -148,6 +184,18 @@ class ExamAttemptLifecycleHandlerTest {
 
     assertThatThrownBy(() -> startHandler.handle(new StartAttemptCommand(exam.id().toString(), user.id().toString())))
         .isInstanceOf(ExamNotOpenForAttempt.class);
+  }
+
+  @Test
+  void rejects_starting_an_attempt_for_an_archived_student() {
+    Exam exam = anOpenExam();
+    User user = aStudentUser(StudentId.generate());
+    Student student = students.getById(new StudentId(user.personId().value()));
+    student.archive();
+    students.save(student);
+
+    assertThatThrownBy(() -> startHandler.handle(new StartAttemptCommand(exam.id().toString(), user.id().toString())))
+        .isInstanceOf(StudentAlreadyArchived.class);
   }
 
   @Test

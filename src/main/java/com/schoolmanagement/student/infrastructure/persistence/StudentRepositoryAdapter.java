@@ -8,6 +8,7 @@ import com.schoolmanagement.promotion.domain.PromotionId;
 import com.schoolmanagement.student.domain.Student;
 import com.schoolmanagement.student.domain.StudentId;
 import com.schoolmanagement.student.domain.StudentRepository;
+import com.schoolmanagement.student.domain.StudentStatus;
 import com.schoolmanagement.student.domain.exception.StudentNotFound;
 
 @Repository
@@ -35,6 +36,13 @@ public class StudentRepositoryAdapter implements StudentRepository {
   @Override
   public List<Student> findByPromotionId(PromotionId promotionId) {
     return studentRepository.findByPromotionId(promotionId.value()).stream()
+        .map(studentMapper::toDomain)
+        .toList();
+  }
+
+  @Override
+  public List<Student> findActiveByPromotionId(PromotionId promotionId) {
+    return studentRepository.findByPromotionIdAndStatus(promotionId.value(), StudentStatus.ENROLLED).stream()
         .map(studentMapper::toDomain)
         .toList();
   }

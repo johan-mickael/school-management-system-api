@@ -28,11 +28,9 @@ public class ArchivePromotionHandler {
     promotion.archive();
     promotions.save(promotion);
 
-    for (Student student : students.findByPromotionId(promotionId)) {
-      if (!student.isArchived()) {
-        student.archive();
-        students.save(student);
-      }
+    for (Student student : students.findActiveByPromotionId(promotionId)) {
+      student.archive();
+      students.save(student);
     }
 
     return PromotionView.from(promotion);

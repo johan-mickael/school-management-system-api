@@ -93,13 +93,17 @@ class RecordGradeHandlerTest {
     public List<Student> findByPromotionId(PromotionId promotionId) {
       return db.values().stream().filter(s -> promotionId.equals(s.promotionId())).toList();
     }
+
+    public List<Student> findActiveByPromotionId(PromotionId promotionId) {
+      return findByPromotionId(promotionId).stream().filter(s -> !s.isArchived()).toList();
+    }
   }
 
   private final InMemoryGrades grades = new InMemoryGrades();
   private final InMemoryCourses courses = new InMemoryCourses();
   private final InMemoryStudents students = new InMemoryStudents();
   private final RecordGradeHandler recordHandler = new RecordGradeHandler(grades, courses, students);
-  private final CorrectGradeHandler correctHandler = new CorrectGradeHandler(grades);
+  private final CorrectGradeHandler correctHandler = new CorrectGradeHandler(grades, students);
 
   private Course aCourse() {
     Course course = Course.create(
@@ -184,5 +188,18 @@ class RecordGradeHandlerTest {
     GradeView corrected = correctHandler.handle(new CorrectGradeCommand(recorded.id(), 14.0));
 
     assertThat(corrected.score()).isEqualTo(14.0);
+  }
+
+  @Test
+  void rejects_correcting_a_grade_for_an_archived_student() {
+    Course course = aCourse();
+    Student student = aStudent();
+    GradeView recorded = recordHandler.handle(
+        new RecordGradeCommand(course.id().toString(), student.id().toString(), null, 10.0, 2.0));
+    student.archive();
+    students.save(student);
+
+    assertThatThrownBy(() -> correctHandler.handle(new CorrectGradeCommand(recorded.id(), 14.0)))
+        .isInstanceOf(com.schoolmanagement.student.domain.exception.StudentAlreadyArchived.class);
   }
 }

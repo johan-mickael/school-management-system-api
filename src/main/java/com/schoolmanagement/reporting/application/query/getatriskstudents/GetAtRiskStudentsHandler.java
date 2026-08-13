@@ -43,7 +43,7 @@ public class GetAtRiskStudentsHandler {
     PromotionId promotionId = PromotionId.of(query.promotionId());
     promotions.getById(promotionId);
 
-    return students.findByPromotionId(promotionId).stream()
+    return students.findActiveByPromotionId(promotionId).stream()
         .map(this::toView)
         .filter(this::isAtRisk)
         .toList();

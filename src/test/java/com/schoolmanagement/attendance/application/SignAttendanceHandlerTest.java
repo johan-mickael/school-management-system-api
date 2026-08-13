@@ -126,6 +126,10 @@ class SignAttendanceHandlerTest {
     public List<Student> findByPromotionId(PromotionId promotionId) {
       return db.values().stream().filter(s -> promotionId.equals(s.promotionId())).toList();
     }
+
+    public List<Student> findActiveByPromotionId(PromotionId promotionId) {
+      return findByPromotionId(promotionId).stream().filter(s -> !s.isArchived()).toList();
+    }
   }
 
   private final InMemorySessions sessions = new InMemorySessions();
@@ -135,7 +139,8 @@ class SignAttendanceHandlerTest {
   private final Clock clock = Clock.fixed(Instant.parse("2025-09-01T08:10:00Z"), ZoneOffset.UTC);
   private final SignAttendanceHandler signHandler =
       new SignAttendanceHandler(attendanceRecords, sessions, users, students, clock);
-  private final JustifyAttendanceHandler justifyHandler = new JustifyAttendanceHandler(attendanceRecords);
+  private final JustifyAttendanceHandler justifyHandler =
+      new JustifyAttendanceHandler(attendanceRecords, students);
   private final java.util.concurrent.atomic.AtomicInteger studentNumberSequence =
       new java.util.concurrent.atomic.AtomicInteger();
 
@@ -158,6 +163,15 @@ class SignAttendanceHandlerTest {
         new FullName("Ada", "Lovelace"), new EmailAddress(studentId.value() + "@example.com"),
         Instant.parse("2025-09-01T00:00:00Z")));
     return user;
+  }
+
+  private Student activeStudent(StudentId studentId) {
+    Student student = Student.enroll(
+        studentId, new StudentNumber("STU-2025-%04d".formatted(studentNumberSequence.incrementAndGet())),
+        new FullName("Ada", "Lovelace"), new EmailAddress(studentId.value() + "@example.com"),
+        Instant.parse("2025-09-01T00:00:00Z"));
+    students.save(student);
+    return student;
   }
 
   @Test
@@ -223,7 +237,7 @@ class SignAttendanceHandlerTest {
   @Test
   void justifies_an_absence() {
     Session session = openSession(Instant.parse("2025-09-01T08:00:00Z"), Duration.ofMinutes(15));
-    StudentId studentId = StudentId.generate();
+    StudentId studentId = activeStudent(StudentId.generate()).id();
     attendanceRecords.save(com.schoolmanagement.attendance.domain.AttendanceRecord.absent(
         com.schoolmanagement.attendance.domain.AttendanceId.generate(), session.id(), studentId));
 
@@ -248,8 +262,24 @@ class SignAttendanceHandlerTest {
 
   @Test
   void rejects_justifying_a_record_that_does_not_exist() {
+    StudentId studentId = activeStudent(StudentId.generate()).id();
+
     assertThatThrownBy(() -> justifyHandler.handle(
-        new JustifyAttendanceCommand(SessionId.generate().toString(), StudentId.generate().toString(), "N/A")))
+        new JustifyAttendanceCommand(SessionId.generate().toString(), studentId.toString(), "N/A")))
             .isInstanceOf(AttendanceRecordNotFound.class);
+  }
+
+  @Test
+  void rejects_justifying_an_absence_for_an_archived_student() {
+    Session session = openSession(Instant.parse("2025-09-01T08:00:00Z"), Duration.ofMinutes(15));
+    Student student = activeStudent(StudentId.generate());
+    attendanceRecords.save(com.schoolmanagement.attendance.domain.AttendanceRecord.absent(
+        com.schoolmanagement.attendance.domain.AttendanceId.generate(), session.id(), student.id()));
+    student.archive();
+    students.save(student);
+
+    assertThatThrownBy(() -> justifyHandler.handle(
+        new JustifyAttendanceCommand(session.id().toString(), student.id().toString(), "N/A")))
+            .isInstanceOf(StudentAlreadyArchived.class);
   }
 }
