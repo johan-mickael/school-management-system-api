@@ -17,6 +17,7 @@ import com.schoolmanagement.iam.domain.PasswordHash;
 import com.schoolmanagement.iam.domain.PasswordHasher;
 import com.schoolmanagement.iam.domain.TokenIssuer;
 import com.schoolmanagement.iam.domain.User;
+import com.schoolmanagement.iam.domain.UserId;
 import com.schoolmanagement.iam.domain.UserRepository;
 import com.schoolmanagement.iam.domain.Username;
 import com.schoolmanagement.iam.domain.exception.InvalidCredentials;
@@ -33,6 +34,10 @@ class AuthenticationHandlerTest {
 
     public Optional<User> findByUsername(Username username) {
       return Optional.ofNullable(db.get(username.value()));
+    }
+
+    public Optional<User> findById(UserId id) {
+      return db.values().stream().filter(u -> u.id().equals(id)).findFirst();
     }
   }
 

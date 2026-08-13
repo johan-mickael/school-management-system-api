@@ -5,6 +5,7 @@ import java.util.Optional;
 import org.springframework.stereotype.Repository;
 
 import com.schoolmanagement.iam.domain.User;
+import com.schoolmanagement.iam.domain.UserId;
 import com.schoolmanagement.iam.domain.UserRepository;
 import com.schoolmanagement.iam.domain.Username;
 
@@ -26,6 +27,12 @@ public class UserRepositoryAdapter implements UserRepository {
   @Override
   public Optional<User> findByUsername(Username username) {
     return userRepository.findByUsername(username.value())
+        .map(userMapper::toDomain);
+  }
+
+  @Override
+  public Optional<User> findById(UserId id) {
+    return userRepository.findById(id.value())
         .map(userMapper::toDomain);
   }
 }

@@ -24,6 +24,9 @@ import com.schoolmanagement.promotion.domain.PromotionId;
 import com.schoolmanagement.promotion.domain.PromotionName;
 import com.schoolmanagement.promotion.domain.PromotionRepository;
 import com.schoolmanagement.promotion.domain.exception.PromotionNotFound;
+import com.schoolmanagement.attendance.domain.AttendanceRecord;
+import com.schoolmanagement.attendance.domain.AttendanceRecordRepository;
+import com.schoolmanagement.promotion.domain.PromotionId;
 import com.schoolmanagement.scheduling.application.command.cancelsession.CancelSessionCommand;
 import com.schoolmanagement.scheduling.application.command.cancelsession.CancelSessionHandler;
 import com.schoolmanagement.scheduling.application.command.closesessionsigning.CloseSessionSigningCommand;
@@ -39,6 +42,10 @@ import com.schoolmanagement.scheduling.domain.SessionRepository;
 import com.schoolmanagement.scheduling.domain.exception.InvalidSessionTransition;
 import com.schoolmanagement.scheduling.domain.exception.SessionNotFound;
 import com.schoolmanagement.shared.domain.exception.InvalidTimeWindow;
+import com.schoolmanagement.student.domain.Student;
+import com.schoolmanagement.student.domain.StudentId;
+import com.schoolmanagement.student.domain.StudentRepository;
+import com.schoolmanagement.student.domain.exception.StudentNotFound;
 import com.schoolmanagement.teacher.domain.StaffNumber;
 import com.schoolmanagement.teacher.domain.Teacher;
 import com.schoolmanagement.teacher.domain.TeacherId;
@@ -46,6 +53,7 @@ import com.schoolmanagement.teacher.domain.TeacherRepository;
 import com.schoolmanagement.teacher.domain.exception.TeacherNotFound;
 import com.schoolmanagement.shared.domain.EmailAddress;
 import com.schoolmanagement.shared.domain.FullName;
+import java.util.Optional;
 
 class SessionLifecycleHandlerTest {
   static class InMemorySessions implements SessionRepository {
@@ -121,14 +129,59 @@ class SessionLifecycleHandlerTest {
     }
   }
 
+  static class InMemoryStudents implements StudentRepository {
+    final Map<java.util.UUID, Student> db = new HashMap<>();
+
+    public void save(Student s) {
+      db.put(s.id().value(), s);
+    }
+
+    public Student getById(StudentId id) {
+      Student s = db.get(id.value());
+      if (s == null)
+        throw new StudentNotFound(id);
+      return s;
+    }
+
+    public List<Student> findByPromotionId(PromotionId promotionId) {
+      return db.values().stream().filter(s -> promotionId.equals(s.promotionId())).toList();
+    }
+  }
+
+  static class InMemoryAttendanceRecords implements AttendanceRecordRepository {
+    final List<AttendanceRecord> db = new ArrayList<>();
+
+    public void save(AttendanceRecord r) {
+      db.removeIf(existing -> existing.id().equals(r.id()));
+      db.add(r);
+    }
+
+    public Optional<AttendanceRecord> findBySessionIdAndStudentId(SessionId sessionId, StudentId studentId) {
+      return db.stream()
+          .filter(r -> r.sessionId().equals(sessionId) && r.studentId().equals(studentId))
+          .findFirst();
+    }
+
+    public List<AttendanceRecord> findBySessionId(SessionId sessionId) {
+      return db.stream().filter(r -> r.sessionId().equals(sessionId)).toList();
+    }
+
+    public List<AttendanceRecord> findByStudentId(StudentId studentId) {
+      return db.stream().filter(r -> r.studentId().equals(studentId)).toList();
+    }
+  }
+
   private final InMemorySessions sessions = new InMemorySessions();
   private final InMemoryCourses courses = new InMemoryCourses();
   private final InMemoryPromotions promotions = new InMemoryPromotions();
   private final InMemoryTeachers teachers = new InMemoryTeachers();
+  private final InMemoryStudents students = new InMemoryStudents();
+  private final InMemoryAttendanceRecords attendanceRecords = new InMemoryAttendanceRecords();
   private final ScheduleSessionHandler scheduleHandler =
       new ScheduleSessionHandler(sessions, courses, promotions, teachers);
   private final OpenSessionSigningHandler openHandler = new OpenSessionSigningHandler(sessions);
-  private final CloseSessionSigningHandler closeHandler = new CloseSessionSigningHandler(sessions);
+  private final CloseSessionSigningHandler closeHandler =
+      new CloseSessionSigningHandler(sessions, students, attendanceRecords);
   private final CancelSessionHandler cancelHandler = new CancelSessionHandler(sessions);
 
   private Promotion aPromotion() {
@@ -247,5 +300,40 @@ class SessionLifecycleHandlerTest {
 
     assertThatThrownBy(() -> cancelHandler.handle(new CancelSessionCommand(scheduled.id())))
         .isInstanceOf(InvalidSessionTransition.class);
+  }
+
+  @Test
+  void closing_a_session_generates_absent_records_for_non_signers() {
+    Promotion promotion = aPromotion();
+    Teacher teacher = aTeacher();
+    Course course = aCourse(promotion.id());
+    SessionView scheduled = scheduleHandler.handle(new ScheduleSessionCommand(
+        course.id().toString(), promotion.id().toString(), teacher.id().toString(),
+        Instant.parse("2025-09-01T08:00:00Z"), Instant.parse("2025-09-01T10:00:00Z"), 900));
+    openHandler.handle(new OpenSessionSigningCommand(scheduled.id()));
+
+    Student signedStudent = Student.enroll(
+        StudentId.generate(), new com.schoolmanagement.student.domain.StudentNumber("STU-2025-0001"),
+        new FullName("Ada", "Lovelace"), new EmailAddress("ada@example.com"), Instant.parse("2025-09-01T00:00:00Z"));
+    signedStudent.assignToPromotion(promotion.id());
+    students.save(signedStudent);
+    Student absentStudent = Student.enroll(
+        StudentId.generate(), new com.schoolmanagement.student.domain.StudentNumber("STU-2025-0002"),
+        new FullName("Grace", "Hopper"), new EmailAddress("grace@example.com"), Instant.parse("2025-09-01T00:00:00Z"));
+    absentStudent.assignToPromotion(promotion.id());
+    students.save(absentStudent);
+    attendanceRecords.save(AttendanceRecord.sign(
+        com.schoolmanagement.attendance.domain.AttendanceId.generate(), SessionId.of(scheduled.id()),
+        signedStudent.id(), Instant.parse("2025-09-01T08:05:00Z"), Instant.parse("2025-09-01T08:00:00Z"),
+        java.time.Duration.ofMinutes(15)));
+
+    closeHandler.handle(new CloseSessionSigningCommand(scheduled.id()));
+
+    assertThat(attendanceRecords.findBySessionId(SessionId.of(scheduled.id())))
+        .hasSize(2);
+    assertThat(attendanceRecords.findBySessionIdAndStudentId(SessionId.of(scheduled.id()), signedStudent.id()))
+        .get().extracting(AttendanceRecord::status).isEqualTo(com.schoolmanagement.attendance.domain.AttendanceStatus.PRESENT);
+    assertThat(attendanceRecords.findBySessionIdAndStudentId(SessionId.of(scheduled.id()), absentStudent.id()))
+        .get().extracting(AttendanceRecord::status).isEqualTo(com.schoolmanagement.attendance.domain.AttendanceStatus.ABSENT);
   }
 }

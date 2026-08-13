@@ -10,6 +10,10 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import com.schoolmanagement.attendance.domain.exception.AttendanceAlreadyRecorded;
+import com.schoolmanagement.attendance.domain.exception.AttendanceRecordNotFound;
+import com.schoolmanagement.attendance.domain.exception.InvalidAttendanceTransition;
+import com.schoolmanagement.attendance.domain.exception.SessionSigningNotOpen;
 import com.schoolmanagement.course.domain.exception.CourseNotFound;
 import com.schoolmanagement.iam.domain.exception.InvalidCredentials;
 import com.schoolmanagement.iam.domain.exception.UsernameAlreadyTaken;
@@ -52,6 +56,11 @@ public class DomainExceptionHandler {
     return build(HttpStatus.NOT_FOUND, ex.getMessage());
   }
 
+  @ExceptionHandler(AttendanceRecordNotFound.class)
+  public ResponseEntity<ApiError> notFound(AttendanceRecordNotFound ex) {
+    return build(HttpStatus.NOT_FOUND, ex.getMessage());
+  }
+
   @ExceptionHandler(InvalidCredentials.class)
   public ResponseEntity<ApiError> unauthorized(InvalidCredentials ex) {
     return build(HttpStatus.UNAUTHORIZED, ex.getMessage());
@@ -84,6 +93,21 @@ public class DomainExceptionHandler {
 
   @ExceptionHandler(InvalidSessionTransition.class)
   public ResponseEntity<ApiError> conflict(InvalidSessionTransition ex) {
+    return build(HttpStatus.CONFLICT, ex.getMessage());
+  }
+
+  @ExceptionHandler(SessionSigningNotOpen.class)
+  public ResponseEntity<ApiError> conflict(SessionSigningNotOpen ex) {
+    return build(HttpStatus.CONFLICT, ex.getMessage());
+  }
+
+  @ExceptionHandler(AttendanceAlreadyRecorded.class)
+  public ResponseEntity<ApiError> conflict(AttendanceAlreadyRecorded ex) {
+    return build(HttpStatus.CONFLICT, ex.getMessage());
+  }
+
+  @ExceptionHandler(InvalidAttendanceTransition.class)
+  public ResponseEntity<ApiError> conflict(InvalidAttendanceTransition ex) {
     return build(HttpStatus.CONFLICT, ex.getMessage());
   }
 
