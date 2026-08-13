@@ -22,3 +22,5 @@ app:
       enabled: ${SEED_ADMIN_ENABLED:false}
       username: ${SEED_ADMIN_USERNAME:admin}
       password: ${SEED_ADMIN_PASSWORD:}
+  exam:
+    integrity-threshold: ${EXAM_INTEGRITY_THRESHOLD:5}
