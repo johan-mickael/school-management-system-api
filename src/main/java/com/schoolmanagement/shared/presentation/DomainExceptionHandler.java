@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import com.schoolmanagement.course.domain.exception.CourseNotFound;
+import com.schoolmanagement.iam.domain.exception.InvalidCredentials;
+import com.schoolmanagement.iam.domain.exception.UsernameAlreadyTaken;
 import com.schoolmanagement.promotion.domain.exception.PromotionFull;
 import com.schoolmanagement.promotion.domain.exception.PromotionNotFound;
 import com.schoolmanagement.shared.domain.DomainException;
@@ -43,6 +45,11 @@ public class DomainExceptionHandler {
     return build(HttpStatus.NOT_FOUND, ex.getMessage());
   }
 
+  @ExceptionHandler(InvalidCredentials.class)
+  public ResponseEntity<ApiError> unauthorized(InvalidCredentials ex) {
+    return build(HttpStatus.UNAUTHORIZED, ex.getMessage());
+  }
+
   @ExceptionHandler(StudentAlreadyArchived.class)
   public ResponseEntity<ApiError> conflict(StudentAlreadyArchived ex) {
     return build(HttpStatus.CONFLICT, ex.getMessage());
@@ -60,6 +67,11 @@ public class DomainExceptionHandler {
 
   @ExceptionHandler(StudentAlreadyAssignedToPromotion.class)
   public ResponseEntity<ApiError> conflict(StudentAlreadyAssignedToPromotion ex) {
+    return build(HttpStatus.CONFLICT, ex.getMessage());
+  }
+
+  @ExceptionHandler(UsernameAlreadyTaken.class)
+  public ResponseEntity<ApiError> conflict(UsernameAlreadyTaken ex) {
     return build(HttpStatus.CONFLICT, ex.getMessage());
   }
 
