@@ -14,12 +14,18 @@ import com.schoolmanagement.grading.application.command.correctgrade.CorrectGrad
 import com.schoolmanagement.grading.application.command.correctgrade.CorrectGradeHandler;
 import com.schoolmanagement.grading.application.command.recordgrade.RecordGradeCommand;
 import com.schoolmanagement.grading.application.command.recordgrade.RecordGradeHandler;
+import com.schoolmanagement.grading.application.query.getpromotionrankings.GetPromotionRankingsHandler;
+import com.schoolmanagement.grading.application.query.getpromotionrankings.GetPromotionRankingsQuery;
+import com.schoolmanagement.grading.application.query.getstudentaverages.GetStudentAveragesHandler;
+import com.schoolmanagement.grading.application.query.getstudentaverages.GetStudentAveragesQuery;
 import com.schoolmanagement.grading.application.query.getstudentgrades.GetStudentGradesHandler;
 import com.schoolmanagement.grading.application.query.getstudentgrades.GetStudentGradesQuery;
 import com.schoolmanagement.grading.application.view.GradeView;
 import com.schoolmanagement.grading.presentation.dto.CorrectGradeRequest;
 import com.schoolmanagement.grading.presentation.dto.GradeResponse;
+import com.schoolmanagement.grading.presentation.dto.PromotionRankingEntryResponse;
 import com.schoolmanagement.grading.presentation.dto.RecordGradeRequest;
+import com.schoolmanagement.grading.presentation.dto.StudentAveragesResponse;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -31,14 +37,20 @@ public class GradeController {
   private final RecordGradeHandler record;
   private final CorrectGradeHandler correct;
   private final GetStudentGradesHandler studentGrades;
+  private final GetStudentAveragesHandler studentAverages;
+  private final GetPromotionRankingsHandler promotionRankings;
 
   public GradeController(
       RecordGradeHandler record,
       CorrectGradeHandler correct,
-      GetStudentGradesHandler studentGrades) {
+      GetStudentGradesHandler studentGrades,
+      GetStudentAveragesHandler studentAverages,
+      GetPromotionRankingsHandler promotionRankings) {
     this.record = record;
     this.correct = correct;
     this.studentGrades = studentGrades;
+    this.studentAverages = studentAverages;
+    this.promotionRankings = promotionRankings;
   }
 
   @PostMapping("/api/v1/courses/{courseId}/grades")
@@ -68,5 +80,17 @@ public class GradeController {
   @PostMapping("/api/v1/grades/{id}/correct")
   public GradeResponse correct(@PathVariable String id, @Valid @RequestBody CorrectGradeRequest request) {
     return GradeResponse.from(correct.handle(new CorrectGradeCommand(id, request.score())));
+  }
+
+  @GetMapping("/api/v1/students/{studentId}/averages")
+  public StudentAveragesResponse getStudentAverages(@PathVariable String studentId) {
+    return StudentAveragesResponse.from(studentAverages.handle(new GetStudentAveragesQuery(studentId)));
+  }
+
+  @GetMapping("/api/v1/promotions/{promotionId}/rankings")
+  public List<PromotionRankingEntryResponse> getPromotionRankings(@PathVariable String promotionId) {
+    return promotionRankings.handle(new GetPromotionRankingsQuery(promotionId)).stream()
+        .map(PromotionRankingEntryResponse::from)
+        .toList();
   }
 }
