@@ -15,6 +15,8 @@ import com.schoolmanagement.attendance.domain.exception.AttendanceRecordNotFound
 import com.schoolmanagement.attendance.domain.exception.InvalidAttendanceTransition;
 import com.schoolmanagement.attendance.domain.exception.SessionSigningNotOpen;
 import com.schoolmanagement.course.domain.exception.CourseNotFound;
+import com.schoolmanagement.examination.domain.exception.ExamNotFound;
+import com.schoolmanagement.examination.domain.exception.InvalidExamTransition;
 import com.schoolmanagement.grading.domain.exception.GradeNotFound;
 import com.schoolmanagement.iam.domain.exception.InvalidCredentials;
 import com.schoolmanagement.iam.domain.exception.UsernameAlreadyTaken;
@@ -67,6 +69,11 @@ public class DomainExceptionHandler {
     return build(HttpStatus.NOT_FOUND, ex.getMessage());
   }
 
+  @ExceptionHandler(ExamNotFound.class)
+  public ResponseEntity<ApiError> notFound(ExamNotFound ex) {
+    return build(HttpStatus.NOT_FOUND, ex.getMessage());
+  }
+
   @ExceptionHandler(InvalidCredentials.class)
   public ResponseEntity<ApiError> unauthorized(InvalidCredentials ex) {
     return build(HttpStatus.UNAUTHORIZED, ex.getMessage());
@@ -114,6 +121,11 @@ public class DomainExceptionHandler {
 
   @ExceptionHandler(InvalidAttendanceTransition.class)
   public ResponseEntity<ApiError> conflict(InvalidAttendanceTransition ex) {
+    return build(HttpStatus.CONFLICT, ex.getMessage());
+  }
+
+  @ExceptionHandler(InvalidExamTransition.class)
+  public ResponseEntity<ApiError> conflict(InvalidExamTransition ex) {
     return build(HttpStatus.CONFLICT, ex.getMessage());
   }
 
