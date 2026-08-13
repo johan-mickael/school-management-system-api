@@ -28,11 +28,17 @@ services:
     volumes:
       - ./:/workspace
       - maven-repo:/root/.m2
+      - /var/run/docker.sock:/var/run/docker.sock
     environment:
       DB_HOST: ${DB_HOST}
       POSTGRES_DB: ${POSTGRES_DB}
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      TESTCONTAINERS_DOCKER_NETWORK: schoolnet
+
+networks:
+  default:
+    name: schoolnet
 
 volumes:
   db-data:
