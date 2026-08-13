@@ -44,6 +44,7 @@ public class GetAtRiskStudentsHandler {
     promotions.getById(promotionId);
 
     return students.findByPromotionId(promotionId).stream()
+        .filter(s -> !s.isArchived())
         .map(this::toView)
         .filter(this::isAtRisk)
         .toList();

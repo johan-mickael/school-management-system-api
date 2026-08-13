@@ -53,10 +53,17 @@ public final class Student {
         return status == StudentStatus.ARCHIVED;
     }
 
-    public void assignToPromotion(PromotionId promotionId) {
+    /**
+     * @throws StudentAlreadyArchived if this student is archived
+     */
+    public void ensureActive() {
         if (isArchived()) {
             throw new StudentAlreadyArchived(id);
         }
+    }
+
+    public void assignToPromotion(PromotionId promotionId) {
+        ensureActive();
         if (this.promotionId != null) {
             throw new StudentAlreadyAssignedToPromotion(id);
         }

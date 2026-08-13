@@ -42,6 +42,9 @@ public class CloseSessionSigningHandler {
 
   private void generateAbsencesForNonSigners(Session session) {
     for (Student student : students.findByPromotionId(session.promotionId())) {
+      if (student.isArchived()) {
+        continue;
+      }
       boolean alreadyRecorded = attendanceRecords
           .findBySessionIdAndStudentId(session.id(), student.id())
           .isPresent();

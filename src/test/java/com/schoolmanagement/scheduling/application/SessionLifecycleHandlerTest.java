@@ -26,7 +26,6 @@ import com.schoolmanagement.promotion.domain.PromotionRepository;
 import com.schoolmanagement.promotion.domain.exception.PromotionNotFound;
 import com.schoolmanagement.attendance.domain.AttendanceRecord;
 import com.schoolmanagement.attendance.domain.AttendanceRecordRepository;
-import com.schoolmanagement.promotion.domain.PromotionId;
 import com.schoolmanagement.scheduling.application.command.cancelsession.CancelSessionCommand;
 import com.schoolmanagement.scheduling.application.command.cancelsession.CancelSessionHandler;
 import com.schoolmanagement.scheduling.application.command.closesessionsigning.CloseSessionSigningCommand;
@@ -339,5 +338,28 @@ class SessionLifecycleHandlerTest {
         .get().extracting(AttendanceRecord::status).isEqualTo(com.schoolmanagement.attendance.domain.AttendanceStatus.PRESENT);
     assertThat(attendanceRecords.findBySessionIdAndStudentId(SessionId.of(scheduled.id()), absentStudent.id()))
         .get().extracting(AttendanceRecord::status).isEqualTo(com.schoolmanagement.attendance.domain.AttendanceStatus.ABSENT);
+  }
+
+  @Test
+  void closing_a_session_does_not_generate_an_absence_for_an_archived_student() {
+    Promotion promotion = aPromotion();
+    Teacher teacher = aTeacher();
+    Course course = aCourse(promotion.id());
+    SessionView scheduled = scheduleHandler.handle(new ScheduleSessionCommand(
+        course.id().toString(), promotion.id().toString(), teacher.id().toString(),
+        Instant.parse("2025-09-01T08:00:00Z"), Instant.parse("2025-09-01T10:00:00Z"), 900));
+    openHandler.handle(new OpenSessionSigningCommand(scheduled.id()));
+
+    Student archivedStudent = Student.enroll(
+        StudentId.generate(), new com.schoolmanagement.student.domain.StudentNumber("STU-2025-0003"),
+        new FullName("Rosalind", "Franklin"), new EmailAddress("rosalind@example.com"),
+        Instant.parse("2025-09-01T00:00:00Z"));
+    archivedStudent.assignToPromotion(promotion.id());
+    archivedStudent.archive();
+    students.save(archivedStudent);
+
+    closeHandler.handle(new CloseSessionSigningCommand(scheduled.id()));
+
+    assertThat(attendanceRecords.findBySessionId(SessionId.of(scheduled.id()))).isEmpty();
   }
 }

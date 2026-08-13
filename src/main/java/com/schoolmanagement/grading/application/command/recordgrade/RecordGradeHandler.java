@@ -16,7 +16,6 @@ import com.schoolmanagement.grading.domain.Score;
 import com.schoolmanagement.student.domain.Student;
 import com.schoolmanagement.student.domain.StudentId;
 import com.schoolmanagement.student.domain.StudentRepository;
-import com.schoolmanagement.student.domain.exception.StudentAlreadyArchived;
 
 @Service
 public class RecordGradeHandler {
@@ -36,9 +35,7 @@ public class RecordGradeHandler {
     courses.getById(courseId);
     StudentId studentId = StudentId.of(command.studentId());
     Student student = students.getById(studentId);
-    if (student.isArchived()) {
-      throw new StudentAlreadyArchived(studentId);
-    }
+    student.ensureActive();
 
     Grade grade = Grade.record(
         GradeId.generate(),

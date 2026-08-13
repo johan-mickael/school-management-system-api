@@ -37,7 +37,9 @@ public class GetPromotionSummaryHandler {
     PromotionId promotionId = PromotionId.of(query.promotionId());
     promotions.getById(promotionId);
 
-    List<Student> promotionStudents = students.findByPromotionId(promotionId);
+    List<Student> promotionStudents = students.findByPromotionId(promotionId).stream()
+        .filter(s -> !s.isArchived())
+        .toList();
 
     OptionalDouble averageAttendanceRate = promotionStudents.stream()
         .flatMap(s -> attendanceStatistics.attendanceRateForStudent(s.id()).stream())

@@ -132,4 +132,29 @@ class GradeStatisticsIT extends AbstractIntegrationTest {
             tuple(middle.id().toString(), 2),
             tuple(ungraded.id().toString(), 3));
   }
+
+  @Test
+  void excludes_an_archived_student_from_the_ranking() {
+    Promotion promotion = Promotion.create(
+        PromotionId.generate(), new PromotionName("MSE 2025"), new AcademicYear("2025-2026"), new Capacity(30));
+    promotions.save(promotion);
+    Course course = aCourse(promotion.id(), "CS602");
+
+    Student active = aStudent("STU-2025-0404");
+    active.assignToPromotion(promotion.id());
+    students.save(active);
+    recordGrade.handle(new RecordGradeCommand(course.id().toString(), active.id().toString(), null, 10.0, 1.0));
+
+    Student archived = aStudent("STU-2025-0405");
+    archived.assignToPromotion(promotion.id());
+    recordGrade.handle(new RecordGradeCommand(course.id().toString(), archived.id().toString(), null, 20.0, 1.0));
+    archived.archive();
+    students.save(archived);
+
+    java.util.List<PromotionRankingEntryView> ranking =
+        promotionRankings.handle(new GetPromotionRankingsQuery(promotion.id().toString()));
+
+    assertThat(ranking).extracting(PromotionRankingEntryView::studentId)
+        .containsExactly(active.id().toString());
+  }
 }
