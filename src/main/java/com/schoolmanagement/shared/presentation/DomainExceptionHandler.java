@@ -16,6 +16,8 @@ import com.schoolmanagement.shared.domain.DomainException;
 import com.schoolmanagement.student.domain.exception.StudentAlreadyArchived;
 import com.schoolmanagement.student.domain.exception.StudentAlreadyAssignedToPromotion;
 import com.schoolmanagement.student.domain.exception.StudentNotFound;
+import com.schoolmanagement.teacher.domain.exception.TeacherAlreadyArchived;
+import com.schoolmanagement.teacher.domain.exception.TeacherNotFound;
 
 @RestControllerAdvice
 public class DomainExceptionHandler {
@@ -30,8 +32,18 @@ public class DomainExceptionHandler {
     return build(HttpStatus.NOT_FOUND, ex.getMessage());
   }
 
+  @ExceptionHandler(TeacherNotFound.class)
+  public ResponseEntity<ApiError> notFound(TeacherNotFound ex) {
+    return build(HttpStatus.NOT_FOUND, ex.getMessage());
+  }
+
   @ExceptionHandler(StudentAlreadyArchived.class)
   public ResponseEntity<ApiError> conflict(StudentAlreadyArchived ex) {
+    return build(HttpStatus.CONFLICT, ex.getMessage());
+  }
+
+  @ExceptionHandler(TeacherAlreadyArchived.class)
+  public ResponseEntity<ApiError> conflict(TeacherAlreadyArchived ex) {
     return build(HttpStatus.CONFLICT, ex.getMessage());
   }
 
