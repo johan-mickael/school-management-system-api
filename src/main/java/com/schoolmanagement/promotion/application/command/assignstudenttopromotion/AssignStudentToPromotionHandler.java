@@ -27,7 +27,7 @@ public class AssignStudentToPromotionHandler {
     Promotion promotion = promotions.getById(promotionId);
     Student student = students.getById(StudentId.of(command.studentId()));
 
-    promotion.enrollStudent();
+    promotion.admit();
     student.assignToPromotion(promotionId);
 
     promotions.save(promotion);
