@@ -19,7 +19,6 @@ import com.schoolmanagement.iam.domain.UserRepository;
 import com.schoolmanagement.scheduling.domain.Session;
 import com.schoolmanagement.scheduling.domain.SessionId;
 import com.schoolmanagement.scheduling.domain.SessionRepository;
-import com.schoolmanagement.scheduling.domain.SessionStatus;
 import com.schoolmanagement.student.domain.Student;
 import com.schoolmanagement.student.domain.StudentId;
 import com.schoolmanagement.student.domain.StudentRepository;
@@ -49,7 +48,7 @@ public class SignAttendanceHandler {
   public AttendanceRecordView handle(SignAttendanceCommand command) {
     SessionId sessionId = SessionId.of(command.sessionId());
     Session session = sessions.getById(sessionId);
-    if (session.status() != SessionStatus.SIGNING_OPEN) {
+    if (!session.isAcceptingSignatures()) {
       throw new SessionSigningNotOpen(sessionId);
     }
 

@@ -123,6 +123,10 @@ class ExamAttemptLifecycleHandlerTest {
     public List<Student> findByPromotionId(PromotionId promotionId) {
       return db.values().stream().filter(s -> promotionId.equals(s.promotionId())).toList();
     }
+
+    public List<Student> findActiveByPromotionId(PromotionId promotionId) {
+      return findByPromotionId(promotionId).stream().filter(s -> !s.isArchived()).toList();
+    }
   }
 
   private final InMemoryAttempts attempts = new InMemoryAttempts();

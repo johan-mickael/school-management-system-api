@@ -14,4 +14,9 @@ public interface StudentRepository {
     Student getById(StudentId id);
 
     List<Student> findByPromotionId(PromotionId promotionId);
+
+    /**
+     * Same as {@link #findByPromotionId}, excluding archived students.
+     */
+    List<Student> findActiveByPromotionId(PromotionId promotionId);
 }

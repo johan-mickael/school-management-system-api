@@ -77,6 +77,10 @@ public final class Session {
         status = SessionStatus.CANCELLED;
     }
 
+    public boolean isAcceptingSignatures() {
+        return status == SessionStatus.SIGNING_OPEN;
+    }
+
     public SessionId id() {
         return id;
     }

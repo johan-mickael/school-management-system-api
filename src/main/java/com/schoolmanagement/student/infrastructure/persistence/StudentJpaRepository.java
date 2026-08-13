@@ -5,6 +5,10 @@ import java.util.UUID;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import com.schoolmanagement.student.domain.StudentStatus;
+
 public interface StudentJpaRepository extends JpaRepository<StudentEntity, UUID> {
   List<StudentEntity> findByPromotionId(UUID promotionId);
+
+  List<StudentEntity> findByPromotionIdAndStatus(UUID promotionId, StudentStatus status);
 }
