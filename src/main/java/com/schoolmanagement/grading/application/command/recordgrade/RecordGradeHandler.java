@@ -13,8 +13,10 @@ import com.schoolmanagement.grading.domain.Grade;
 import com.schoolmanagement.grading.domain.GradeId;
 import com.schoolmanagement.grading.domain.GradeRepository;
 import com.schoolmanagement.grading.domain.Score;
+import com.schoolmanagement.student.domain.Student;
 import com.schoolmanagement.student.domain.StudentId;
 import com.schoolmanagement.student.domain.StudentRepository;
+import com.schoolmanagement.student.domain.exception.StudentAlreadyArchived;
 
 @Service
 public class RecordGradeHandler {
@@ -33,7 +35,10 @@ public class RecordGradeHandler {
     CourseId courseId = CourseId.of(command.courseId());
     courses.getById(courseId);
     StudentId studentId = StudentId.of(command.studentId());
-    students.getById(studentId);
+    Student student = students.getById(studentId);
+    if (student.isArchived()) {
+      throw new StudentAlreadyArchived(studentId);
+    }
 
     Grade grade = Grade.record(
         GradeId.generate(),

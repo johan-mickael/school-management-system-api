@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.schoolmanagement.promotion.application.command.archivepromotion.ArchivePromotionCommand;
+import com.schoolmanagement.promotion.application.command.archivepromotion.ArchivePromotionHandler;
 import com.schoolmanagement.promotion.application.command.assignstudenttopromotion.AssignStudentToPromotionCommand;
 import com.schoolmanagement.promotion.application.command.assignstudenttopromotion.AssignStudentToPromotionHandler;
 import com.schoolmanagement.promotion.application.command.createpromotion.CreatePromotionCommand;
@@ -38,16 +40,19 @@ public class PromotionController {
   private final GetPromotionHandler get;
   private final ListPromotionStudentsHandler listStudents;
   private final AssignStudentToPromotionHandler assignStudent;
+  private final ArchivePromotionHandler archive;
 
   public PromotionController(
       CreatePromotionHandler create,
       GetPromotionHandler get,
       ListPromotionStudentsHandler listStudents,
-      AssignStudentToPromotionHandler assignStudent) {
+      AssignStudentToPromotionHandler assignStudent,
+      ArchivePromotionHandler archive) {
     this.create = create;
     this.get = get;
     this.listStudents = listStudents;
     this.assignStudent = assignStudent;
+    this.archive = archive;
   }
 
   @PostMapping
@@ -80,5 +85,10 @@ public class PromotionController {
       @Valid @RequestBody AssignStudentToPromotionRequest request) {
     AssignStudentToPromotionCommand command = new AssignStudentToPromotionCommand(id, request.studentId());
     return StudentResponse.from(assignStudent.handle(command));
+  }
+
+  @PostMapping("/{id}/archive")
+  public PromotionResponse archive(@PathVariable String id) {
+    return PromotionResponse.from(archive.handle(new ArchivePromotionCommand(id)));
   }
 }

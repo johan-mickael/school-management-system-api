@@ -26,6 +26,7 @@ public class ListPromotionStudentsHandler {
     promotions.getById(id);
 
     return students.findByPromotionId(id).stream()
+        .filter(s -> !s.isArchived())
         .map(StudentView::from)
         .toList();
   }

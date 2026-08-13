@@ -54,6 +54,9 @@ public final class Student {
     }
 
     public void assignToPromotion(PromotionId promotionId) {
+        if (isArchived()) {
+            throw new StudentAlreadyArchived(id);
+        }
         if (this.promotionId != null) {
             throw new StudentAlreadyAssignedToPromotion(id);
         }

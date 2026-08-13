@@ -39,8 +39,15 @@ import com.schoolmanagement.scheduling.domain.Session;
 import com.schoolmanagement.scheduling.domain.SessionId;
 import com.schoolmanagement.scheduling.domain.SessionRepository;
 import com.schoolmanagement.scheduling.domain.exception.SessionNotFound;
+import com.schoolmanagement.shared.domain.EmailAddress;
+import com.schoolmanagement.shared.domain.FullName;
 import com.schoolmanagement.shared.domain.TimeWindow;
+import com.schoolmanagement.student.domain.Student;
 import com.schoolmanagement.student.domain.StudentId;
+import com.schoolmanagement.student.domain.StudentNumber;
+import com.schoolmanagement.student.domain.StudentRepository;
+import com.schoolmanagement.student.domain.exception.StudentAlreadyArchived;
+import com.schoolmanagement.student.domain.exception.StudentNotFound;
 import com.schoolmanagement.teacher.domain.TeacherId;
 
 class SignAttendanceHandlerTest {
@@ -102,13 +109,35 @@ class SignAttendanceHandlerTest {
     }
   }
 
+  static class InMemoryStudents implements StudentRepository {
+    final Map<java.util.UUID, Student> db = new HashMap<>();
+
+    public void save(Student s) {
+      db.put(s.id().value(), s);
+    }
+
+    public Student getById(StudentId id) {
+      Student s = db.get(id.value());
+      if (s == null)
+        throw new StudentNotFound(id);
+      return s;
+    }
+
+    public List<Student> findByPromotionId(PromotionId promotionId) {
+      return db.values().stream().filter(s -> promotionId.equals(s.promotionId())).toList();
+    }
+  }
+
   private final InMemorySessions sessions = new InMemorySessions();
   private final InMemoryUsers users = new InMemoryUsers();
   private final InMemoryAttendanceRecords attendanceRecords = new InMemoryAttendanceRecords();
+  private final InMemoryStudents students = new InMemoryStudents();
   private final Clock clock = Clock.fixed(Instant.parse("2025-09-01T08:10:00Z"), ZoneOffset.UTC);
   private final SignAttendanceHandler signHandler =
-      new SignAttendanceHandler(attendanceRecords, sessions, users, clock);
+      new SignAttendanceHandler(attendanceRecords, sessions, users, students, clock);
   private final JustifyAttendanceHandler justifyHandler = new JustifyAttendanceHandler(attendanceRecords);
+  private final java.util.concurrent.atomic.AtomicInteger studentNumberSequence =
+      new java.util.concurrent.atomic.AtomicInteger();
 
   private Session openSession(Instant start, Duration gracePeriod) {
     Session session = Session.schedule(
@@ -124,6 +153,10 @@ class SignAttendanceHandlerTest {
         UserId.generate(), new Username("student" + studentId.value()), new PasswordHash("hashed:x"),
         Role.STUDENT, new PersonId(studentId.value()));
     users.save(user);
+    students.save(Student.enroll(
+        studentId, new StudentNumber("STU-2025-%04d".formatted(studentNumberSequence.incrementAndGet())),
+        new FullName("Ada", "Lovelace"), new EmailAddress(studentId.value() + "@example.com"),
+        Instant.parse("2025-09-01T00:00:00Z")));
     return user;
   }
 
@@ -136,6 +169,19 @@ class SignAttendanceHandlerTest {
         new SignAttendanceCommand(session.id().toString(), user.id().toString()));
 
     assertThat(view.status()).isEqualTo("PRESENT");
+  }
+
+  @Test
+  void rejects_signing_for_an_archived_student() {
+    Session session = openSession(Instant.parse("2025-09-01T08:00:00Z"), Duration.ofMinutes(15));
+    User user = aStudentUser(StudentId.generate());
+    Student student = students.getById(new StudentId(user.personId().value()));
+    student.archive();
+    students.save(student);
+
+    assertThatThrownBy(() -> signHandler.handle(
+        new SignAttendanceCommand(session.id().toString(), user.id().toString())))
+            .isInstanceOf(StudentAlreadyArchived.class);
   }
 
   @Test

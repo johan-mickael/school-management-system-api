@@ -47,6 +47,10 @@ class GetAtRiskStudentsHandlerTest {
         throw new PromotionNotFound(id);
       return p;
     }
+
+    public List<Promotion> findArchived() {
+      return db.values().stream().filter(Promotion::isArchived).toList();
+    }
   }
 
   static class InMemoryStudents implements StudentRepository {
