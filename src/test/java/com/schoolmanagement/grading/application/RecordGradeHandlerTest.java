@@ -118,6 +118,18 @@ class RecordGradeHandlerTest {
   }
 
   @Test
+  void rejects_recording_a_grade_for_an_archived_student() {
+    Course course = aCourse();
+    Student student = aStudent();
+    student.archive();
+    students.save(student);
+
+    assertThatThrownBy(() -> recordHandler.handle(
+        new RecordGradeCommand(course.id().toString(), student.id().toString(), null, 15.5, 2.0)))
+            .isInstanceOf(com.schoolmanagement.student.domain.exception.StudentAlreadyArchived.class);
+  }
+
+  @Test
   void records_a_grade() {
     Course course = aCourse();
     Student student = aStudent();
