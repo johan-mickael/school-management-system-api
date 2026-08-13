@@ -15,6 +15,7 @@ import com.schoolmanagement.attendance.domain.exception.AttendanceRecordNotFound
 import com.schoolmanagement.attendance.domain.exception.InvalidAttendanceTransition;
 import com.schoolmanagement.attendance.domain.exception.SessionSigningNotOpen;
 import com.schoolmanagement.course.domain.exception.CourseNotFound;
+import com.schoolmanagement.grading.domain.exception.GradeNotFound;
 import com.schoolmanagement.iam.domain.exception.InvalidCredentials;
 import com.schoolmanagement.iam.domain.exception.UsernameAlreadyTaken;
 import com.schoolmanagement.promotion.domain.exception.PromotionFull;
@@ -58,6 +59,11 @@ public class DomainExceptionHandler {
 
   @ExceptionHandler(AttendanceRecordNotFound.class)
   public ResponseEntity<ApiError> notFound(AttendanceRecordNotFound ex) {
+    return build(HttpStatus.NOT_FOUND, ex.getMessage());
+  }
+
+  @ExceptionHandler(GradeNotFound.class)
+  public ResponseEntity<ApiError> notFound(GradeNotFound ex) {
     return build(HttpStatus.NOT_FOUND, ex.getMessage());
   }
 

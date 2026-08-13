@@ -33,6 +33,7 @@ public class SecurityConfiguration {
             .requestMatchers(HttpMethod.POST, "/api/v1/auth/register").hasRole("ADMIN")
             .requestMatchers(HttpMethod.POST, "/api/v1/students/**").hasRole("ADMIN")
             .requestMatchers(HttpMethod.POST, "/api/v1/teachers/**").hasRole("ADMIN")
+            .requestMatchers(HttpMethod.POST, "/api/v1/courses/*/grades").hasAnyRole("ADMIN", "TEACHER")
             .requestMatchers(HttpMethod.POST, "/api/v1/courses/**").hasRole("ADMIN")
             .requestMatchers(HttpMethod.POST, "/api/v1/promotions/**").hasRole("ADMIN")
             .requestMatchers(HttpMethod.POST, "/api/v1/sessions/*/open").hasAnyRole("ADMIN", "TEACHER")
@@ -41,6 +42,7 @@ public class SecurityConfiguration {
             .requestMatchers(HttpMethod.POST, "/api/v1/sessions").hasRole("ADMIN")
             .requestMatchers(HttpMethod.POST, "/api/v1/sessions/*/attendance/sign").hasRole("STUDENT")
             .requestMatchers(HttpMethod.POST, "/api/v1/sessions/*/attendance/*/justify").hasAnyRole("ADMIN", "TEACHER")
+            .requestMatchers(HttpMethod.POST, "/api/v1/grades/*/correct").hasAnyRole("ADMIN", "TEACHER")
             .anyRequest().authenticated())
         .exceptionHandling(ex -> ex
             .authenticationEntryPoint((req, res, e) -> writeError(res, 401, "Unauthorized"))
