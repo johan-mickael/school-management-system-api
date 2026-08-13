@@ -301,4 +301,39 @@ class SessionLifecycleHandlerTest {
     assertThatThrownBy(() -> cancelHandler.handle(new CancelSessionCommand(scheduled.id())))
         .isInstanceOf(InvalidSessionTransition.class);
   }
+
+  @Test
+  void closing_a_session_generates_absent_records_for_non_signers() {
+    Promotion promotion = aPromotion();
+    Teacher teacher = aTeacher();
+    Course course = aCourse(promotion.id());
+    SessionView scheduled = scheduleHandler.handle(new ScheduleSessionCommand(
+        course.id().toString(), promotion.id().toString(), teacher.id().toString(),
+        Instant.parse("2025-09-01T08:00:00Z"), Instant.parse("2025-09-01T10:00:00Z"), 900));
+    openHandler.handle(new OpenSessionSigningCommand(scheduled.id()));
+
+    Student signedStudent = Student.enroll(
+        StudentId.generate(), new com.schoolmanagement.student.domain.StudentNumber("STU-2025-0001"),
+        new FullName("Ada", "Lovelace"), new EmailAddress("ada@example.com"), Instant.parse("2025-09-01T00:00:00Z"));
+    signedStudent.assignToPromotion(promotion.id());
+    students.save(signedStudent);
+    Student absentStudent = Student.enroll(
+        StudentId.generate(), new com.schoolmanagement.student.domain.StudentNumber("STU-2025-0002"),
+        new FullName("Grace", "Hopper"), new EmailAddress("grace@example.com"), Instant.parse("2025-09-01T00:00:00Z"));
+    absentStudent.assignToPromotion(promotion.id());
+    students.save(absentStudent);
+    attendanceRecords.save(AttendanceRecord.sign(
+        com.schoolmanagement.attendance.domain.AttendanceId.generate(), SessionId.of(scheduled.id()),
+        signedStudent.id(), Instant.parse("2025-09-01T08:05:00Z"), Instant.parse("2025-09-01T08:00:00Z"),
+        java.time.Duration.ofMinutes(15)));
+
+    closeHandler.handle(new CloseSessionSigningCommand(scheduled.id()));
+
+    assertThat(attendanceRecords.findBySessionId(SessionId.of(scheduled.id())))
+        .hasSize(2);
+    assertThat(attendanceRecords.findBySessionIdAndStudentId(SessionId.of(scheduled.id()), signedStudent.id()))
+        .get().extracting(AttendanceRecord::status).isEqualTo(com.schoolmanagement.attendance.domain.AttendanceStatus.PRESENT);
+    assertThat(attendanceRecords.findBySessionIdAndStudentId(SessionId.of(scheduled.id()), absentStudent.id()))
+        .get().extracting(AttendanceRecord::status).isEqualTo(com.schoolmanagement.attendance.domain.AttendanceStatus.ABSENT);
+  }
 }
