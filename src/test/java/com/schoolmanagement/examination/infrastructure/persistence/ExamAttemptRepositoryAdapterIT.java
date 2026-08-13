@@ -58,11 +58,12 @@ class ExamAttemptRepositoryAdapterIT extends AbstractIntegrationTest {
   private StudentRepository students;
 
   private Exam anExam() {
+    String uniqueSuffix = "%04d".formatted(Math.abs(UUID.randomUUID().hashCode()) % 10000);
     Promotion promotion = Promotion.create(
         PromotionId.generate(), new PromotionName("MSE 2025"), new AcademicYear("2025-2026"), new Capacity(30));
     promotions.save(promotion);
     Course course = Course.create(
-        CourseId.generate(), new CourseCode("CS-EXAMATTEMPTIT-" + UUID.randomUUID()), new CourseTitle("Cryptography"),
+        CourseId.generate(), new CourseCode("CS" + uniqueSuffix), new CourseTitle("Cryptography"),
         new Coefficient(2.0), promotion.id(), null);
     courses.save(course);
     Exam exam = Exam.schedule(

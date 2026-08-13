@@ -63,7 +63,7 @@ class SessionRepositoryAdapterIT extends AbstractIntegrationTest {
         new EmailAddress("grace.session-" + uniqueSuffix + "@example.com"), Instant.parse("2025-09-01T08:00:00Z"));
     teachers.save(teacher);
     Course course = Course.create(
-        CourseId.generate(), new CourseCode("CS-SESSIONADAPTERIT-" + UUID.randomUUID()), new CourseTitle("Databases"),
+        CourseId.generate(), new CourseCode("CS" + uniqueSuffix), new CourseTitle("Databases"),
         new Coefficient(2.0), promotion.id(), teacher.id());
     courses.save(course);
 
