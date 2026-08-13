@@ -49,6 +49,10 @@ public final class Course {
         this.teacherId = teacherId;
     }
 
+    public boolean isTaughtBy(TeacherId teacherId) {
+        return this.teacherId != null && this.teacherId.equals(teacherId);
+    }
+
     public CourseId id() {
         return id;
     }

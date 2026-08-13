@@ -7,6 +7,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -19,6 +20,7 @@ import jakarta.servlet.http.HttpServletResponse;
 
 @Configuration
 @EnableWebSecurity
+@EnableMethodSecurity
 public class SecurityConfiguration {
 
   @Bean
@@ -30,26 +32,6 @@ public class SecurityConfiguration {
             .requestMatchers("/actuator/**").permitAll()
             .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
             .requestMatchers(HttpMethod.POST, "/api/v1/auth/login").permitAll()
-            .requestMatchers(HttpMethod.POST, "/api/v1/auth/register").hasRole("ADMIN")
-            .requestMatchers(HttpMethod.POST, "/api/v1/students/**").hasRole("ADMIN")
-            .requestMatchers(HttpMethod.POST, "/api/v1/teachers/**").hasRole("ADMIN")
-            .requestMatchers(HttpMethod.POST, "/api/v1/courses/*/grades").hasAnyRole("ADMIN", "TEACHER")
-            .requestMatchers(HttpMethod.POST, "/api/v1/courses/**").hasRole("ADMIN")
-            .requestMatchers(HttpMethod.POST, "/api/v1/promotions/**").hasRole("ADMIN")
-            .requestMatchers(HttpMethod.POST, "/api/v1/sessions/*/open").hasAnyRole("ADMIN", "TEACHER")
-            .requestMatchers(HttpMethod.POST, "/api/v1/sessions/*/close").hasAnyRole("ADMIN", "TEACHER")
-            .requestMatchers(HttpMethod.POST, "/api/v1/sessions/*/cancel").hasAnyRole("ADMIN", "TEACHER")
-            .requestMatchers(HttpMethod.POST, "/api/v1/sessions").hasRole("ADMIN")
-            .requestMatchers(HttpMethod.POST, "/api/v1/sessions/*/attendance/sign").hasRole("STUDENT")
-            .requestMatchers(HttpMethod.POST, "/api/v1/sessions/*/attendance/*/justify").hasAnyRole("ADMIN", "TEACHER")
-            .requestMatchers(HttpMethod.POST, "/api/v1/grades/*/correct").hasAnyRole("ADMIN", "TEACHER")
-            .requestMatchers(HttpMethod.POST, "/api/v1/exams/*/open").hasAnyRole("ADMIN", "TEACHER")
-            .requestMatchers(HttpMethod.POST, "/api/v1/exams/*/close").hasAnyRole("ADMIN", "TEACHER")
-            .requestMatchers(HttpMethod.POST, "/api/v1/exams").hasRole("ADMIN")
-            .requestMatchers(HttpMethod.POST, "/api/v1/exams/*/attempts/start").hasRole("STUDENT")
-            .requestMatchers(HttpMethod.POST, "/api/v1/attempts/*/events").hasRole("STUDENT")
-            .requestMatchers(HttpMethod.POST, "/api/v1/attempts/*/submit").hasRole("STUDENT")
-            .requestMatchers(HttpMethod.GET, "/api/v1/exams/*/attempts").hasAnyRole("ADMIN", "TEACHER")
             .anyRequest().authenticated())
         .exceptionHandling(ex -> ex
             .authenticationEntryPoint((req, res, e) -> writeError(res, 401, "Unauthorized"))

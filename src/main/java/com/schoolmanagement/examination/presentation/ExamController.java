@@ -4,6 +4,8 @@ import java.net.URI;
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -54,6 +56,7 @@ public class ExamController {
   }
 
   @PostMapping
+  @PreAuthorize("hasRole('ADMIN')")
   public ResponseEntity<ExamResponse> schedule(@Valid @RequestBody ScheduleExamRequest request) {
     ScheduleExamCommand scheduleExamCommand = new ScheduleExamCommand(
         request.courseId(),
@@ -80,12 +83,14 @@ public class ExamController {
   }
 
   @PostMapping("/{id}/open")
-  public ExamResponse open(@PathVariable String id) {
+  @PreAuthorize("hasRole('ADMIN') or (hasRole('TEACHER') and @examAccessPolicy.canManage(#id, authentication))")
+  public ExamResponse open(@P("id") @PathVariable String id) {
     return ExamResponse.from(open.handle(new OpenExamCommand(id)));
   }
 
   @PostMapping("/{id}/close")
-  public ExamResponse close(@PathVariable String id) {
+  @PreAuthorize("hasRole('ADMIN') or (hasRole('TEACHER') and @examAccessPolicy.canManage(#id, authentication))")
+  public ExamResponse close(@P("id") @PathVariable String id) {
     return ExamResponse.from(close.handle(new CloseExamCommand(id)));
   }
 }

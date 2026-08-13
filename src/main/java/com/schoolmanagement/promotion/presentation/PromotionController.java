@@ -4,6 +4,7 @@ import java.net.URI;
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -56,6 +57,7 @@ public class PromotionController {
   }
 
   @PostMapping
+  @PreAuthorize("hasRole('ADMIN')")
   public ResponseEntity<PromotionResponse> create(@Valid @RequestBody CreatePromotionRequest request) {
     CreatePromotionCommand createPromotionCommand = new CreatePromotionCommand(
         request.name(),
@@ -80,6 +82,7 @@ public class PromotionController {
   }
 
   @PostMapping("/{id}/students")
+  @PreAuthorize("hasRole('ADMIN')")
   public StudentResponse assignStudent(
       @PathVariable String id,
       @Valid @RequestBody AssignStudentToPromotionRequest request) {
@@ -88,6 +91,7 @@ public class PromotionController {
   }
 
   @PostMapping("/{id}/archive")
+  @PreAuthorize("hasRole('ADMIN')")
   public PromotionResponse archive(@PathVariable String id) {
     return PromotionResponse.from(archive.handle(new ArchivePromotionCommand(id)));
   }

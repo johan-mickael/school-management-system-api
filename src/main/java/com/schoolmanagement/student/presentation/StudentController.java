@@ -3,6 +3,7 @@ package com.schoolmanagement.student.presentation;
 import java.net.URI;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -42,6 +43,7 @@ public class StudentController {
   }
 
   @PostMapping
+  @PreAuthorize("hasRole('ADMIN')")
   public ResponseEntity<StudentResponse> enroll(@Valid @RequestBody EnrollStudentRequest request) {
     EnrollStudentCommand enrollStudentCommand = new EnrollStudentCommand(
         request.studentNumber(),
@@ -61,6 +63,7 @@ public class StudentController {
   }
 
   @PostMapping("/{id}/archive")
+  @PreAuthorize("hasRole('ADMIN')")
   public StudentResponse archiveStudent(@PathVariable String id) {
     return StudentResponse.from(archive.handle(new ArchiveStudentCommand(id)));
   }
