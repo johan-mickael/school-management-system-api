@@ -1,5 +1,7 @@
 package com.schoolmanagement.promotion.domain;
 
+import java.util.List;
+
 import com.schoolmanagement.promotion.domain.exception.PromotionNotFound;
 
 public interface PromotionRepository {
@@ -9,4 +11,6 @@ public interface PromotionRepository {
      * @throws PromotionNotFound
      */
     Promotion getById(PromotionId id);
+
+    List<Promotion> findArchived();
 }

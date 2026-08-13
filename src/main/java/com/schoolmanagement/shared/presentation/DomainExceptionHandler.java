@@ -24,6 +24,7 @@ import com.schoolmanagement.examination.domain.exception.InvalidExamTransition;
 import com.schoolmanagement.grading.domain.exception.GradeNotFound;
 import com.schoolmanagement.iam.domain.exception.InvalidCredentials;
 import com.schoolmanagement.iam.domain.exception.UsernameAlreadyTaken;
+import com.schoolmanagement.promotion.domain.exception.PromotionAlreadyArchived;
 import com.schoolmanagement.promotion.domain.exception.PromotionFull;
 import com.schoolmanagement.promotion.domain.exception.PromotionNotFound;
 import com.schoolmanagement.scheduling.domain.exception.InvalidSessionTransition;
@@ -100,6 +101,11 @@ public class DomainExceptionHandler {
 
   @ExceptionHandler(PromotionFull.class)
   public ResponseEntity<ApiError> conflict(PromotionFull ex) {
+    return build(HttpStatus.CONFLICT, ex.getMessage());
+  }
+
+  @ExceptionHandler(PromotionAlreadyArchived.class)
+  public ResponseEntity<ApiError> conflict(PromotionAlreadyArchived ex) {
     return build(HttpStatus.CONFLICT, ex.getMessage());
   }
 

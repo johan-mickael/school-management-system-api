@@ -7,7 +7,8 @@ public record PromotionResponse(
     String name,
     String academicYear,
     int capacity,
-    int occupancy) {
+    int occupancy,
+    String status) {
 
   public static PromotionResponse from(PromotionView v) {
     return new PromotionResponse(
@@ -15,6 +16,7 @@ public record PromotionResponse(
         v.name(),
         v.academicYear(),
         v.capacity(),
-        v.occupancy());
+        v.occupancy(),
+        v.status());
   }
 }

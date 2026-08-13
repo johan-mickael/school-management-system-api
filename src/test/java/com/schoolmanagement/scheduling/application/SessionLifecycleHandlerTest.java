@@ -108,6 +108,10 @@ class SessionLifecycleHandlerTest {
         throw new PromotionNotFound(id);
       return p;
     }
+
+    public List<Promotion> findArchived() {
+      return db.values().stream().filter(Promotion::isArchived).toList();
+    }
   }
 
   static class InMemoryTeachers implements TeacherRepository {

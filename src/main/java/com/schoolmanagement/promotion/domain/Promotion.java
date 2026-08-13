@@ -2,6 +2,7 @@ package com.schoolmanagement.promotion.domain;
 
 import java.util.Objects;
 
+import com.schoolmanagement.promotion.domain.exception.PromotionAlreadyArchived;
 import com.schoolmanagement.promotion.domain.exception.PromotionFull;
 import com.schoolmanagement.promotion.domain.exception.PromotionNotOccupied;
 
@@ -11,6 +12,7 @@ public final class Promotion {
     private final AcademicYear academicYear;
     private final Capacity capacity;
     private int occupancy;
+    private PromotionStatus status;
     private final long version;
 
     private Promotion(PromotionId id,
@@ -18,12 +20,14 @@ public final class Promotion {
             AcademicYear academicYear,
             Capacity capacity,
             int occupancy,
+            PromotionStatus status,
             long version) {
         this.id = id;
         this.name = name;
         this.academicYear = academicYear;
         this.capacity = capacity;
         this.occupancy = occupancy;
+        this.status = status;
         this.version = version;
     }
 
@@ -31,7 +35,7 @@ public final class Promotion {
             PromotionName name,
             AcademicYear academicYear,
             Capacity capacity) {
-        return new Promotion(id, name, academicYear, capacity, 0, 0L);
+        return new Promotion(id, name, academicYear, capacity, 0, PromotionStatus.ACTIVE, 0L);
     }
 
     public static Promotion reconstitute(PromotionId id,
@@ -39,11 +43,15 @@ public final class Promotion {
             AcademicYear academicYear,
             Capacity capacity,
             int occupancy,
+            PromotionStatus status,
             long version) {
-        return new Promotion(id, name, academicYear, capacity, occupancy, version);
+        return new Promotion(id, name, academicYear, capacity, occupancy, status, version);
     }
 
     public void admit() {
+        if (isArchived()) {
+            throw new PromotionAlreadyArchived(id);
+        }
         if (occupancy >= capacity.value()) {
             throw new PromotionFull(id);
         }
@@ -55,6 +63,17 @@ public final class Promotion {
             throw new PromotionNotOccupied(id);
         }
         occupancy--;
+    }
+
+    public void archive() {
+        if (isArchived()) {
+            throw new PromotionAlreadyArchived(id);
+        }
+        this.status = PromotionStatus.ARCHIVED;
+    }
+
+    public boolean isArchived() {
+        return status == PromotionStatus.ARCHIVED;
     }
 
     public PromotionId id() {
@@ -79,6 +98,10 @@ public final class Promotion {
 
     public long version() {
         return version;
+    }
+
+    public PromotionStatus status() {
+        return status;
     }
 
     @Override

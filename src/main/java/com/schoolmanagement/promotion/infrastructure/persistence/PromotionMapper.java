@@ -18,6 +18,7 @@ public class PromotionMapper {
         p.academicYear().value(),
         p.capacity().value(),
         p.occupancy(),
+        p.status(),
         p.version());
   }
 
@@ -28,6 +29,7 @@ public class PromotionMapper {
         new AcademicYear(e.getAcademicYear()),
         new Capacity(e.getCapacity()),
         e.getOccupancy(),
+        e.getStatus(),
         e.getVersion());
   }
 }

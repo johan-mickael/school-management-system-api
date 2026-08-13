@@ -91,6 +91,10 @@ class ExamLifecycleHandlerTest {
         throw new PromotionNotFound(id);
       return p;
     }
+
+    public List<Promotion> findArchived() {
+      return db.values().stream().filter(Promotion::isArchived).toList();
+    }
   }
 
   private final InMemoryExams exams = new InMemoryExams();
