@@ -1,8 +1,8 @@
-package com.schoolmanagement.student.domain;
+package com.schoolmanagement.shared.domain;
 
 import java.util.regex.Pattern;
 
-import com.schoolmanagement.student.domain.exception.InvalidEmailAddress;
+import com.schoolmanagement.shared.domain.exception.InvalidEmailAddress;
 
 public record EmailAddress(String value) {
     private static final Pattern FORMAT =

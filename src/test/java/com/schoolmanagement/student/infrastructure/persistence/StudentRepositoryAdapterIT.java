@@ -10,8 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.schoolmanagement.shared.AbstractIntegrationTest;
-import com.schoolmanagement.student.domain.EmailAddress;
-import com.schoolmanagement.student.domain.FullName;
+import com.schoolmanagement.shared.domain.EmailAddress;
+import com.schoolmanagement.shared.domain.FullName;
 import com.schoolmanagement.student.domain.Student;
 import com.schoolmanagement.student.domain.StudentId;
 import com.schoolmanagement.student.domain.StudentNumber;

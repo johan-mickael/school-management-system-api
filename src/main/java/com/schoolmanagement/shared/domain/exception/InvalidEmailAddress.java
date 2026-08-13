@@ -1,4 +1,4 @@
-package com.schoolmanagement.student.domain.exception;
+package com.schoolmanagement.shared.domain.exception;
 
 import com.schoolmanagement.shared.domain.DomainException;
 

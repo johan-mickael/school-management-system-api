@@ -1,13 +1,13 @@
-package com.schoolmanagement.student.domain;
+package com.schoolmanagement.shared.domain;
 
-import com.schoolmanagement.student.domain.exception.BlankStudentName;
+import com.schoolmanagement.shared.domain.exception.BlankFullName;
 
 public record FullName(String firstName, String lastName) {
     public FullName {
         firstName = normalize(firstName);
         lastName = normalize(lastName);
         if (firstName.isEmpty() || lastName.isEmpty()) {
-            throw new BlankStudentName();
+            throw new BlankFullName();
         }
     }
 
