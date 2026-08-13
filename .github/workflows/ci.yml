@@ -9,6 +9,20 @@ on:
 jobs:
   verify:
     runs-on: ubuntu-latest
+    services:
+      db:
+        image: postgres:17
+        env:
+          POSTGRES_DB: school
+          POSTGRES_USER: school
+          POSTGRES_PASSWORD: school
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U school -d school"
+          --health-interval 5s
+          --health-timeout 3s
+          --health-retries 5
     steps:
       - uses: actions/checkout@v4
 
@@ -20,3 +34,7 @@ jobs:
 
       - name: mvn verify
         run: mvn -B verify
+        env:
+          POSTGRES_DB: school
+          POSTGRES_USER: school
+          POSTGRES_PASSWORD: school
