@@ -5,10 +5,13 @@ import { RouterLink } from '@angular/router';
 import { PromotionsApi } from '../../../core/api/promotions.api';
 import { PromotionResponse } from '../../../core/api-models';
 import { errorMessage } from '../../../shared/api-error';
+import { Chip } from '../../../shared/ui/chip';
+import { EmptyState } from '../../../shared/ui/empty-state';
+import { Feedback } from '../../../shared/ui/feedback';
 
 @Component({
   selector: 'app-admin-promotions',
-  imports: [FormsModule, RouterLink],
+  imports: [FormsModule, RouterLink, Chip, EmptyState, Feedback],
   templateUrl: './admin-promotions.html',
 })
 export class AdminPromotions {

@@ -1,0 +1,818 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SchoolBase — Design System (Airtable-style)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   SchoolBase — Airtable-style data-workspace design system
+   Dense, utilitarian, grid-first. No hero, no serif, no decoration.
+   ============================================================ */
+:root{
+  /* neutrals & surfaces */
+  --white:#ffffff;
+  --canvas:#f7f7f8;        /* app background */
+  --hover:#f2f2f4;
+  --sunk:#fafafa;
+  --border:#e5e5e7;        /* card / panel borders */
+  --grid:#e2e2e4;          /* grid lines */
+  --border-strong:#d0d0d4;
+  --text:#1d1f25;
+  --text-2:#616670;
+  --text-3:#9498a3;
+  --icon:#787d88;
+
+  /* primary action (Airtable blue) */
+  --blue:#2d7ff9; --blue-hover:#166ee1; --blue-050:#ecf3fe; --blue-100:#cfdfff;
+  --ring:rgba(45,127,249,.85);
+
+  /* base accent (a base's chosen color) */
+  --base:#0f7b7b; --base-dark:#0a5f5f;
+
+  /* Airtable select-field palette — bg / text */
+  --blue-bg:#cfdfff;   --blue-tx:#2750ae;
+  --cyan-bg:#d0f0fd;   --cyan-tx:#0b76b7;
+  --teal-bg:#c2f5e9;   --teal-tx:#0a8f88;
+  --green-bg:#d1f7c4;  --green-tx:#338a17;
+  --yellow-bg:#ffeab6; --yellow-tx:#b87503;
+  --orange-bg:#fee2d5; --orange-tx:#c8461f;
+  --red-bg:#ffdce5;    --red-tx:#d91f44;
+  --pink-bg:#ffdaf6;   --pink-tx:#b2158b;
+  --purple-bg:#ede2fe; --purple-tx:#6b46c1;
+  --gray-bg:#eeeeee;   --gray-tx:#585b62;
+
+  /* spacing (4px base) */
+  --s1:4px; --s2:8px; --s3:12px; --s4:16px; --s5:20px; --s6:24px; --s8:32px; --s10:40px;
+
+  /* radius (small & functional) */
+  --r-xs:3px; --r-sm:4px; --r-md:6px; --r-lg:8px; --r-xl:12px;
+
+  /* elevation (soft, for popovers/records) */
+  --sh-pop:0 0 0 1px rgba(0,0,0,.06), 0 4px 12px rgba(0,0,0,.12);
+  --sh-modal:0 0 0 1px rgba(0,0,0,.06), 0 12px 32px rgba(0,0,0,.18);
+  --sh-sm:0 1px 2px rgba(0,0,0,.06);
+
+  --font:"Inter",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0; background:var(--canvas); color:var(--text);
+  font-family:var(--font); font-size:14px; line-height:1.5;
+  -webkit-font-smoothing:antialiased;
+}
+h1,h2,h3,h4{margin:0;font-weight:600;line-height:1.25}
+p{margin:0}
+button{font-family:inherit;cursor:pointer}
+a{color:var(--blue);text-decoration:none}
+:focus-visible{outline:2px solid var(--blue);outline-offset:1px;border-radius:var(--r-xs)}
+.tnum{font-variant-numeric:tabular-nums}
+.mono-ish{font-variant-numeric:tabular-nums;letter-spacing:-.01em}
+
+/* ---------- app chrome (guide framed as a tool) ---------- */
+.appbar{
+  position:sticky;top:0;z-index:50;background:var(--white);
+  border-bottom:1px solid var(--border);height:48px;
+  display:flex;align-items:center;gap:var(--s3);padding:0 var(--s4);
+}
+.appbar .dot{width:18px;height:18px;border-radius:var(--r-sm);background:var(--base);flex:none}
+.appbar .title{font-weight:600;font-size:14px}
+.appbar .title span{color:var(--text-3);font-weight:400}
+.appbar nav{margin-left:var(--s6);display:flex;gap:2px;overflow:auto}
+.appbar nav a{
+  font-size:13px;color:var(--text-2);padding:6px 10px;border-radius:var(--r-md);white-space:nowrap;
+}
+.appbar nav a:hover{background:var(--hover);color:var(--text)}
+.appbar .right{margin-left:auto;display:flex;align-items:center;gap:var(--s2)}
+
+.wrap{max-width:1160px;margin:0 auto;padding:0 var(--s6)}
+section{padding:var(--s10) 0;border-bottom:1px solid var(--border)}
+.sec-head{margin-bottom:var(--s6);display:flex;align-items:baseline;gap:var(--s3);flex-wrap:wrap}
+.sec-head .n{font-size:12px;font-weight:600;color:var(--text-3);font-variant-numeric:tabular-nums}
+.sec-head h2{font-size:20px}
+.sec-head p{color:var(--text-2);font-size:13px;flex-basis:100%;max-width:680px;margin-top:2px}
+
+.panel{background:var(--white);border:1px solid var(--border);border-radius:var(--r-lg);box-shadow:var(--sh-sm)}
+.panel-pad{padding:var(--s5)}
+.panel + .panel{margin-top:var(--s4)}
+.cap{font-size:11px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--text-3);margin-bottom:var(--s4)}
+.grid{display:grid;gap:var(--s4)}
+.g2{grid-template-columns:repeat(2,1fr)}.g3{grid-template-columns:repeat(3,1fr)}.g4{grid-template-columns:repeat(4,1fr)}
+@media(max-width:840px){.g3,.g4{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:520px){.g2,.g3,.g4{grid-template-columns:1fr}}
+.row{display:flex;flex-wrap:wrap;gap:var(--s2);align-items:center}
+.stackv{display:flex;flex-direction:column;gap:var(--s3)}
+
+/* ---------- intro strip ---------- */
+.intro{display:flex;flex-wrap:wrap;gap:var(--s5);align-items:center;justify-content:space-between;
+  background:var(--white);border:1px solid var(--border);border-radius:var(--r-xl);padding:var(--s6);box-shadow:var(--sh-sm)}
+.intro h1{font-size:22px;margin-bottom:6px}
+.intro p{color:var(--text-2);font-size:13px;max-width:520px}
+.meta-chips{display:flex;flex-wrap:wrap;gap:var(--s2)}
+.mchip{font-size:12px;color:var(--text-2);background:var(--sunk);border:1px solid var(--border);padding:5px 10px;border-radius:var(--r-md)}
+.mchip b{color:var(--text);font-weight:600}
+
+/* ---------- color ---------- */
+.sw{border:1px solid var(--border);border-radius:var(--r-md);overflow:hidden;background:var(--white)}
+.sw .c{height:56px}
+.sw .m{padding:6px 8px;font-size:11px}
+.sw .m b{display:block;font-weight:600}
+.sw .m span{color:var(--text-3);font-variant-numeric:tabular-nums}
+
+.tokrow{display:flex;align-items:center;gap:var(--s3);padding:8px 0;border-bottom:1px solid var(--border)}
+.tokrow:last-child{border-bottom:0}
+.tokrow .chip{width:28px;height:28px;border-radius:var(--r-sm);border:1px solid rgba(0,0,0,.08);flex:none}
+.tokrow b{font-size:13px;font-weight:600}
+.tokrow .u{font-size:12px;color:var(--text-2)}
+.tokrow .h{margin-left:auto;font-size:12px;color:var(--text-3);font-variant-numeric:tabular-nums}
+
+/* select-color palette tiles */
+.pal{display:grid;grid-template-columns:repeat(5,1fr);gap:var(--s3)}
+@media(max-width:720px){.pal{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:460px){.pal{grid-template-columns:repeat(2,1fr)}}
+.paltile{border:1px solid var(--border);border-radius:var(--r-md);overflow:hidden}
+.paltile .demo{padding:12px;display:flex;justify-content:center}
+.paltile .lab{font-size:11px;color:var(--text-3);text-align:center;padding:6px;border-top:1px solid var(--border);font-variant-numeric:tabular-nums}
+
+/* select chip (Airtable) */
+.chip-sel{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:500;
+  padding:2px 8px;border-radius:9px;line-height:18px;white-space:nowrap}
+.chip-sel .d{width:6px;height:6px;border-radius:50%;background:currentColor;opacity:.85}
+.sel-blue{background:var(--blue-bg);color:var(--blue-tx)}
+.sel-cyan{background:var(--cyan-bg);color:var(--cyan-tx)}
+.sel-teal{background:var(--teal-bg);color:var(--teal-tx)}
+.sel-green{background:var(--green-bg);color:var(--green-tx)}
+.sel-yellow{background:var(--yellow-bg);color:var(--yellow-tx)}
+.sel-orange{background:var(--orange-bg);color:var(--orange-tx)}
+.sel-red{background:var(--red-bg);color:var(--red-tx)}
+.sel-pink{background:var(--pink-bg);color:var(--pink-tx)}
+.sel-purple{background:var(--purple-bg);color:var(--purple-tx)}
+.sel-gray{background:var(--gray-bg);color:var(--gray-tx)}
+
+/* ---------- type ---------- */
+.type-scale{width:100%;border-collapse:collapse}
+.type-scale td{padding:10px 12px;border-bottom:1px solid var(--border);vertical-align:baseline}
+.type-scale tr:last-child td{border-bottom:0}
+.type-scale .meta{font-size:12px;color:var(--text-3);white-space:nowrap;font-variant-numeric:tabular-nums;width:150px}
+
+/* ---------- buttons ---------- */
+.btn{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:500;
+  padding:6px 12px;border-radius:var(--r-md);border:1px solid transparent;background:var(--blue);color:#fff;
+  transition:background .12s}
+.btn svg{width:15px;height:15px}
+.btn:hover{background:var(--blue-hover)}
+.btn.sec{background:var(--white);color:var(--text);border-color:var(--border-strong)}
+.btn.sec:hover{background:var(--hover)}
+.btn.ghost{background:transparent;color:var(--text-2)}
+.btn.ghost:hover{background:var(--hover);color:var(--text)}
+.btn.sm{padding:4px 9px;font-size:12px}
+.btn[disabled]{opacity:.5;cursor:not-allowed}
+
+/* toolbar button (Airtable) */
+.tb-btn{display:inline-flex;align-items:center;gap:6px;font-size:13px;color:var(--text-2);
+  padding:5px 8px;border-radius:var(--r-md);background:transparent;border:0}
+.tb-btn svg{width:15px;height:15px;color:var(--icon)}
+.tb-btn:hover{background:var(--hover);color:var(--text)}
+.tb-btn.active{color:var(--text)}
+.tb-btn .cnt{background:var(--blue-050);color:var(--blue-tx);font-size:11px;font-weight:600;padding:0 5px;border-radius:8px}
+
+/* field-type icon */
+.fti{display:inline-flex;width:15px;height:15px;color:var(--icon);flex:none}
+.fti svg{width:15px;height:15px}
+
+/* input */
+.field{max-width:320px}
+.field label{display:block;font-size:12px;font-weight:600;color:var(--text-2);margin-bottom:5px}
+.input{width:100%;font:inherit;font-size:13px;padding:7px 9px;border:1px solid var(--border-strong);border-radius:var(--r-md);background:var(--white)}
+.input:focus{outline:none;border-color:var(--blue);box-shadow:0 0 0 2px var(--blue-050)}
+.searchbar{display:flex;align-items:center;gap:6px;max-width:280px;padding:5px 9px;border:1px solid var(--border);border-radius:var(--r-md);background:var(--white)}
+.searchbar input{border:0;outline:none;font:inherit;font-size:13px;width:100%;background:transparent}
+.searchbar svg{width:15px;height:15px;color:var(--icon);flex:none}
+
+/* popover (filter/sort/group) */
+.pop{width:280px;background:var(--white);border-radius:var(--r-lg);box-shadow:var(--sh-pop);overflow:hidden}
+.pop .ph{padding:10px 12px;font-size:12px;color:var(--text-2);border-bottom:1px solid var(--border)}
+.pop .pb{padding:10px 12px;display:flex;flex-direction:column;gap:8px}
+.pop .cond{display:flex;align-items:center;gap:6px;font-size:12px}
+.pop .mini{border:1px solid var(--border-strong);border-radius:var(--r-sm);padding:4px 6px;font-size:12px;background:var(--white);color:var(--text)}
+.pop .addcond{font-size:12px;color:var(--blue);display:inline-flex;align-items:center;gap:5px;background:transparent;border:0;padding:2px}
+
+/* collaborator */
+.collab{display:inline-flex;align-items:center;gap:6px}
+.av{width:22px;height:22px;border-radius:50%;display:grid;place-items:center;color:#fff;font-size:10px;font-weight:600;flex:none}
+.collab span{font-size:13px}
+
+/* checkbox cell */
+.ck{width:16px;height:16px;border-radius:var(--r-xs);border:1.5px solid var(--border-strong);display:inline-grid;place-items:center;background:var(--white)}
+.ck.on{background:var(--blue);border-color:var(--blue)}
+.ck.on svg{color:#fff}
+.ck svg{width:11px;height:11px}
+
+/* ---------- the grid (centerpiece) ---------- */
+.base-window{border:1px solid var(--border-strong);border-radius:var(--r-xl);overflow:hidden;box-shadow:var(--sh-modal);background:var(--white)}
+.base-bar{background:var(--base);color:#fff;padding:0 var(--s4)}
+.base-top{display:flex;align-items:center;gap:var(--s3);height:44px}
+.base-top .bname{font-weight:600;font-size:14px;display:flex;align-items:center;gap:8px}
+.base-top .chev{opacity:.8}
+.base-top .spacer{flex:1}
+.base-top .avstack{display:flex}
+.base-top .avstack .av{border:2px solid var(--base);margin-left:-6px}
+.base-top .share{background:rgba(255,255,255,.16);color:#fff;border:0;font-size:13px;padding:5px 12px;border-radius:var(--r-md);display:inline-flex;align-items:center;gap:6px}
+.base-top .share:hover{background:rgba(255,255,255,.26)}
+.tabs-strip{display:flex;align-items:flex-end;gap:2px;height:36px;padding:0 4px;overflow:auto}
+.ttab{font-size:13px;color:rgba(255,255,255,.85);padding:7px 12px;border-radius:var(--r-md) var(--r-md) 0 0;white-space:nowrap;display:flex;align-items:center;gap:6px}
+.ttab:hover{background:rgba(255,255,255,.12);color:#fff}
+.ttab.active{background:var(--white);color:var(--text);font-weight:600}
+.ttab .cnt{font-size:11px;color:var(--text-3);font-variant-numeric:tabular-nums}
+.tabs-strip .add{color:rgba(255,255,255,.85);padding:7px 10px;font-size:13px}
+
+.toolbar{display:flex;align-items:center;gap:2px;height:44px;padding:0 8px;background:var(--white);border-bottom:1px solid var(--border)}
+.toolbar .div{width:1px;height:20px;background:var(--border);margin:0 6px}
+.toolbar .spacer{flex:1}
+.viewbtn{display:inline-flex;align-items:center;gap:7px;font-size:13px;font-weight:600;color:var(--text);padding:5px 8px;border-radius:var(--r-md)}
+.viewbtn:hover{background:var(--hover)}
+.viewbtn .vic{width:15px;height:15px;color:var(--blue)}
+
+/* grid table */
+.gridscroll{overflow:auto}
+table.tg{border-collapse:collapse;width:100%;font-size:13px;min-width:1000px}
+table.tg th,table.tg td{border-right:1px solid var(--grid);border-bottom:1px solid var(--grid);height:34px;padding:0 8px;text-align:left;vertical-align:middle}
+table.tg thead th{background:var(--white);position:sticky;top:0;font-weight:500;color:var(--text-2);z-index:2}
+table.tg th .colhead{display:flex;align-items:center;gap:6px}
+table.tg th .colhead .fti{color:var(--icon)}
+.gutter{width:64px;min-width:64px;text-align:center!important;color:var(--text-3);font-variant-numeric:tabular-nums;background:var(--white);position:sticky;left:0;z-index:1}
+thead .gutter{z-index:3}
+table.tg tbody tr:hover td{background:var(--sunk)}
+table.tg tbody tr:hover .gutter{background:var(--hover)}
+.gutter .rn{font-size:12px}
+.gutter .expand{display:none;color:var(--icon)}
+tr:hover .gutter .rn{display:none}
+tr:hover .gutter .expand{display:inline-flex}
+.expand svg{width:15px;height:15px}
+.namecell{display:flex;align-items:center;gap:8px;font-weight:500}
+.cell-num{text-align:right;font-variant-numeric:tabular-nums;color:var(--text)}
+td.selected{box-shadow:inset 0 0 0 2px var(--blue);position:relative;z-index:1;background:var(--white)!important}
+.addcol{width:44px;min-width:44px;text-align:center!important;color:var(--icon)}
+.addrow td{height:34px;color:var(--text-2)}
+.addrow .gutter{color:var(--icon)}
+.addrow-inner{display:inline-flex;align-items:center;gap:6px;font-size:13px}
+
+/* group header row */
+.grouphdr td{background:#fbfbfc;font-weight:600;font-size:12px;color:var(--text-2)}
+.grouphdr .gwrap{display:flex;align-items:center;gap:8px}
+.grouphdr .gcnt{color:var(--text-3);font-weight:500}
+
+/* kanban */
+.kanban{display:flex;gap:var(--s3);overflow:auto;padding:var(--s3);background:var(--canvas)}
+.kcol{width:220px;flex:none;background:var(--white);border:1px solid var(--border);border-radius:var(--r-lg);padding:8px;display:flex;flex-direction:column;gap:8px}
+.kcol .khead{display:flex;align-items:center;justify-content:space-between}
+.kcard{border:1px solid var(--border);border-radius:var(--r-md);padding:10px;box-shadow:var(--sh-sm);display:flex;flex-direction:column;gap:7px}
+.kcard .kn{font-weight:600;font-size:13px}
+.kcard .krow{display:flex;align-items:center;gap:6px;color:var(--text-2);font-size:12px}
+
+/* expanded record */
+.record{width:100%;max-width:520px;background:var(--white);border-radius:var(--r-xl);box-shadow:var(--sh-modal);overflow:hidden}
+.record .rhead{display:flex;align-items:center;gap:8px;padding:12px 16px;border-bottom:1px solid var(--border)}
+.record .rhead .rt{font-weight:600;font-size:15px}
+.record .rhead .spacer{flex:1}
+.record .rbody{padding:8px 16px 16px}
+.frow{display:grid;grid-template-columns:150px 1fr;gap:8px;align-items:center;padding:9px 0;border-bottom:1px solid var(--border)}
+.frow:last-child{border-bottom:0}
+.frow .fl{display:flex;align-items:center;gap:7px;font-size:12px;color:var(--text-2)}
+.frow .fv{font-size:13px}
+.frow .fv .input{max-width:100%}
+
+/* toast */
+.toast{display:flex;align-items:center;gap:10px;background:#1d1f25;color:#fff;padding:10px 14px;border-radius:var(--r-lg);box-shadow:var(--sh-modal);max-width:400px;font-size:13px}
+.toast svg{width:16px;height:16px;color:#7bd88f;flex:none}
+.toast .x{margin-left:auto;color:#9aa0ac;background:transparent;border:0;display:grid;place-items:center}
+
+/* empty */
+.empty{text-align:center;padding:var(--s10) var(--s6)}
+.empty svg{width:40px;height:40px;color:var(--border-strong);margin-bottom:12px}
+.empty h4{font-size:15px}
+.empty p{color:var(--text-2);font-size:13px;margin:6px auto 16px;max-width:320px}
+
+/* handoff prompt */
+.prompt{background:#1d2129;border-radius:var(--r-xl);overflow:hidden;box-shadow:var(--sh-modal)}
+.prompt .bar{display:flex;align-items:center;gap:8px;padding:10px 14px;border-bottom:1px solid rgba(255,255,255,.08)}
+.prompt .bar .l{font-size:12px;color:#8b93a1;font-weight:600}
+.prompt .bar .copy{margin-left:auto;display:inline-flex;align-items:center;gap:6px;font-size:12px;color:#fff;background:#2d7ff9;border:0;padding:6px 12px;border-radius:var(--r-md)}
+.prompt .bar .copy:hover{background:var(--blue-hover)}
+.prompt pre{margin:0;padding:18px;overflow-x:auto;color:#d7dbe2;font-size:12.5px;line-height:1.65;white-space:pre-wrap;
+  font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+.prompt pre b{color:#67d0ff;font-weight:600}
+.cmd{background:var(--white);border:1px solid var(--border);border-radius:var(--r-md);padding:10px 12px;font-family:ui-monospace,Menlo,monospace;font-size:12px;color:var(--text);overflow-x:auto;margin-top:8px}
+.cmd .c{color:var(--text-3)}
+.hrnote{display:flex;align-items:center;gap:10px;margin:20px 0 12px;color:var(--text-3);font-size:11px;font-weight:600;letter-spacing:.04em;text-transform:uppercase}
+.hrnote::before,.hrnote::after{content:"";height:1px;background:var(--border);flex:1}
+
+footer{padding:var(--s8) 0;color:var(--text-3);font-size:12px}
+footer .wrap{display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px}
+.note{font-size:12px;color:var(--text-3);margin-top:10px}
+
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
+</style>
+</head>
+<body>
+
+<!-- app chrome -->
+<div class="appbar">
+  <span class="dot"></span>
+  <span class="title">School Management <span>· Design System</span></span>
+  <nav>
+    <a href="#color">Color</a>
+    <a href="#type">Type</a>
+    <a href="#fields">Fields &amp; cells</a>
+    <a href="#components">Components</a>
+    <a href="#grid">Grid</a>
+    <a href="#record">Record</a>
+    <a href="#handoff">Handoff</a>
+  </nav>
+  <div class="right">
+    <span class="chip-sel sel-teal"><span class="d"></span>Airtable-style</span>
+  </div>
+</div>
+
+<div class="wrap">
+
+<!-- intro -->
+<section style="border-bottom:0;padding-bottom:var(--s6)">
+  <div class="intro">
+    <div>
+      <h1>SchoolBase</h1>
+      <p>A data-workspace UI for the School Management platform — records, attendance, grading, exams and archiving presented as filterable, groupable tables. Built for staff who live in the data, not a marketing site.</p>
+    </div>
+    <div class="meta-chips">
+      <span class="mchip"><b>Primary</b> #2D7FF9</span>
+      <span class="mchip"><b>Type</b> Inter · 13px grid</span>
+      <span class="mchip"><b>Signature</b> the record grid</span>
+      <span class="mchip"><b>Density</b> 34px rows</span>
+    </div>
+  </div>
+</section>
+
+<!-- COLOR -->
+<section id="color">
+  <div class="sec-head"><span class="n">01</span><h2>Color</h2>
+    <p>Neutral chrome so the data carries the color. One functional blue for actions and selection; a per-base accent for the header; and the select-field palette that turns every categorical column into a scannable set of tags.</p>
+  </div>
+
+  <div class="grid g4" style="margin-bottom:var(--s5)">
+    <div class="sw"><div class="c" style="background:#2d7ff9"></div><div class="m"><b>Blue · primary</b><span>#2D7FF9 → hover #166EE1</span></div></div>
+    <div class="sw"><div class="c" style="background:#0f7b7b"></div><div class="m"><b>Base accent</b><span>#0F7B7B (per-base)</span></div></div>
+    <div class="sw"><div class="c" style="background:#f7f7f8;border-bottom:1px solid var(--border)"></div><div class="m"><b>Canvas</b><span>#F7F7F8</span></div></div>
+    <div class="sw"><div class="c" style="background:#e2e2e4"></div><div class="m"><b>Grid line</b><span>#E2E2E4</span></div></div>
+  </div>
+
+  <div class="panel panel-pad" style="margin-bottom:var(--s5)">
+    <div class="cap">Neutrals &amp; text</div>
+    <div class="tokrow"><span class="chip" style="background:#ffffff"></span><b>Surface</b><span class="u">Grid, panels, popovers, records</span><span class="h">#FFFFFF</span></div>
+    <div class="tokrow"><span class="chip" style="background:#f7f7f8"></span><b>Canvas</b><span class="u">App background behind panels</span><span class="h">#F7F7F8</span></div>
+    <div class="tokrow"><span class="chip" style="background:#f2f2f4"></span><b>Hover</b><span class="u">Row / button hover</span><span class="h">#F2F2F4</span></div>
+    <div class="tokrow"><span class="chip" style="background:#e5e5e7"></span><b>Border</b><span class="u">Panel &amp; toolbar borders</span><span class="h">#E5E5E7</span></div>
+    <div class="tokrow"><span class="chip" style="background:#1d1f25"></span><b>Text</b><span class="u">Primary — 14.8:1 on white</span><span class="h">#1D1F25</span></div>
+    <div class="tokrow"><span class="chip" style="background:#616670"></span><b>Text secondary</b><span class="u">Field labels, meta, muted cells</span><span class="h">#616670</span></div>
+  </div>
+
+  <div class="cap">Select-field palette — one hue per meaning, always tag + label (never color alone)</div>
+  <div class="pal">
+    <div class="paltile"><div class="demo"><span class="chip-sel sel-green"><span class="d"></span>Present</span></div><div class="lab">green · #D1F7C4</div></div>
+    <div class="paltile"><div class="demo"><span class="chip-sel sel-red"><span class="d"></span>Absent</span></div><div class="lab">red · #FFDCE5</div></div>
+    <div class="paltile"><div class="demo"><span class="chip-sel sel-orange"><span class="d"></span>Late</span></div><div class="lab">orange · #FEE2D5</div></div>
+    <div class="paltile"><div class="demo"><span class="chip-sel sel-blue"><span class="d"></span>Excused</span></div><div class="lab">blue · #CFDFFF</div></div>
+    <div class="paltile"><div class="demo"><span class="chip-sel sel-yellow"><span class="d"></span>At-risk</span></div><div class="lab">yellow · #FFEAB6</div></div>
+    <div class="paltile"><div class="demo"><span class="chip-sel sel-red"><span class="d"></span>Flagged</span></div><div class="lab">red · #FFDCE5</div></div>
+    <div class="paltile"><div class="demo"><span class="chip-sel sel-purple"><span class="d"></span>Distinction</span></div><div class="lab">purple · #EDE2FE</div></div>
+    <div class="paltile"><div class="demo"><span class="chip-sel sel-teal"><span class="d"></span>Teacher</span></div><div class="lab">teal · #C2F5E9</div></div>
+    <div class="paltile"><div class="demo"><span class="chip-sel sel-cyan"><span class="d"></span>Scheduled</span></div><div class="lab">cyan · #D0F0FD</div></div>
+    <div class="paltile"><div class="demo"><span class="chip-sel sel-gray"><span class="d"></span>Archived</span></div><div class="lab">gray · #EEEEEE</div></div>
+  </div>
+</section>
+
+<!-- TYPE -->
+<section id="type">
+  <div class="sec-head"><span class="n">02</span><h2>Typography</h2>
+    <p>Inter everywhere — a neutral, highly legible workhorse. No display serif; the interface should read as software. Numbers use tabular figures so columns of grades and percentages line up.</p>
+  </div>
+  <div class="panel panel-pad">
+    <table class="type-scale">
+      <tr><td class="meta">18px / 600 · page</td><td style="font-size:18px;font-weight:600">Students · Promotion 2026-B</td></tr>
+      <tr><td class="meta">15px / 600 · record title</td><td style="font-size:15px;font-weight:600">Amina Okoro</td></tr>
+      <tr><td class="meta">13px / 500 · field name</td><td style="font-size:13px;font-weight:500;color:var(--text-2)">Attendance rate</td></tr>
+      <tr><td class="meta">13px / 400 · cell / body</td><td style="font-size:13px">Signed in at 14:02, marked present.</td></tr>
+      <tr><td class="meta">13px · tnum · number cell</td><td style="font-size:13px;font-variant-numeric:tabular-nums">15.75 · 92% · STU-0412</td></tr>
+      <tr><td class="meta">12px / 500 · tag</td><td><span class="chip-sel sel-green"><span class="d"></span>On-track</span></td></tr>
+      <tr><td class="meta">11px / 600 · caps label</td><td style="font-size:11px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--text-3)">Fields</td></tr>
+    </table>
+  </div>
+  <div class="grid g3" style="margin-top:var(--s4)">
+    <div class="panel panel-pad"><div class="cap">Rows are dense</div><p style="font-size:13px;color:var(--text-2)">Default row height 34px (Short). Options: Medium 48, Tall 64, Extra-tall 88 — same as Airtable’s row-height control.</p></div>
+    <div class="panel panel-pad"><div class="cap">Radius stays small</div><p style="font-size:13px;color:var(--text-2)">3–6px on cells, chips and buttons; 8–12px on panels, popovers and records. No pill-shaped buttons.</p></div>
+    <div class="panel panel-pad"><div class="cap">Shadows are for layers</div><p style="font-size:13px;color:var(--text-2)">Flat grid; soft shadows only on things that float — popovers, the expanded record, toasts. Everything else uses 1px borders.</p></div>
+  </div>
+</section>
+
+<!-- FIELDS & CELLS -->
+<section id="fields">
+  <div class="sec-head"><span class="n">03</span><h2>Field types &amp; cells</h2>
+    <p>Each column is a typed field with its own icon and its own cell renderer. These are the atoms every table is built from.</p>
+  </div>
+  <div class="panel panel-pad">
+    <div class="cap">Field types (column-header icon + name)</div>
+    <div class="grid g4">
+      <div class="row"><span class="fti"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 7V5h14v2M9 5v14M7 19h4"/></svg></span><span style="font-size:13px">Single line text</span></div>
+      <div class="row"><span class="fti"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h10"/></svg></span><span style="font-size:13px">Long text</span></div>
+      <div class="row"><span class="fti"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 3l-1 18M19 3l-1 18M4 9h16M3 15h16"/></svg></span><span style="font-size:13px">Number</span></div>
+      <div class="row"><span class="fti"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M8 12h8"/></svg></span><span style="font-size:13px">Percent</span></div>
+      <div class="row"><span class="fti"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="8"/><path d="M8 12l3 3 5-6"/></svg></span><span style="font-size:13px">Single select</span></div>
+      <div class="row"><span class="fti"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="10" height="5" rx="2"/><rect x="8" y="14" width="10" height="5" rx="2"/></svg></span><span style="font-size:13px">Multiple select</span></div>
+      <div class="row"><span class="fti"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M8 3v4M16 3v4M3 10h18"/></svg></span><span style="font-size:13px">Date</span></div>
+      <div class="row"><span class="fti"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="4" width="16" height="16" rx="3"/><path d="M8 12l3 3 5-6"/></svg></span><span style="font-size:13px">Checkbox</span></div>
+      <div class="row"><span class="fti"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 4-6 8-6s8 2 8 6"/></svg></span><span style="font-size:13px">Collaborator</span></div>
+      <div class="row"><span class="fti"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 007 0l2-2a5 5 0 00-7-7l-1 1"/><path d="M14 11a5 5 0 00-7 0l-2 2a5 5 0 007 7l1-1"/></svg></span><span style="font-size:13px">Linked record</span></div>
+      <div class="row"><span class="fti"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15l-5-5L5 21M8 9a2 2 0 100-4 2 2 0 000 4z"/><rect x="3" y="3" width="18" height="18" rx="2"/></svg></span><span style="font-size:13px">Attachment</span></div>
+      <div class="row"><span class="fti"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 20V8a3 3 0 016 0M5 12h6"/><path d="M13 8h5l-2 12"/></svg></span><span style="font-size:13px">Formula</span></div>
+    </div>
+  </div>
+
+  <div class="panel panel-pad">
+    <div class="cap">Cell renderers</div>
+    <div class="grid g3">
+      <div class="stackv">
+        <div class="row"><span style="width:110px;font-size:12px;color:var(--text-3)">Text</span><span style="font-size:13px">Algorithms</span></div>
+        <div class="row"><span style="width:110px;font-size:12px;color:var(--text-3)">Number</span><span style="font-size:13px;font-variant-numeric:tabular-nums">15.75</span></div>
+        <div class="row"><span style="width:110px;font-size:12px;color:var(--text-3)">Percent</span><span style="font-size:13px;font-variant-numeric:tabular-nums">92%</span></div>
+        <div class="row"><span style="width:110px;font-size:12px;color:var(--text-3)">Checkbox</span><span class="ck on"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 12l4 4 10-11"/></svg></span></div>
+      </div>
+      <div class="stackv">
+        <div class="row"><span style="width:110px;font-size:12px;color:var(--text-3)">Single select</span><span class="chip-sel sel-green"><span class="d"></span>Present</span></div>
+        <div class="row"><span style="width:110px;font-size:12px;color:var(--text-3)">Multi select</span><span class="chip-sel sel-cyan">Math</span><span class="chip-sel sel-purple">Physics</span></div>
+        <div class="row"><span style="width:110px;font-size:12px;color:var(--text-3)">Date</span><span style="font-size:13px">14 Aug 2026</span></div>
+        <div class="row"><span style="width:110px;font-size:12px;color:var(--text-3)">Collaborator</span><span class="collab"><span class="av" style="background:#8b46ff">MD</span><span>M. Diallo</span></span></div>
+      </div>
+      <div class="stackv">
+        <div class="row"><span style="width:110px;font-size:12px;color:var(--text-3)">Linked record</span><span class="chip-sel sel-blue">Promotion 2026-B</span></div>
+        <div class="row"><span style="width:110px;font-size:12px;color:var(--text-3)">Role</span><span class="chip-sel sel-purple">Admin</span></div>
+        <div class="row"><span style="width:110px;font-size:12px;color:var(--text-3)">Attachment</span><span style="font-size:13px;color:var(--text-2)">transcript.pdf</span></div>
+        <div class="row"><span style="width:110px;font-size:12px;color:var(--text-3)">Empty</span><span style="font-size:13px;color:var(--text-3)">—</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- COMPONENTS -->
+<section id="components">
+  <div class="sec-head"><span class="n">04</span><h2>Components</h2>
+    <p>The working parts around the grid — toolbar controls, popovers, buttons, search. Copy is active-voice: a control says what it does.</p>
+  </div>
+
+  <div class="panel panel-pad">
+    <div class="cap">Toolbar controls</div>
+    <div class="row" style="gap:2px;margin-bottom:var(--s4)">
+      <button class="viewbtn"><span class="vic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18M3 14h18M9 4v16"/></svg></span>Grid view <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--icon)"><path d="M6 9l6 6 6-6"/></svg></button>
+      <span class="div" style="width:1px;height:20px;background:var(--border);margin:0 6px"></span>
+      <button class="tb-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M7 12h10M10 18h4"/></svg>Hide fields</button>
+      <button class="tb-btn active"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 5h18l-7 8v5l-4 2v-7z"/></svg>Filter <span class="cnt">2</span></button>
+      <button class="tb-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="8" height="7" rx="1"/><rect x="13" y="4" width="8" height="7" rx="1"/><rect x="3" y="14" width="18" height="6" rx="1"/></svg>Group</button>
+      <button class="tb-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 4v16M7 20l-3-3M7 20l3-3M14 7h6M14 12h4M14 17h2"/></svg>Sort</button>
+      <button class="tb-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 010 18"/></svg>Color</button>
+      <button class="tb-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 10h16M4 14h16M4 18h16"/></svg>Row height</button>
+    </div>
+    <div class="row">
+      <div class="searchbar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4-4"/></svg><input placeholder="Search records…"></div>
+      <button class="btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>Add record</button>
+      <button class="btn sec"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12v7h16v-7M12 3v12M8 7l4-4 4 4"/></svg>Import</button>
+      <button class="btn sec">Share view</button>
+      <button class="btn ghost">Cancel</button>
+    </div>
+  </div>
+
+  <div class="grid g2">
+    <div class="panel panel-pad">
+      <div class="cap">Filter popover</div>
+      <div class="pop" style="box-shadow:none;border:1px solid var(--border)">
+        <div class="ph">In this view, show records</div>
+        <div class="pb">
+          <div class="cond"><span>Where</span><span class="mini">Status</span><span class="mini">is</span><span class="mini" style="min-width:90px">At-risk ▾</span></div>
+          <div class="cond"><span>And</span><span class="mini">Attendance</span><span class="mini">&lt;</span><span class="mini" style="min-width:90px">75%</span></div>
+          <button class="addcond"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>Add condition</button>
+        </div>
+      </div>
+    </div>
+    <div class="panel panel-pad">
+      <div class="cap">Feedback — shared ApiError, humanised</div>
+      <div class="stackv">
+        <div class="row" style="gap:8px;font-size:13px"><span class="chip-sel sel-yellow" style="flex:none">400</span><span>Enter a grade between 0 and 20.</span></div>
+        <div class="row" style="gap:8px;font-size:13px"><span class="chip-sel sel-gray" style="flex:none">404</span><span>That session was cancelled — pick another from today.</span></div>
+        <div class="row" style="gap:8px;font-size:13px"><span class="chip-sel sel-red" style="flex:none">409</span><span>The signing window is closed. Ask the owning teacher to justify.</span></div>
+        <div class="row" style="gap:8px;font-size:13px"><span class="chip-sel sel-blue" style="flex:none">403</span><span>You don’t teach this course, so you can’t enter grades.</span></div>
+        <div class="hrnote" style="margin:12px 0 10px">Toast</div>
+        <div class="toast"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M4 12l5 5L20 6"/></svg><span>Window closed — 4 non-signers marked absent.</span><button class="x" aria-label="Dismiss"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- GRID (centerpiece) -->
+<section id="grid">
+  <div class="sec-head"><span class="n">05</span><h2>The record grid</h2>
+    <p>The whole product, in one surface: a colored base bar, table tabs, the toolbar, and a grouped, filterable grid. The active cell carries a 2px blue ring; hovering a row swaps the row number for a checkbox and an expand button.</p>
+  </div>
+
+  <div class="base-window">
+    <div class="base-bar">
+      <div class="base-top">
+        <span class="bname"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18M9 9v11"/></svg>School Management <svg class="chev" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></span>
+        <span class="spacer"></span>
+        <span class="avstack"><span class="av" style="background:#8b46ff">MD</span><span class="av" style="background:#2d7ff9">JR</span><span class="av" style="background:#20c933">SA</span></span>
+        <button class="share"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="M8.5 13.5l7 4M15.5 6.5l-7 4"/></svg>Share</button>
+      </div>
+      <div class="tabs-strip">
+        <span class="ttab active">Students <span class="cnt">1,204</span></span>
+        <span class="ttab">Teachers</span>
+        <span class="ttab">Courses</span>
+        <span class="ttab">Promotions</span>
+        <span class="ttab">Sessions</span>
+        <span class="ttab">Grades</span>
+        <span class="ttab">Exams</span>
+        <span class="add">+ Add or import</span>
+      </div>
+    </div>
+
+    <div class="toolbar">
+      <button class="viewbtn"><span class="vic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18M3 14h18M9 4v16"/></svg></span>Grid view <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--icon)"><path d="M6 9l6 6 6-6"/></svg></button>
+      <span class="div"></span>
+      <button class="tb-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M7 12h10M10 18h4"/></svg>Hide fields</button>
+      <button class="tb-btn active"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 5h18l-7 8v5l-4 2v-7z"/></svg>Filter <span class="cnt">1</span></button>
+      <button class="tb-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="8" height="7" rx="1"/><rect x="13" y="4" width="8" height="7" rx="1"/><rect x="3" y="14" width="18" height="6" rx="1"/></svg>Group <span class="cnt">Status</span></button>
+      <button class="tb-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 4v16M7 20l-3-3M7 20l3-3M14 7h6M14 12h4M14 17h2"/></svg>Sort</button>
+      <button class="tb-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 10h16M4 14h16M4 18h16"/></svg>Row height</button>
+      <span class="spacer"></span>
+      <div class="searchbar" style="max-width:200px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4-4"/></svg><input placeholder="Search"></div>
+    </div>
+
+    <div class="gridscroll">
+      <table class="tg">
+        <thead>
+          <tr>
+            <th class="gutter"><span class="ck"></span></th>
+            <th><div class="colhead"><span class="fti"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 7V5h14v2M9 5v14M7 19h4"/></svg></span>Name</div></th>
+            <th><div class="colhead"><span class="fti"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 7V5h14v2M9 5v14M7 19h4"/></svg></span>Student ID</div></th>
+            <th><div class="colhead"><span class="fti"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 007 0l2-2a5 5 0 00-7-7l-1 1"/></svg></span>Promotion</div></th>
+            <th><div class="colhead"><span class="fti"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="8"/><path d="M8 12l3 3 5-6"/></svg></span>Status</div></th>
+            <th><div class="colhead"><span class="fti"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M8 12h8"/></svg></span>Attendance</div></th>
+            <th><div class="colhead"><span class="fti"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 3l-1 18M19 3l-1 18M4 9h16M3 15h16"/></svg></span>Avg /20</div></th>
+            <th><div class="colhead"><span class="fti"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="8"/><path d="M8 12l3 3 5-6"/></svg></span>Last session</div></th>
+            <th><div class="colhead"><span class="fti"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 4-6 8-6s8 2 8 6"/></svg></span>Advisor</div></th>
+            <th><div class="colhead"><span class="fti"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="4" width="16" height="16" rx="3"/><path d="M8 12l3 3 5-6"/></svg></span>Flagged</div></th>
+            <th class="addcol">+</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- group: On-track -->
+          <tr class="grouphdr">
+            <td class="gutter"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></td>
+            <td colspan="9"><span class="gwrap"><span class="chip-sel sel-green"><span class="d"></span>On-track</span><span class="gcnt">982 records</span></span></td>
+          </tr>
+          <tr>
+            <td class="gutter"><span class="rn">1</span><span class="expand"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 8V4h4M20 8V4h-4M4 16v4h4M20 16v4h-4"/></svg></span></td>
+            <td><div class="namecell"><span class="av" style="background:#2d7ff9;width:20px;height:20px;font-size:9px">AO</span>Amina Okoro</div></td>
+            <td class="mono-ish" style="color:var(--text-2)">STU-0412</td>
+            <td><span class="chip-sel sel-blue">Promotion 2026-B</span></td>
+            <td><span class="chip-sel sel-green"><span class="d"></span>On-track</span></td>
+            <td class="cell-num selected">96%</td>
+            <td class="cell-num">17.20</td>
+            <td><span class="chip-sel sel-green"><span class="d"></span>Present</span></td>
+            <td><span class="collab"><span class="av" style="background:#8b46ff">MD</span><span>M. Diallo</span></span></td>
+            <td style="text-align:center"><span class="ck"></span></td>
+            <td class="addcol"></td>
+          </tr>
+          <tr>
+            <td class="gutter"><span class="rn">2</span><span class="expand"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 8V4h4M20 8V4h-4M4 16v4h4M20 16v4h-4"/></svg></span></td>
+            <td><div class="namecell"><span class="av" style="background:#20c933;width:20px;height:20px;font-size:9px">LM</span>Lucas Mercier</div></td>
+            <td class="mono-ish" style="color:var(--text-2)">STU-0388</td>
+            <td><span class="chip-sel sel-blue">Promotion 2026-B</span></td>
+            <td><span class="chip-sel sel-green"><span class="d"></span>On-track</span></td>
+            <td class="cell-num">91%</td>
+            <td class="cell-num">16.05</td>
+            <td><span class="chip-sel sel-green"><span class="d"></span>Present</span></td>
+            <td><span class="collab"><span class="av" style="background:#18bfff">JR</span><span>J. Roy</span></span></td>
+            <td style="text-align:center"><span class="ck"></span></td>
+            <td class="addcol"></td>
+          </tr>
+          <!-- group: At-risk -->
+          <tr class="grouphdr">
+            <td class="gutter"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></td>
+            <td colspan="9"><span class="gwrap"><span class="chip-sel sel-yellow"><span class="d"></span>At-risk</span><span class="gcnt">37 records · attendance &lt; 75% and average &lt; 10</span></span></td>
+          </tr>
+          <tr>
+            <td class="gutter"><span class="rn">3</span><span class="expand"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 8V4h4M20 8V4h-4M4 16v4h4M20 16v4h-4"/></svg></span></td>
+            <td><div class="namecell"><span class="av" style="background:#ff6f2c;width:20px;height:20px;font-size:9px">TN</span>Théo Nakamura</div></td>
+            <td class="mono-ish" style="color:var(--text-2)">STU-0421</td>
+            <td><span class="chip-sel sel-blue">Promotion 2026-B</span></td>
+            <td><span class="chip-sel sel-yellow"><span class="d"></span>At-risk</span></td>
+            <td class="cell-num" style="color:var(--red-tx)">64%</td>
+            <td class="cell-num" style="color:var(--red-tx)">9.10</td>
+            <td><span class="chip-sel sel-red"><span class="d"></span>Absent</span></td>
+            <td><span class="collab"><span class="av" style="background:#8b46ff">MD</span><span>M. Diallo</span></span></td>
+            <td style="text-align:center"><span class="ck on"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 12l4 4 10-11"/></svg></span></td>
+            <td class="addcol"></td>
+          </tr>
+          <tr>
+            <td class="gutter"><span class="rn">4</span><span class="expand"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 8V4h4M20 8V4h-4M4 16v4h4M20 16v4h-4"/></svg></span></td>
+            <td><div class="namecell"><span class="av" style="background:#fcb400;width:20px;height:20px;font-size:9px">SR</span>Sofia Rossi</div></td>
+            <td class="mono-ish" style="color:var(--text-2)">STU-0401</td>
+            <td><span class="chip-sel sel-blue">Promotion 2026-A</span></td>
+            <td><span class="chip-sel sel-yellow"><span class="d"></span>At-risk</span></td>
+            <td class="cell-num" style="color:var(--yellow-tx)">73%</td>
+            <td class="cell-num">11.40</td>
+            <td><span class="chip-sel sel-orange"><span class="d"></span>Late</span></td>
+            <td><span class="collab"><span class="av" style="background:#18bfff">JR</span><span>J. Roy</span></span></td>
+            <td style="text-align:center"><span class="ck"></span></td>
+            <td class="addcol"></td>
+          </tr>
+          <tr class="addrow">
+            <td class="gutter"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg></td>
+            <td colspan="10"><span class="addrow-inner">Add record</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <p class="note">Colored dot on the row-number gutter, blue active-cell ring, sticky header + first column, group headers with live counts, and “Add record” pinned to the bottom — all standard grid affordances rebuilt on the tokens above.</p>
+
+  <!-- kanban -->
+  <div class="cap" style="margin-top:var(--s6)">Same data, Kanban view — grouped by Status</div>
+  <div class="panel" style="overflow:hidden">
+    <div class="kanban">
+      <div class="kcol">
+        <div class="khead"><span class="chip-sel sel-green"><span class="d"></span>On-track</span><span style="font-size:12px;color:var(--text-3)">982</span></div>
+        <div class="kcard"><span class="kn">Amina Okoro</span><span class="krow"><span class="chip-sel sel-blue">2026-B</span></span><span class="krow">96% · 17.20</span></div>
+        <div class="kcard"><span class="kn">Lucas Mercier</span><span class="krow"><span class="chip-sel sel-blue">2026-B</span></span><span class="krow">91% · 16.05</span></div>
+      </div>
+      <div class="kcol">
+        <div class="khead"><span class="chip-sel sel-yellow"><span class="d"></span>At-risk</span><span style="font-size:12px;color:var(--text-3)">37</span></div>
+        <div class="kcard"><span class="kn">Théo Nakamura</span><span class="krow"><span class="chip-sel sel-red">Absent</span></span><span class="krow" style="color:var(--red-tx)">64% · 9.10</span></div>
+        <div class="kcard"><span class="kn">Sofia Rossi</span><span class="krow"><span class="chip-sel sel-orange">Late</span></span><span class="krow">73% · 11.40</span></div>
+      </div>
+      <div class="kcol">
+        <div class="khead"><span class="chip-sel sel-gray"><span class="d"></span>Archived</span><span style="font-size:12px;color:var(--text-3)">188</span></div>
+        <div class="kcard" style="opacity:.65"><span class="kn">Promotion 2024-A cohort</span><span class="krow" style="color:var(--text-3)">Read-only</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- RECORD + EMPTY -->
+<section id="record">
+  <div class="sec-head"><span class="n">06</span><h2>Expanded record &amp; empty state</h2>
+    <p>Clicking a row’s expand button opens the record as a form of its fields — the same field types, editable. Empty views invite the first action rather than sitting blank.</p>
+  </div>
+  <div class="grid g2" style="align-items:start">
+    <div class="record">
+      <div class="rhead">
+        <span class="av" style="background:#2d7ff9;width:26px;height:26px;font-size:11px">AO</span>
+        <span class="rt">Amina Okoro</span>
+        <span class="spacer"></span>
+        <button class="btn ghost sm"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg></button>
+      </div>
+      <div class="rbody">
+        <div class="frow"><span class="fl"><span class="fti"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 7V5h14v2M9 5v14M7 19h4"/></svg></span>Student ID</span><span class="fv mono-ish">STU-0412</span></div>
+        <div class="frow"><span class="fl"><span class="fti"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 007 0l2-2a5 5 0 00-7-7"/></svg></span>Promotion</span><span class="fv"><span class="chip-sel sel-blue">Promotion 2026-B</span></span></div>
+        <div class="frow"><span class="fl"><span class="fti"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="8"/><path d="M8 12l3 3 5-6"/></svg></span>Status</span><span class="fv"><span class="chip-sel sel-green"><span class="d"></span>On-track</span></span></div>
+        <div class="frow"><span class="fl"><span class="fti"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M8 12h8"/></svg></span>Attendance</span><span class="fv mono-ish">96%</span></div>
+        <div class="frow"><span class="fl"><span class="fti"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 3l-1 18M19 3l-1 18M4 9h16M3 15h16"/></svg></span>Average /20</span><span class="fv mono-ish">17.20</span></div>
+        <div class="frow"><span class="fl"><span class="fti"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 4-6 8-6s8 2 8 6"/></svg></span>Advisor</span><span class="fv"><span class="collab"><span class="av" style="background:#8b46ff">MD</span><span>M. Diallo</span></span></span></div>
+        <div class="frow"><span class="fl"><span class="fti"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="10" height="5" rx="2"/><rect x="8" y="14" width="10" height="5" rx="2"/></svg></span>Courses</span><span class="fv"><span class="chip-sel sel-cyan">Algorithms</span> <span class="chip-sel sel-purple">Databases</span></span></div>
+        <div class="frow"><span class="fl"><span class="fti"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h10"/></svg></span>Notes</span><span class="fv"><input class="input" placeholder="Add a note…"></span></div>
+      </div>
+    </div>
+    <div class="panel" style="display:flex;align-items:center;justify-content:center;min-height:320px">
+      <div class="empty">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18M9 9v11"/></svg>
+        <h4>No exams scheduled</h4>
+        <p>Schedule an exam to open attempts, set the integrity threshold and start proctoring.</p>
+        <button class="btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>Schedule exam</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HANDOFF -->
+<section id="handoff" style="border-bottom:0">
+  <div class="sec-head"><span class="n">07</span><h2>Redesign prompt · UI UX Pro Max</h2>
+    <p>Paste into Claude Code / Cursor / Windsurf with the <span class="mono-ish">ui-ux-pro-max</span> skill installed. It locks this Airtable-style system so the skill builds the workspace instead of choosing a new look.</p>
+  </div>
+
+  <div class="prompt">
+    <div class="bar"><span class="l">prompt.txt</span>
+      <button class="copy" id="copyBtn"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 012-2h10"/></svg>Copy</button>
+    </div>
+<pre id="promptText">Use the <b>ui-ux-pro-max</b> skill to redesign the frontend of my School Management
+platform. This is an internal ADMIN tool, not a marketing site — model it closely
+on <b>Airtable</b>: a data workspace of filterable, groupable tables, NOT a landing page.
+
+<b>Product type:</b> B2B admin dashboard / data workspace (school records system)
+over a Java/Spring REST API, JWT auth, roles ADMIN / TEACHER / STUDENT.
+<b>Style intent:</b> Airtable-like spreadsheet–database UI (data-dense, utilitarian).
+<b>Stack:</b> React + Tailwind + TanStack Table (virtualized rows) + shadcn/ui for
+popovers/menus.  (swap for Vue/Nuxt or Laravel+Livewire if preferred.)
+
+<b>Lock this design system — do NOT re-pick a style:</b>
+• Chrome is neutral; the DATA carries the color.
+• Colors: primary/action + selection blue #2D7FF9 (hover #166EE1);
+          per-base accent bar #0F7B7B; canvas #F7F7F8; surface #FFFFFF;
+          hover #F2F2F4; border #E5E5E7; grid line #E2E2E4;
+          text #1D1F25; secondary #616670.
+• Select-field palette (light bg / dark text; status = tag + label, never color alone):
+          green #D1F7C4/#338A17 · red #FFDCE5/#D91F44 · orange #FEE2D5/#C8461F ·
+          blue #CFDFFF/#2750AE · yellow #FFEAB6/#B87503 · purple #EDE2FE/#6B46C1 ·
+          teal #C2F5E9/#0A8F88 · cyan #D0F0FD/#0B76B7 · gray #EEE/#585B62.
+          Map: Present=green, Absent/Flagged=red, Late=orange, Excused=blue,
+          At-risk=yellow, Distinction=purple, Archived=gray, Admin=purple,
+          Teacher=teal, Student=blue.
+• Type: <b>Inter</b> only, no serif. 13px grid cells / 14px UI; tabular-nums for
+          numbers; 34px default row height (Short/Medium/Tall/Extra-tall options).
+• Radius small: 3–6px on cells/chips/buttons, 8–12px on panels/popovers/records.
+          Flat grid; soft shadows only on floating layers.
+
+<b>Signature = the record grid.</b> Every table has: colored base bar + table tabs;
+a toolbar (view switcher · Hide fields · Filter · Group · Sort · Color · Row height ·
+Share · search); typed fields with a field-type icon in each column header
+(text, number, percent, single/multi select, date, checkbox, collaborator,
+linked record, attachment, formula); colored select chips; sticky header + first
+column; row-hover reveals checkbox + expand; 2px blue active-cell ring; group
+headers with live counts; “Add record” pinned bottom; “+” add-field column.
+Views: Grid, Kanban, Calendar, Gallery, Form. Expanded record = a side sheet of
+the fields as an editable form.
+
+<b>Screens</b> (map to API), each with loading / empty / error via shared ApiError
+(400 validation · 404 · 409 conflict · 401/403):
+1. App shell — base bar + table tabs + left views sidebar.
+2. Students / Teachers tables — roster grids, expand to record.
+3. Courses & Promotions — linked-record fields (course↔teacher, student↔promotion).
+4. Sessions — grid + a signing-window record (open / close / cancel, countdown,
+   signed N/total); closing marks non-signers Absent.
+5. Attendance — per-session grid, student self-sign, justify → Excused.
+6. Grades — editable number cells (0–20), averages, promotion rankings (sort view,
+   rank-1 = purple Distinction chip).
+7. Exams — attempts grid, proctoring-event log, integrity-threshold meter,
+   “Flagged” filtered view for review.
+8. Reporting — at-risk view = a saved filter (attendance < 75% AND average < 10),
+   grouped by promotion.
+9. Archive — read-only grid; archived rows are dimmed and reject edits.
+
+<b>Anti-patterns to AVOID:</b> marketing hero / big headline, serif display fonts,
+gold/terracotta editorial accents, dashboard indigo-purple gradients, pill-shaped
+buttons, heavy drop shadows, color-only status, emoji icons (use SVG:
+Phosphor/Lucide), sparse low-density layouts. Keep it dense, gridded, functional.
+
+<b>Quality floor:</b> WCAG AA contrast, visible keyboard focus, full keyboard grid
+nav (arrows between cells, Enter to expand), prefers-reduced-motion respected,
+responsive 375/768/1024/1440 (grid → horizontal scroll on mobile, records stack).
+
+First generate + persist the design system to design-system/MASTER.md, then build
+the app shell + Students grid, and show me that before continuing.</pre>
+  </div>
+
+  <div class="hrnote">Optional · pin a reusable design system first</div>
+  <div class="cmd"><span class="c"># after: uipro init --ai claude</span><br>python3 .claude/skills/ui-ux-pro-max/scripts/search.py "airtable data grid admin workspace spreadsheet database" --design-system --persist -p "SchoolBase"</div>
+  <div class="cmd" style="margin-top:8px"><span class="c"># confirm the skill leans data-dense, not landing-page</span><br>python3 .claude/skills/ui-ux-pro-max/scripts/search.py "data table dense productivity tool" --domain style --json</div>
+  <p class="note">The skill auto-activates on UI/UX requests, so the prompt alone is enough. If its first pass drifts toward a marketing layout, reply: “No hero — this is an internal Airtable-style grid tool. Rebuild as the record grid.”</p>
+</section>
+
+</div>
+
+<footer>
+  <div class="wrap">
+    <span>SchoolBase — Design System · Airtable-style data workspace for the School Management platform</span>
+    <span>Inter · #2D7FF9 · 34px rows · the record grid</span>
+  </div>
+</footer>
+
+<script>
+document.getElementById('copyBtn').addEventListener('click', function(){
+  var b=this, t=document.getElementById('promptText').innerText;
+  navigator.clipboard.writeText(t).then(function(){
+    var o=b.innerHTML;
+    b.innerHTML='<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12l4 4 10-11"/></svg>Copied';
+    setTimeout(function(){b.innerHTML=o;},1800);
+  });
+});
+// demo: click a data cell to move the blue selection ring
+document.querySelectorAll('table.tg tbody td').forEach(function(td){
+  if(td.classList.contains('gutter')||td.classList.contains('addcol'))return;
+  td.addEventListener('click',function(){
+    document.querySelectorAll('table.tg td.selected').forEach(function(s){s.classList.remove('selected');});
+    td.classList.add('selected');
+  });
+});
+document.querySelectorAll('.toast .x').forEach(function(b){b.addEventListener('click',function(){b.closest('.toast').style.opacity='.4';});});
+</script>
+</body>
+</html>

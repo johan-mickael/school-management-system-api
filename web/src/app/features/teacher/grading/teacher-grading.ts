@@ -7,10 +7,11 @@ import { PromotionsApi } from '../../../core/api/promotions.api';
 import { AuthService } from '../../../core/auth/auth.service';
 import { CourseResponse, GradeResponse, PromotionResponse } from '../../../core/api-models';
 import { errorMessage } from '../../../shared/api-error';
+import { Feedback } from '../../../shared/ui/feedback';
 
 @Component({
   selector: 'app-teacher-grading',
-  imports: [FormsModule],
+  imports: [FormsModule, Feedback],
   templateUrl: './teacher-grading.html',
 })
 export class TeacherGrading {

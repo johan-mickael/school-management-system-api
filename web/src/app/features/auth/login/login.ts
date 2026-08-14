@@ -3,11 +3,12 @@ import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 
 import { AuthService } from '../../../core/auth/auth.service';
+import { Feedback } from '../../../shared/ui/feedback';
 import { errorMessage } from '../../../shared/api-error';
 
 @Component({
   selector: 'app-login',
-  imports: [FormsModule],
+  imports: [FormsModule, Feedback],
   templateUrl: './login.html',
 })
 export class Login {

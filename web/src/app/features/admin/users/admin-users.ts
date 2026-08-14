@@ -5,10 +5,12 @@ import { UsersApi } from '../../../core/api/users.api';
 import { Role } from '../../../core/auth/auth.models';
 import { UserResponse } from '../../../core/api-models';
 import { errorMessage } from '../../../shared/api-error';
+import { Chip } from '../../../shared/ui/chip';
+import { Feedback } from '../../../shared/ui/feedback';
 
 @Component({
   selector: 'app-admin-users',
-  imports: [FormsModule],
+  imports: [FormsModule, Chip, Feedback],
   templateUrl: './admin-users.html',
 })
 export class AdminUsers {

@@ -7,10 +7,12 @@ import { AttendanceApi } from '../../../core/api/attendance.api';
 import { SessionsApi } from '../../../core/api/sessions.api';
 import { AttendanceRecordResponse, SessionResponse } from '../../../core/api-models';
 import { errorMessage } from '../../../shared/api-error';
+import { Chip } from '../../../shared/ui/chip';
+import { Feedback } from '../../../shared/ui/feedback';
 
 @Component({
   selector: 'app-session-detail',
-  imports: [DatePipe, RouterLink, FormsModule],
+  imports: [DatePipe, RouterLink, FormsModule, Chip, Feedback],
   templateUrl: './session-detail.html',
 })
 export class SessionDetail {

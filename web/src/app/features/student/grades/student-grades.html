@@ -1,26 +1,27 @@
-<h1 class="mb-6 text-lg font-semibold text-slate-900">Grades</h1>
+<div class="mb-6 flex items-baseline gap-3">
+  <span class="text-xs font-semibold text-text-3">02</span>
+  <h1 class="text-[20px] font-semibold text-text">Grades</h1>
+</div>
 
 @if (error()) {
-  <div class="mb-4 rounded border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">
-    {{ error() }}
-  </div>
+  <app-feedback [message]="error()!" />
 }
 
 @if (loading()) {
-  <p class="text-sm text-slate-500">Loading…</p>
+  <p class="text-[13px] text-text-2">Loading…</p>
 } @else {
   <section class="mb-8">
-    <h2 class="mb-3 text-sm font-medium text-slate-700">Averages</h2>
-    <div class="rounded border border-slate-200 bg-white p-4">
-      <p class="mb-3 text-sm text-slate-900">
+    <div class="cap">Averages</div>
+    <div class="panel panel-pad">
+      <p class="mb-3 text-[13px] text-text">
         Overall average:
-        <span class="font-semibold">{{ averages()?.overallAverage ?? '—' }}</span>
+        <span class="font-semibold tabular-nums">{{ averages()?.overallAverage ?? '—' }}</span>
         / 20
       </p>
       @if (averages()?.courseAverages?.length) {
-        <ul class="space-y-1 text-sm text-slate-600">
+        <ul class="space-y-1 text-[13px] text-text-2">
           @for (courseAverage of averages()?.courseAverages; track courseAverage.courseId) {
-            <li>Course {{ courseAverage.courseId }}: {{ courseAverage.average }} / 20</li>
+            <li>Course {{ courseAverage.courseId }}: <span class="tabular-nums">{{ courseAverage.average }}</span> / 20</li>
           }
         </ul>
       }
@@ -28,28 +29,36 @@
   </section>
 
   <section>
-    <h2 class="mb-3 text-sm font-medium text-slate-700">Grades</h2>
+    <div class="cap">Grades</div>
     @if (grades().length === 0) {
-      <p class="text-sm text-slate-500">No grades recorded yet.</p>
+      <div class="panel">
+        <app-empty-state title="No grades yet" description="Grades your teachers record will show up here." />
+      </div>
     } @else {
-      <table class="w-full overflow-hidden rounded border border-slate-200 bg-white text-sm">
-        <thead class="bg-slate-50 text-left text-slate-500">
-          <tr>
-            <th class="px-4 py-2 font-medium">Course</th>
-            <th class="px-4 py-2 font-medium">Score</th>
-            <th class="px-4 py-2 font-medium">Coefficient</th>
-          </tr>
-        </thead>
-        <tbody class="divide-y divide-slate-200">
-          @for (grade of grades(); track grade.id) {
-            <tr>
-              <td class="px-4 py-2">{{ grade.courseId }}</td>
-              <td class="px-4 py-2">{{ grade.score }} / 20</td>
-              <td class="px-4 py-2">{{ grade.coefficient }}</td>
-            </tr>
-          }
-        </tbody>
-      </table>
+      <div class="panel overflow-hidden">
+        <div class="overflow-auto">
+          <table class="grid-table">
+            <thead>
+              <tr>
+                <th class="gutter">#</th>
+                <th>Course</th>
+                <th class="text-right">Score</th>
+                <th class="text-right">Coefficient</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (grade of grades(); track grade.id; let i = $index) {
+                <tr>
+                  <td class="gutter">{{ i + 1 }}</td>
+                  <td>{{ grade.courseId }}</td>
+                  <td class="cell-num">{{ grade.score }} / 20</td>
+                  <td class="cell-num">{{ grade.coefficient }}</td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      </div>
     }
   </section>
 }

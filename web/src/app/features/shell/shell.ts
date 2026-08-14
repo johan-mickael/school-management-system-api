@@ -1,6 +1,8 @@
 import { Component, computed, inject } from '@angular/core';
 import { Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 
+import { Avatar } from '../../shared/ui/avatar';
+import { Chip } from '../../shared/ui/chip';
 import { AuthService } from '../../core/auth/auth.service';
 
 interface NavLink {
@@ -10,7 +12,7 @@ interface NavLink {
 
 @Component({
   selector: 'app-shell',
-  imports: [RouterOutlet, RouterLink, RouterLinkActive],
+  imports: [RouterOutlet, RouterLink, RouterLinkActive, Avatar, Chip],
   templateUrl: './shell.html',
 })
 export class Shell {

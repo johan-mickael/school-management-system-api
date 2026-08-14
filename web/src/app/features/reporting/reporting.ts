@@ -10,10 +10,13 @@ import {
   StudentSummaryResponse,
 } from '../../core/api-models';
 import { errorMessage } from '../../shared/api-error';
+import { Chip } from '../../shared/ui/chip';
+import { EmptyState } from '../../shared/ui/empty-state';
+import { Feedback } from '../../shared/ui/feedback';
 
 @Component({
   selector: 'app-reporting',
-  imports: [FormsModule],
+  imports: [FormsModule, Chip, EmptyState, Feedback],
   templateUrl: './reporting.html',
 })
 export class Reporting {

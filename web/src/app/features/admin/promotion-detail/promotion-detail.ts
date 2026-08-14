@@ -17,10 +17,14 @@ import {
   TeacherResponse,
 } from '../../../core/api-models';
 import { errorMessage } from '../../../shared/api-error';
+import { Avatar } from '../../../shared/ui/avatar';
+import { Chip } from '../../../shared/ui/chip';
+import { EmptyState } from '../../../shared/ui/empty-state';
+import { Feedback } from '../../../shared/ui/feedback';
 
 @Component({
   selector: 'app-promotion-detail',
-  imports: [DatePipe, FormsModule, RouterLink],
+  imports: [DatePipe, FormsModule, RouterLink, Avatar, Chip, EmptyState, Feedback],
   templateUrl: './promotion-detail.html',
 })
 export class PromotionDetail {

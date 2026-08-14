@@ -1,30 +1,36 @@
-<div class="min-h-screen bg-slate-50">
-  <header class="border-b border-slate-200 bg-white">
-    <div class="mx-auto flex max-w-5xl items-center justify-between px-4 py-3">
-      <div class="flex items-center gap-6">
-        <span class="font-semibold text-slate-900">School Management System</span>
-        <nav class="flex gap-4">
-          @for (link of links(); track link.path) {
-            <a
-              [routerLink]="link.path"
-              routerLinkActive="text-slate-900 font-medium"
-              class="text-sm text-slate-500 hover:text-slate-900"
-            >
-              {{ link.label }}
-            </a>
-          }
-        </nav>
-      </div>
-      <div class="flex items-center gap-3 text-sm text-slate-500">
-        <span>{{ claims()?.username }} · {{ claims()?.role }}</span>
-        <button class="rounded border border-slate-300 px-3 py-1 hover:bg-slate-100" (click)="logout()">
-          Sign out
-        </button>
-      </div>
+<div class="min-h-screen bg-canvas">
+  <div class="base-bar sticky top-0 z-50">
+    <div class="mx-auto flex h-11 max-w-6xl items-center gap-3 px-4">
+      <span class="flex items-center gap-2 text-[14px] font-semibold">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="3" y="4" width="18" height="16" rx="2" />
+          <path d="M3 9h18M9 9v11" />
+        </svg>
+        School Management
+      </span>
+      <span class="flex-1"></span>
+      @if (claims(); as c) {
+        <app-avatar [name]="c.username" [size]="24" />
+        <span class="text-[13px]">{{ c.username }}</span>
+        <app-chip [status]="c.role" [dot]="false">{{ c.role }}</app-chip>
+      }
+      <button
+        class="inline-flex items-center gap-1.5 rounded-md border-0 bg-white/15 px-3 py-1.5 text-[13px] text-white hover:bg-white/25"
+        (click)="logout()"
+      >
+        Sign out
+      </button>
     </div>
-  </header>
+    <div class="mx-auto max-w-6xl">
+      <nav class="tabs-strip">
+        @for (link of links(); track link.path) {
+          <a [routerLink]="link.path" routerLinkActive="ttab-active" class="ttab">{{ link.label }}</a>
+        }
+      </nav>
+    </div>
+  </div>
 
-  <main class="mx-auto max-w-5xl px-4 py-8">
+  <main class="mx-auto max-w-6xl px-4 py-6">
     <router-outlet />
   </main>
 </div>

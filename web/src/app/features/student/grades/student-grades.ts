@@ -5,9 +5,12 @@ import { GradesApi } from '../../../core/api/grades.api';
 import { AuthService } from '../../../core/auth/auth.service';
 import { GradeResponse, StudentAveragesResponse } from '../../../core/api-models';
 import { errorMessage } from '../../../shared/api-error';
+import { EmptyState } from '../../../shared/ui/empty-state';
+import { Feedback } from '../../../shared/ui/feedback';
 
 @Component({
   selector: 'app-student-grades',
+  imports: [EmptyState, Feedback],
   templateUrl: './student-grades.html',
 })
 export class StudentGrades {

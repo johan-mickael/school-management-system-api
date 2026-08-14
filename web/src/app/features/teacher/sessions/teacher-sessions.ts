@@ -7,10 +7,13 @@ import { SessionsApi } from '../../../core/api/sessions.api';
 import { AuthService } from '../../../core/auth/auth.service';
 import { PromotionResponse, SessionResponse } from '../../../core/api-models';
 import { errorMessage } from '../../../shared/api-error';
+import { Chip } from '../../../shared/ui/chip';
+import { EmptyState } from '../../../shared/ui/empty-state';
+import { Feedback } from '../../../shared/ui/feedback';
 
 @Component({
   selector: 'app-teacher-sessions',
-  imports: [DatePipe, RouterLink],
+  imports: [DatePipe, RouterLink, Chip, EmptyState, Feedback],
   templateUrl: './teacher-sessions.html',
 })
 export class TeacherSessions {

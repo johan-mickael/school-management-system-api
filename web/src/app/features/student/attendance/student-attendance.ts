@@ -8,10 +8,13 @@ import { StudentsApi } from '../../../core/api/students.api';
 import { AuthService } from '../../../core/auth/auth.service';
 import { AttendanceRecordResponse, SessionResponse } from '../../../core/api-models';
 import { errorMessage } from '../../../shared/api-error';
+import { Chip } from '../../../shared/ui/chip';
+import { EmptyState } from '../../../shared/ui/empty-state';
+import { Feedback } from '../../../shared/ui/feedback';
 
 @Component({
   selector: 'app-student-attendance',
-  imports: [DatePipe],
+  imports: [DatePipe, Chip, EmptyState, Feedback],
   templateUrl: './student-attendance.html',
 })
 export class StudentAttendance {

@@ -4,10 +4,14 @@ import { FormsModule } from '@angular/forms';
 import { TeachersApi } from '../../../core/api/teachers.api';
 import { TeacherResponse } from '../../../core/api-models';
 import { errorMessage } from '../../../shared/api-error';
+import { Avatar } from '../../../shared/ui/avatar';
+import { Chip } from '../../../shared/ui/chip';
+import { EmptyState } from '../../../shared/ui/empty-state';
+import { Feedback } from '../../../shared/ui/feedback';
 
 @Component({
   selector: 'app-admin-teachers',
-  imports: [FormsModule],
+  imports: [FormsModule, Avatar, Chip, EmptyState, Feedback],
   templateUrl: './admin-teachers.html',
 })
 export class AdminTeachers {
