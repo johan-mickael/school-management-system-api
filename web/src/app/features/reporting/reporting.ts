@@ -1,0 +1,72 @@
+import { Component, inject, signal } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+
+import { PromotionsApi } from '../../core/api/promotions.api';
+import { ReportingApi } from '../../core/api/reporting.api';
+import {
+  AtRiskStudentResponse,
+  PromotionResponse,
+  PromotionSummaryResponse,
+  StudentSummaryResponse,
+} from '../../core/api-models';
+import { errorMessage } from '../../shared/api-error';
+
+@Component({
+  selector: 'app-reporting',
+  imports: [FormsModule],
+  templateUrl: './reporting.html',
+})
+export class Reporting {
+  private readonly promotionsApi = inject(PromotionsApi);
+  private readonly reportingApi = inject(ReportingApi);
+
+  readonly promotions = signal<PromotionResponse[]>([]);
+  readonly summary = signal<PromotionSummaryResponse | null>(null);
+  readonly atRisk = signal<AtRiskStudentResponse[]>([]);
+  readonly loading = signal(false);
+  readonly error = signal<string | null>(null);
+
+  readonly lookupStudentId = signal('');
+  readonly studentSummary = signal<StudentSummaryResponse | null>(null);
+
+  constructor() {
+    this.promotionsApi.listActive().subscribe({
+      next: (promotions) => this.promotions.set(promotions),
+      error: (err) => this.error.set(errorMessage(err)),
+    });
+  }
+
+  selectPromotion(promotionId: string): void {
+    if (!promotionId) {
+      this.summary.set(null);
+      this.atRisk.set([]);
+      return;
+    }
+    this.loading.set(true);
+    this.reportingApi.getPromotionSummary(promotionId).subscribe({
+      next: (summary) => {
+        this.summary.set(summary);
+        this.loading.set(false);
+      },
+      error: (err) => {
+        this.error.set(errorMessage(err));
+        this.loading.set(false);
+      },
+    });
+    this.reportingApi.getAtRiskStudents(promotionId).subscribe({
+      next: (students) => this.atRisk.set(students),
+      error: (err) => this.error.set(errorMessage(err)),
+    });
+  }
+
+  lookupStudent(): void {
+    const studentId = this.lookupStudentId();
+    if (!studentId) {
+      return;
+    }
+    this.reportingApi.getStudentSummary(studentId).subscribe({
+      next: (summary) => this.studentSummary.set(summary),
+      error: (err) => this.error.set(errorMessage(err)),
+    });
+  }
+}

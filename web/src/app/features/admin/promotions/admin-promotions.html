@@ -1,0 +1,63 @@
+<h1 class="mb-6 text-lg font-semibold text-slate-900">Promotions</h1>
+
+@if (error()) {
+  <div class="mb-4 rounded border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">
+    {{ error() }}
+  </div>
+}
+
+<section class="mb-8 rounded border border-slate-200 bg-white p-4">
+  <h2 class="mb-3 text-sm font-medium text-slate-700">Create a promotion</h2>
+  <div class="grid max-w-xl grid-cols-3 gap-3">
+    <div class="col-span-2">
+      <label class="mb-1 block text-sm font-medium text-slate-700">Name</label>
+      <input
+        class="w-full rounded border border-slate-300 px-3 py-2 text-sm"
+        [ngModel]="name()"
+        (ngModelChange)="name.set($event)"
+      />
+    </div>
+    <div>
+      <label class="mb-1 block text-sm font-medium text-slate-700">Capacity</label>
+      <input
+        type="number"
+        min="1"
+        class="w-full rounded border border-slate-300 px-3 py-2 text-sm"
+        [ngModel]="capacity()"
+        (ngModelChange)="capacity.set($event)"
+      />
+    </div>
+    <div class="col-span-3">
+      <label class="mb-1 block text-sm font-medium text-slate-700">Academic year (e.g. 2025-2026)</label>
+      <input
+        class="w-full rounded border border-slate-300 px-3 py-2 text-sm"
+        [ngModel]="academicYear()"
+        (ngModelChange)="academicYear.set($event)"
+      />
+    </div>
+  </div>
+  <button
+    class="mt-4 rounded bg-slate-900 px-4 py-2 text-sm font-medium text-white hover:bg-slate-800 disabled:opacity-50"
+    [disabled]="creating()"
+    (click)="create()"
+  >
+    {{ creating() ? 'Creating…' : 'Create promotion' }}
+  </button>
+</section>
+
+@if (loading()) {
+  <p class="text-sm text-slate-500">Loading…</p>
+} @else if (promotions().length === 0) {
+  <p class="text-sm text-slate-500">No active promotions yet.</p>
+} @else {
+  <ul class="divide-y divide-slate-200 rounded border border-slate-200 bg-white">
+    @for (promotion of promotions(); track promotion.id) {
+      <li class="flex items-center justify-between px-4 py-3 text-sm">
+        <a class="text-slate-900 underline" [routerLink]="['/admin/promotions', promotion.id]">
+          {{ promotion.name }} ({{ promotion.academicYear }})
+        </a>
+        <span class="text-slate-500">{{ promotion.occupancy }} / {{ promotion.capacity }}</span>
+      </li>
+    }
+  </ul>
+}

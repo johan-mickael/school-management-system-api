@@ -1,0 +1,161 @@
+<h1 class="mb-6 text-lg font-semibold text-slate-900">Grading</h1>
+
+@if (error()) {
+  <div class="mb-4 rounded border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">
+    {{ error() }}
+  </div>
+}
+
+<section class="mb-8 rounded border border-slate-200 bg-white p-4">
+  <h2 class="mb-3 text-sm font-medium text-slate-700">Record a grade</h2>
+
+  <label class="mb-1 block text-sm font-medium text-slate-700" for="promotion">Promotion</label>
+  <select
+    id="promotion"
+    class="mb-3 w-full max-w-sm rounded border border-slate-300 px-3 py-2 text-sm"
+    (change)="selectPromotion($any($event.target).value)"
+  >
+    <option value="">Select a promotion…</option>
+    @for (promotion of promotions(); track promotion.id) {
+      <option [value]="promotion.id">{{ promotion.name }} ({{ promotion.academicYear }})</option>
+    }
+  </select>
+
+  <label class="mb-1 block text-sm font-medium text-slate-700" for="course">Course</label>
+  <select
+    id="course"
+    class="mb-4 w-full max-w-sm rounded border border-slate-300 px-3 py-2 text-sm"
+    [ngModel]="selectedCourseId()"
+    (ngModelChange)="selectedCourseId.set($event)"
+  >
+    <option [ngValue]="null">Select a course…</option>
+    @for (course of visibleCourses(); track course.id) {
+      <option [ngValue]="course.id">{{ course.code }} — {{ course.title }}</option>
+    }
+  </select>
+
+  @if (selectedCourseId()) {
+    <div class="grid max-w-xl grid-cols-2 gap-3">
+      <div class="col-span-2">
+        <label class="mb-1 block text-sm font-medium text-slate-700">Student ID</label>
+        <input
+          class="w-full rounded border border-slate-300 px-3 py-2 text-sm"
+          [ngModel]="gradeStudentId()"
+          (ngModelChange)="gradeStudentId.set($event)"
+        />
+      </div>
+      <div>
+        <label class="mb-1 block text-sm font-medium text-slate-700">Score (/20)</label>
+        <input
+          type="number"
+          min="0"
+          max="20"
+          step="0.5"
+          class="w-full rounded border border-slate-300 px-3 py-2 text-sm"
+          [ngModel]="gradeScore()"
+          (ngModelChange)="gradeScore.set($event)"
+        />
+      </div>
+      <div>
+        <label class="mb-1 block text-sm font-medium text-slate-700">Coefficient</label>
+        <input
+          type="number"
+          min="0"
+          step="0.5"
+          class="w-full rounded border border-slate-300 px-3 py-2 text-sm"
+          [ngModel]="gradeCoefficient()"
+          (ngModelChange)="gradeCoefficient.set($event)"
+        />
+      </div>
+      <div class="col-span-2">
+        <label class="mb-1 block text-sm font-medium text-slate-700">Exam ID (optional)</label>
+        <input
+          class="w-full rounded border border-slate-300 px-3 py-2 text-sm"
+          [ngModel]="gradeExamId()"
+          (ngModelChange)="gradeExamId.set($event)"
+        />
+      </div>
+    </div>
+
+    <button
+      class="mt-4 rounded bg-slate-900 px-4 py-2 text-sm font-medium text-white hover:bg-slate-800 disabled:opacity-50"
+      [disabled]="recording()"
+      (click)="recordGrade()"
+    >
+      {{ recording() ? 'Recording…' : 'Record grade' }}
+    </button>
+
+    @if (recordedMessage()) {
+      <p class="mt-2 text-sm text-green-700">{{ recordedMessage() }}</p>
+    }
+  }
+</section>
+
+<section class="rounded border border-slate-200 bg-white p-4">
+  <h2 class="mb-3 text-sm font-medium text-slate-700">Look up a student's grades</h2>
+  <div class="mb-4 flex max-w-sm gap-2">
+    <input
+      class="w-full rounded border border-slate-300 px-3 py-2 text-sm"
+      placeholder="Student ID"
+      [ngModel]="lookupStudentId()"
+      (ngModelChange)="lookupStudentId.set($event)"
+    />
+    <button
+      class="rounded border border-slate-300 px-3 py-2 text-sm hover:bg-slate-100"
+      (click)="lookupGradesForStudent()"
+    >
+      Search
+    </button>
+  </div>
+
+  @if (lookupGrades().length > 0) {
+    <table class="w-full overflow-hidden rounded border border-slate-200 text-sm">
+      <thead class="bg-slate-50 text-left text-slate-500">
+        <tr>
+          <th class="px-4 py-2 font-medium">Course</th>
+          <th class="px-4 py-2 font-medium">Score</th>
+          <th class="px-4 py-2 font-medium"></th>
+        </tr>
+      </thead>
+      <tbody class="divide-y divide-slate-200">
+        @for (grade of lookupGrades(); track grade.id) {
+          <tr>
+            <td class="px-4 py-2">{{ grade.courseId }}</td>
+            <td class="px-4 py-2">
+              @if (correctingId() === grade.id) {
+                <input
+                  type="number"
+                  min="0"
+                  max="20"
+                  step="0.5"
+                  class="w-20 rounded border border-slate-300 px-2 py-1"
+                  [ngModel]="correctingScore()"
+                  (ngModelChange)="correctingScore.set($event)"
+                />
+              } @else {
+                {{ grade.score }} / 20
+              }
+            </td>
+            <td class="px-4 py-2 text-right">
+              @if (correctingId() === grade.id) {
+                <button
+                  class="rounded bg-slate-900 px-2 py-1 text-white hover:bg-slate-800"
+                  (click)="submitCorrect(grade.id)"
+                >
+                  Save
+                </button>
+              } @else {
+                <button
+                  class="rounded border border-slate-300 px-2 py-1 hover:bg-slate-100"
+                  (click)="startCorrect(grade)"
+                >
+                  Correct
+                </button>
+              }
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  }
+</section>

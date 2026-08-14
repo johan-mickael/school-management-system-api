@@ -1,0 +1,240 @@
+<a class="mb-4 inline-block text-sm text-slate-500 hover:text-slate-900" routerLink="/admin/promotions">
+  ← Back to promotions
+</a>
+
+@if (error()) {
+  <div class="mb-4 rounded border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">
+    {{ error() }}
+  </div>
+}
+
+@if (loading()) {
+  <p class="text-sm text-slate-500">Loading…</p>
+} @else {
+  <div class="mb-6 flex items-center justify-between">
+    <h1 class="text-lg font-semibold text-slate-900">
+      {{ promotion()?.name }} ({{ promotion()?.academicYear }})
+    </h1>
+    @if (promotion()?.status === 'ACTIVE') {
+      <button
+        class="rounded border border-red-200 px-3 py-1 text-sm text-red-700 hover:bg-red-50"
+        (click)="archivePromotion()"
+      >
+        Archive promotion
+      </button>
+    }
+  </div>
+  <p class="mb-8 text-sm text-slate-500">
+    {{ promotion()?.occupancy }} / {{ promotion()?.capacity }} students · {{ promotion()?.status }}
+  </p>
+
+  <!-- Students -->
+  <section class="mb-8 rounded border border-slate-200 bg-white p-4">
+    <h2 class="mb-3 text-sm font-medium text-slate-700">Students</h2>
+    @if (students().length === 0) {
+      <p class="mb-4 text-sm text-slate-500">No students yet.</p>
+    } @else {
+      <ul class="mb-4 divide-y divide-slate-200">
+        @for (student of students(); track student.id) {
+          <li class="py-2 text-sm">
+            {{ student.firstName }} {{ student.lastName }} ({{ student.number }})
+          </li>
+        }
+      </ul>
+    }
+
+    <h3 class="mb-2 text-xs font-medium uppercase text-slate-500">Enroll & admit a student</h3>
+    <div class="grid max-w-2xl grid-cols-2 gap-3">
+      <input
+        class="rounded border border-slate-300 px-3 py-2 text-sm"
+        placeholder="Student number"
+        [ngModel]="studentNumber()"
+        (ngModelChange)="studentNumber.set($event)"
+      />
+      <input
+        class="rounded border border-slate-300 px-3 py-2 text-sm"
+        placeholder="Email"
+        [ngModel]="studentEmail()"
+        (ngModelChange)="studentEmail.set($event)"
+      />
+      <input
+        class="rounded border border-slate-300 px-3 py-2 text-sm"
+        placeholder="First name"
+        [ngModel]="studentFirstName()"
+        (ngModelChange)="studentFirstName.set($event)"
+      />
+      <input
+        class="rounded border border-slate-300 px-3 py-2 text-sm"
+        placeholder="Last name"
+        [ngModel]="studentLastName()"
+        (ngModelChange)="studentLastName.set($event)"
+      />
+    </div>
+    <button
+      class="mt-3 rounded bg-slate-900 px-4 py-2 text-sm font-medium text-white hover:bg-slate-800 disabled:opacity-50"
+      [disabled]="enrolling()"
+      (click)="enrollAndAdmit()"
+    >
+      {{ enrolling() ? 'Enrolling…' : 'Enroll & admit' }}
+    </button>
+  </section>
+
+  <!-- Courses -->
+  <section class="mb-8 rounded border border-slate-200 bg-white p-4">
+    <h2 class="mb-3 text-sm font-medium text-slate-700">Courses</h2>
+    @if (courses().length === 0) {
+      <p class="mb-4 text-sm text-slate-500">No courses yet.</p>
+    } @else {
+      <ul class="mb-4 divide-y divide-slate-200">
+        @for (course of courses(); track course.id) {
+          <li class="flex items-center justify-between py-2 text-sm">
+            <span>{{ course.code }} — {{ course.title }} (coef. {{ course.coefficient }})</span>
+            <select
+              class="rounded border border-slate-300 px-2 py-1 text-sm"
+              [ngModel]="course.teacherId"
+              (ngModelChange)="assignTeacher(course, $event)"
+            >
+              <option [ngValue]="null">No teacher</option>
+              @for (teacher of teachers(); track teacher.id) {
+                <option [ngValue]="teacher.id">{{ teacher.firstName }} {{ teacher.lastName }}</option>
+              }
+            </select>
+          </li>
+        }
+      </ul>
+    }
+
+    <h3 class="mb-2 text-xs font-medium uppercase text-slate-500">Create a course</h3>
+    <div class="grid max-w-2xl grid-cols-2 gap-3">
+      <input
+        class="rounded border border-slate-300 px-3 py-2 text-sm"
+        placeholder="Code"
+        [ngModel]="courseCode()"
+        (ngModelChange)="courseCode.set($event)"
+      />
+      <input
+        class="rounded border border-slate-300 px-3 py-2 text-sm"
+        placeholder="Title"
+        [ngModel]="courseTitle()"
+        (ngModelChange)="courseTitle.set($event)"
+      />
+      <input
+        type="number"
+        min="0.5"
+        step="0.5"
+        class="rounded border border-slate-300 px-3 py-2 text-sm"
+        placeholder="Coefficient"
+        [ngModel]="courseCoefficient()"
+        (ngModelChange)="courseCoefficient.set($event)"
+      />
+      <select
+        class="rounded border border-slate-300 px-3 py-2 text-sm"
+        [ngModel]="courseTeacherId()"
+        (ngModelChange)="courseTeacherId.set($event)"
+      >
+        <option [ngValue]="null">No teacher (assign later)</option>
+        @for (teacher of teachers(); track teacher.id) {
+          <option [ngValue]="teacher.id">{{ teacher.firstName }} {{ teacher.lastName }}</option>
+        }
+      </select>
+    </div>
+    <button
+      class="mt-3 rounded bg-slate-900 px-4 py-2 text-sm font-medium text-white hover:bg-slate-800 disabled:opacity-50"
+      [disabled]="creatingCourse()"
+      (click)="createCourse()"
+    >
+      {{ creatingCourse() ? 'Creating…' : 'Create course' }}
+    </button>
+  </section>
+
+  <!-- Sessions -->
+  <section class="rounded border border-slate-200 bg-white p-4">
+    <h2 class="mb-3 text-sm font-medium text-slate-700">Sessions</h2>
+    @if (sessions().length === 0) {
+      <p class="mb-4 text-sm text-slate-500">No sessions yet.</p>
+    } @else {
+      <ul class="mb-4 divide-y divide-slate-200">
+        @for (session of sessions(); track session.id) {
+          <li class="flex items-center justify-between py-2 text-sm">
+            <span>{{ session.start | date: 'medium' }} — {{ session.status }}</span>
+            <div class="flex gap-2">
+              @if (session.status === 'SCHEDULED') {
+                <button
+                  class="rounded border border-slate-300 px-2 py-1 hover:bg-slate-100"
+                  (click)="sessionAction(session, 'open')"
+                >
+                  Open
+                </button>
+              }
+              @if (session.status === 'SIGNING_OPEN') {
+                <button
+                  class="rounded border border-slate-300 px-2 py-1 hover:bg-slate-100"
+                  (click)="sessionAction(session, 'close')"
+                >
+                  Close
+                </button>
+              }
+              @if (session.status === 'SCHEDULED' || session.status === 'SIGNING_OPEN') {
+                <button
+                  class="rounded border border-red-200 px-2 py-1 text-red-700 hover:bg-red-50"
+                  (click)="sessionAction(session, 'cancel')"
+                >
+                  Cancel
+                </button>
+              }
+            </div>
+          </li>
+        }
+      </ul>
+    }
+
+    <h3 class="mb-2 text-xs font-medium uppercase text-slate-500">Schedule a session</h3>
+    <div class="grid max-w-2xl grid-cols-2 gap-3">
+      <select
+        class="col-span-2 rounded border border-slate-300 px-3 py-2 text-sm"
+        [ngModel]="sessionCourseId()"
+        (ngModelChange)="onSessionCourseChange($event)"
+      >
+        <option [ngValue]="null">Select a course…</option>
+        @for (course of courses(); track course.id) {
+          <option [ngValue]="course.id">{{ course.code }} — {{ course.title }}</option>
+        }
+      </select>
+      <div>
+        <label class="mb-1 block text-xs text-slate-500">Start</label>
+        <input
+          type="datetime-local"
+          class="w-full rounded border border-slate-300 px-3 py-2 text-sm"
+          [ngModel]="sessionStart()"
+          (ngModelChange)="sessionStart.set($event)"
+        />
+      </div>
+      <div>
+        <label class="mb-1 block text-xs text-slate-500">End</label>
+        <input
+          type="datetime-local"
+          class="w-full rounded border border-slate-300 px-3 py-2 text-sm"
+          [ngModel]="sessionEnd()"
+          (ngModelChange)="sessionEnd.set($event)"
+        />
+      </div>
+      <div>
+        <label class="mb-1 block text-xs text-slate-500">Grace period (seconds)</label>
+        <input
+          type="number"
+          min="0"
+          class="w-full rounded border border-slate-300 px-3 py-2 text-sm"
+          [ngModel]="sessionGraceSeconds()"
+          (ngModelChange)="sessionGraceSeconds.set($event)"
+        />
+      </div>
+    </div>
+    <button
+      class="mt-3 rounded bg-slate-900 px-4 py-2 text-sm font-medium text-white hover:bg-slate-800 disabled:opacity-50"
+      [disabled]="schedulingSession() || !sessionCourseId()"
+      (click)="scheduleSession()"
+    >
+      {{ schedulingSession() ? 'Scheduling…' : 'Schedule session' }}
+    </button>
+  </section>
+}

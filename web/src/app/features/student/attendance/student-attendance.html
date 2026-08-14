@@ -1,0 +1,70 @@
+<h1 class="mb-6 text-lg font-semibold text-slate-900">Attendance</h1>
+
+@if (error()) {
+  <div class="mb-4 rounded border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">
+    {{ error() }}
+  </div>
+}
+
+@if (loading()) {
+  <p class="text-sm text-slate-500">Loading…</p>
+} @else {
+  <section class="mb-8">
+    <h2 class="mb-3 text-sm font-medium text-slate-700">Today's sessions</h2>
+    @if (todaysSessions().length === 0) {
+      <p class="text-sm text-slate-500">No sessions scheduled today.</p>
+    } @else {
+      <ul class="divide-y divide-slate-200 rounded border border-slate-200 bg-white">
+        @for (session of todaysSessions(); track session.id) {
+          <li class="flex items-center justify-between px-4 py-3 text-sm">
+            <div>
+              <span class="font-medium text-slate-900">{{ session.start | date: 'HH:mm' }}</span>
+              <span class="ml-2 text-slate-500">{{ session.status }}</span>
+            </div>
+            @if (alreadySigned(session.id)) {
+              <span class="text-slate-400">Signed</span>
+            } @else if (session.status === 'SIGNING_OPEN') {
+              <button
+                class="rounded bg-slate-900 px-3 py-1 text-white hover:bg-slate-800 disabled:opacity-50"
+                [disabled]="signingId() === session.id"
+                (click)="sign(session.id)"
+              >
+                {{ signingId() === session.id ? 'Signing…' : 'Sign in' }}
+              </button>
+            } @else {
+              <span class="text-slate-400">Signing closed</span>
+            }
+          </li>
+        }
+      </ul>
+    }
+  </section>
+
+  <section>
+    <h2 class="mb-3 text-sm font-medium text-slate-700">History</h2>
+    @if (history().length === 0) {
+      <p class="text-sm text-slate-500">No attendance recorded yet.</p>
+    } @else {
+      <ul class="divide-y divide-slate-200 rounded border border-slate-200 bg-white">
+        @for (record of history(); track record.id) {
+          <li class="flex items-center justify-between px-4 py-3 text-sm">
+            <span class="text-slate-500">{{ record.signedAt ? (record.signedAt | date: 'medium') : '—' }}</span>
+            <span
+              class="rounded px-2 py-0.5 text-xs font-medium"
+              [class.bg-green-100]="record.status === 'PRESENT'"
+              [class.text-green-700]="record.status === 'PRESENT'"
+              [class.bg-amber-100]="record.status === 'LATE'"
+              [class.text-amber-700]="record.status === 'LATE'"
+              [class.bg-red-100]="record.status === 'ABSENT'"
+              [class.text-red-700]="record.status === 'ABSENT'"
+              [class.bg-slate-100]="record.status === 'EXCUSED'"
+              [class.text-slate-700]="record.status === 'EXCUSED'"
+            >
+              {{ record.status }}
+            </span>
+          </li>
+        }
+      </ul>
+    }
+  </section>
+}

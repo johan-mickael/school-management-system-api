@@ -1,0 +1,78 @@
+<h1 class="mb-6 text-lg font-semibold text-slate-900">Sessions</h1>
+
+@if (error()) {
+  <div class="mb-4 rounded border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">
+    {{ error() }}
+  </div>
+}
+
+<label class="mb-2 block text-sm font-medium text-slate-700" for="promotion">Promotion</label>
+<select
+  id="promotion"
+  class="mb-6 w-full max-w-sm rounded border border-slate-300 px-3 py-2 text-sm"
+  (change)="selectPromotion($any($event.target).value)"
+>
+  <option value="">Select a promotion…</option>
+  @for (promotion of promotions(); track promotion.id) {
+    <option [value]="promotion.id">{{ promotion.name }} ({{ promotion.academicYear }})</option>
+  }
+</select>
+
+@if (loading()) {
+  <p class="text-sm text-slate-500">Loading…</p>
+} @else if (selectedPromotionId() && visibleSessions().length === 0) {
+  <p class="text-sm text-slate-500">No sessions found.</p>
+} @else if (visibleSessions().length > 0) {
+  <table class="w-full overflow-hidden rounded border border-slate-200 bg-white text-sm">
+    <thead class="bg-slate-50 text-left text-slate-500">
+      <tr>
+        <th class="px-4 py-2 font-medium">Start</th>
+        <th class="px-4 py-2 font-medium">Status</th>
+        <th class="px-4 py-2 font-medium"></th>
+      </tr>
+    </thead>
+    <tbody class="divide-y divide-slate-200">
+      @for (session of visibleSessions(); track session.id) {
+        <tr>
+          <td class="px-4 py-2">
+            <a class="text-slate-900 underline" [routerLink]="['/teacher/sessions', session.id]">
+              {{ session.start | date: 'medium' }}
+            </a>
+          </td>
+          <td class="px-4 py-2">{{ session.status }}</td>
+          <td class="px-4 py-2 text-right">
+            <div class="flex justify-end gap-2">
+              @if (session.status === 'SCHEDULED') {
+                <button
+                  class="rounded border border-slate-300 px-2 py-1 hover:bg-slate-100 disabled:opacity-50"
+                  [disabled]="actingOn() === session.id"
+                  (click)="act(session, 'open')"
+                >
+                  Open signing
+                </button>
+              }
+              @if (session.status === 'SIGNING_OPEN') {
+                <button
+                  class="rounded border border-slate-300 px-2 py-1 hover:bg-slate-100 disabled:opacity-50"
+                  [disabled]="actingOn() === session.id"
+                  (click)="act(session, 'close')"
+                >
+                  Close signing
+                </button>
+              }
+              @if (session.status === 'SCHEDULED' || session.status === 'SIGNING_OPEN') {
+                <button
+                  class="rounded border border-red-200 px-2 py-1 text-red-700 hover:bg-red-50 disabled:opacity-50"
+                  [disabled]="actingOn() === session.id"
+                  (click)="act(session, 'cancel')"
+                >
+                  Cancel
+                </button>
+              }
+            </div>
+          </td>
+        </tr>
+      }
+    </tbody>
+  </table>
+}

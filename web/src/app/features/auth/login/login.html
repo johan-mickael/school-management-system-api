@@ -1,0 +1,46 @@
+<div class="flex min-h-screen items-center justify-center bg-slate-100 px-4">
+  <form
+    class="w-full max-w-sm rounded-lg bg-white p-8 shadow"
+    (ngSubmit)="submit()"
+  >
+    <h1 class="mb-1 text-xl font-semibold text-slate-900">School Management System</h1>
+    <p class="mb-6 text-sm text-slate-500">Sign in to continue</p>
+
+    @if (error()) {
+      <div class="mb-4 rounded border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">
+        {{ error() }}
+      </div>
+    }
+
+    <label class="mb-1 block text-sm font-medium text-slate-700" for="username">Username</label>
+    <input
+      id="username"
+      name="username"
+      class="mb-4 w-full rounded border border-slate-300 px-3 py-2 text-sm focus:border-slate-500 focus:outline-none"
+      [ngModel]="username()"
+      (ngModelChange)="username.set($event)"
+      autocomplete="username"
+      required
+    />
+
+    <label class="mb-1 block text-sm font-medium text-slate-700" for="password">Password</label>
+    <input
+      id="password"
+      name="password"
+      type="password"
+      class="mb-6 w-full rounded border border-slate-300 px-3 py-2 text-sm focus:border-slate-500 focus:outline-none"
+      [ngModel]="password()"
+      (ngModelChange)="password.set($event)"
+      autocomplete="current-password"
+      required
+    />
+
+    <button
+      type="submit"
+      class="w-full rounded bg-slate-900 px-4 py-2 text-sm font-medium text-white hover:bg-slate-800 disabled:opacity-50"
+      [disabled]="submitting()"
+    >
+      {{ submitting() ? 'Signing in…' : 'Sign in' }}
+    </button>
+  </form>
+</div>
