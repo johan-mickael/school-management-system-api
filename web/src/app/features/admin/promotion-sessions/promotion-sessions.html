@@ -1,0 +1,74 @@
+<h2 class="mb-4 text-[15px] font-semibold text-text">Sessions</h2>
+
+@if (error()) {
+  <app-feedback [message]="error()!" />
+}
+
+@if (loading()) {
+  <p class="text-[13px] text-text-2">Loading…</p>
+} @else if (sessions().length === 0) {
+  <div class="panel mb-6">
+    <app-empty-state title="No sessions yet" description="Schedule a session below." />
+  </div>
+} @else {
+  <div class="panel mb-6 overflow-hidden">
+    <ul class="divide-y divide-border">
+      @for (session of sessions(); track session.id) {
+        <li class="flex items-center justify-between px-3 py-2.5 text-[13px]">
+          <span class="flex items-center gap-2">
+            {{ session.start | date: 'medium' }}
+            <app-chip [status]="session.status">{{ session.status }}</app-chip>
+          </span>
+          <div class="flex gap-2">
+            @if (session.status === 'SCHEDULED') {
+              <button class="btn-sec btn-sm" (click)="act(session, 'open')">Open</button>
+            }
+            @if (session.status === 'SIGNING_OPEN') {
+              <button class="btn-sec btn-sm" (click)="act(session, 'close')">Close</button>
+            }
+            @if (session.status === 'SCHEDULED' || session.status === 'SIGNING_OPEN') {
+              <button class="btn-ghost btn-sm text-sel-red-tx" (click)="act(session, 'cancel')">Cancel</button>
+            }
+          </div>
+        </li>
+      }
+    </ul>
+  </div>
+}
+
+<section class="panel panel-pad">
+  <div class="cap">Schedule a session</div>
+  <div class="grid max-w-2xl grid-cols-2 gap-3">
+    <div class="col-span-2">
+      <label class="field-label" for="session-course">Course</label>
+      <select id="session-course" class="input" [ngModel]="courseId()" (ngModelChange)="onCourseChange($event)">
+        <option [ngValue]="null">Select a course…</option>
+        @for (course of courses(); track course.id) {
+          <option [ngValue]="course.id">{{ course.code }} — {{ course.title }}</option>
+        }
+      </select>
+    </div>
+    <div>
+      <label class="field-label" for="session-start">Start</label>
+      <input id="session-start" type="datetime-local" class="input" [ngModel]="start()" (ngModelChange)="start.set($event)" />
+    </div>
+    <div>
+      <label class="field-label" for="session-end">End</label>
+      <input id="session-end" type="datetime-local" class="input" [ngModel]="end()" (ngModelChange)="end.set($event)" />
+    </div>
+    <div>
+      <label class="field-label" for="session-grace">Grace period (seconds)</label>
+      <input
+        id="session-grace"
+        type="number"
+        min="0"
+        class="input tabular-nums"
+        [ngModel]="graceSeconds()"
+        (ngModelChange)="graceSeconds.set($event)"
+      />
+    </div>
+  </div>
+  <button class="btn mt-3" [disabled]="scheduling() || !courseId()" (click)="schedule()">
+    {{ scheduling() ? 'Scheduling…' : 'Schedule session' }}
+  </button>
+</section>

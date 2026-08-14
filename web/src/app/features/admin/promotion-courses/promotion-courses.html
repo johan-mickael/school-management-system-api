@@ -1,0 +1,73 @@
+<h2 class="mb-4 text-[15px] font-semibold text-text">Courses</h2>
+
+@if (error()) {
+  <app-feedback [message]="error()!" />
+}
+
+@if (loading()) {
+  <p class="text-[13px] text-text-2">Loading…</p>
+} @else if (courses().length === 0) {
+  <div class="panel mb-6">
+    <app-empty-state title="No courses yet" description="Create a course below." />
+  </div>
+} @else {
+  <div class="panel mb-6 overflow-hidden">
+    <ul class="divide-y divide-border">
+      @for (course of courses(); track course.id) {
+        <li class="flex items-center justify-between px-3 py-2.5 text-[13px]">
+          <span>{{ course.code }} — {{ course.title }} <span class="text-text-3">(coef. {{ course.coefficient }})</span></span>
+          <label class="sr-only" [attr.for]="'teacher-' + course.id">Teacher for {{ course.code }}</label>
+          <select
+            [id]="'teacher-' + course.id"
+            class="input w-auto py-1"
+            [ngModel]="course.teacherId"
+            (ngModelChange)="assignTeacher(course, $event)"
+          >
+            <option [ngValue]="null">No teacher</option>
+            @for (teacher of teachers(); track teacher.id) {
+              <option [ngValue]="teacher.id">{{ teacher.firstName }} {{ teacher.lastName }}</option>
+            }
+          </select>
+        </li>
+      }
+    </ul>
+  </div>
+}
+
+<section class="panel panel-pad">
+  <div class="cap">Create a course</div>
+  <div class="grid max-w-2xl grid-cols-2 gap-3">
+    <div>
+      <label class="field-label" for="course-code">Code</label>
+      <input id="course-code" class="input" [ngModel]="code()" (ngModelChange)="code.set($event)" />
+    </div>
+    <div>
+      <label class="field-label" for="course-title">Title</label>
+      <input id="course-title" class="input" [ngModel]="title()" (ngModelChange)="title.set($event)" />
+    </div>
+    <div>
+      <label class="field-label" for="course-coef">Coefficient</label>
+      <input
+        id="course-coef"
+        type="number"
+        min="0.5"
+        step="0.5"
+        class="input tabular-nums"
+        [ngModel]="coefficient()"
+        (ngModelChange)="coefficient.set($event)"
+      />
+    </div>
+    <div>
+      <label class="field-label" for="course-teacher">Teacher</label>
+      <select id="course-teacher" class="input" [ngModel]="teacherId()" (ngModelChange)="teacherId.set($event)">
+        <option [ngValue]="null">No teacher (assign later)</option>
+        @for (teacher of teachers(); track teacher.id) {
+          <option [ngValue]="teacher.id">{{ teacher.firstName }} {{ teacher.lastName }}</option>
+        }
+      </select>
+    </div>
+  </div>
+  <button class="btn mt-3" [disabled]="creating()" (click)="create()">
+    {{ creating() ? 'Creating…' : 'Create course' }}
+  </button>
+</section>

@@ -1,36 +1,68 @@
-<div class="min-h-screen bg-canvas">
-  <div class="base-bar sticky top-0 z-50">
-    <div class="mx-auto flex h-11 max-w-6xl items-center gap-3 px-4">
-      <span class="flex items-center gap-2 text-[14px] font-semibold">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <rect x="3" y="4" width="18" height="16" rx="2" />
-          <path d="M3 9h18M9 9v11" />
-        </svg>
-        School Management
-      </span>
-      <span class="flex-1"></span>
-      @if (claims(); as c) {
-        <app-avatar [name]="c.username" [size]="24" />
-        <span class="text-[13px]">{{ c.username }}</span>
-        <app-chip [status]="c.role" [dot]="false">{{ c.role }}</app-chip>
-      }
-      <button
-        class="inline-flex items-center gap-1.5 rounded-md border-0 bg-white/15 px-3 py-1.5 text-[13px] text-white hover:bg-white/25"
-        (click)="logout()"
-      >
-        Sign out
-      </button>
-    </div>
-    <div class="mx-auto max-w-6xl">
-      <nav class="tabs-strip">
-        @for (link of links(); track link.path) {
-          <a [routerLink]="link.path" routerLinkActive="ttab-active" class="ttab">{{ link.label }}</a>
-        }
-      </nav>
-    </div>
-  </div>
+<a
+  href="#main-content"
+  class="sr-only rounded-md bg-blue px-3 py-2 text-white focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-[100]"
+>
+  Skip to content
+</a>
 
-  <main class="mx-auto max-w-6xl px-4 py-6">
+<div class="flex min-h-screen bg-canvas">
+  <aside class="flex w-56 flex-none flex-col border-r border-border bg-white">
+    <div class="flex h-12 items-center gap-2 border-b border-border px-4">
+      <span class="h-[18px] w-[18px] flex-none rounded-sm bg-base"></span>
+      <span class="text-[14px] font-semibold text-text">School Management</span>
+    </div>
+
+    <nav class="flex-1 space-y-0.5 overflow-auto p-2" aria-label="Primary">
+      <a
+        routerLink="/"
+        routerLinkActive="bg-hover text-text font-medium"
+        [routerLinkActiveOptions]="{ exact: true }"
+        #dashRla="routerLinkActive"
+        [attr.aria-current]="dashRla.isActive ? 'page' : null"
+        class="flex items-center gap-2.5 rounded-md px-2.5 py-2 text-[13px] text-text-2 hover:bg-hover hover:text-text"
+      >
+        <app-nav-icon name="dashboard" />
+        Dashboard
+      </a>
+
+      <div class="my-2 border-t border-border"></div>
+
+      @for (link of links(); track link.path) {
+        <a
+          [routerLink]="link.path"
+          routerLinkActive="bg-hover text-text font-medium"
+          #rla="routerLinkActive"
+          [attr.aria-current]="rla.isActive ? 'page' : null"
+          class="flex items-center gap-2.5 rounded-md px-2.5 py-2 text-[13px] text-text-2 hover:bg-hover hover:text-text"
+        >
+          <app-nav-icon [name]="link.icon" />
+          {{ link.label }}
+        </a>
+      }
+    </nav>
+
+    @if (claims(); as c) {
+      <div class="flex items-center gap-2 border-t border-border p-3">
+        <app-avatar [name]="c.username" [size]="26" />
+        <div class="min-w-0 flex-1">
+          <p class="truncate text-[13px] font-medium text-text">{{ c.username }}</p>
+          <app-chip [status]="c.role" [dot]="false">{{ c.role }}</app-chip>
+        </div>
+        <button
+          class="rounded-md p-1.5 text-text-3 hover:bg-hover hover:text-text"
+          (click)="logout()"
+          aria-label="Sign out"
+          title="Sign out"
+        >
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="h-[18px] w-[18px]" aria-hidden="true">
+            <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9" />
+          </svg>
+        </button>
+      </div>
+    }
+  </aside>
+
+  <main id="main-content" class="min-w-0 flex-1 px-6 py-6" tabindex="-1">
     <router-outlet />
   </main>
 </div>

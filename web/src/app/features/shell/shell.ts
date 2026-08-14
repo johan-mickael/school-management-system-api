@@ -3,16 +3,18 @@ import { Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/rou
 
 import { Avatar } from '../../shared/ui/avatar';
 import { Chip } from '../../shared/ui/chip';
+import { NavIcon, NavIconComponent } from '../../shared/ui/nav-icon';
 import { AuthService } from '../../core/auth/auth.service';
 
 interface NavLink {
   path: string;
   label: string;
+  icon: NavIcon;
 }
 
 @Component({
   selector: 'app-shell',
-  imports: [RouterOutlet, RouterLink, RouterLinkActive, Avatar, Chip],
+  imports: [RouterOutlet, RouterLink, RouterLinkActive, Avatar, Chip, NavIconComponent],
   templateUrl: './shell.html',
 })
 export class Shell {
@@ -25,23 +27,24 @@ export class Shell {
     const role = this.claims()?.role;
     if (role === 'STUDENT') {
       return [
-        { path: '/attendance', label: 'Attendance' },
-        { path: '/grades', label: 'Grades' },
+        { path: '/attendance', label: 'Attendance', icon: 'attendance' },
+        { path: '/grades', label: 'Grades', icon: 'grades' },
       ];
     }
     if (role === 'TEACHER') {
       return [
-        { path: '/teacher/sessions', label: 'Sessions' },
-        { path: '/teacher/grading', label: 'Grading' },
-        { path: '/reporting', label: 'Reporting' },
+        { path: '/teacher/sessions', label: 'Sessions', icon: 'sessions' },
+        { path: '/teacher/grading', label: 'Record grades', icon: 'grading' },
+        { path: '/teacher/grading/corrections', label: 'Correct grades', icon: 'correct' },
+        { path: '/reporting', label: 'Reporting', icon: 'reporting' },
       ];
     }
     if (role === 'ADMIN') {
       return [
-        { path: '/admin/promotions', label: 'Promotions' },
-        { path: '/admin/teachers', label: 'Teachers' },
-        { path: '/admin/users', label: 'Users' },
-        { path: '/reporting', label: 'Reporting' },
+        { path: '/admin/promotions', label: 'Promotions', icon: 'promotions' },
+        { path: '/admin/teachers', label: 'Teachers', icon: 'teachers' },
+        { path: '/admin/users', label: 'Users', icon: 'users' },
+        { path: '/reporting', label: 'Reporting', icon: 'reporting' },
       ];
     }
     return [];

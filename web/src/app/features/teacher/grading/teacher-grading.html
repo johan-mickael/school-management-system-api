@@ -1,17 +1,15 @@
-<div class="mb-6 flex items-baseline gap-3">
-  <span class="text-xs font-semibold text-text-3">02</span>
-  <h1 class="text-[20px] font-semibold text-text">Grading</h1>
+<div class="mb-6 flex items-center justify-between">
+  <h1 class="text-[20px] font-semibold text-text">Record grades</h1>
+  <a routerLink="/teacher/grading/corrections" class="text-[13px] text-blue hover:underline">Correct a grade →</a>
 </div>
 
 @if (error()) {
   <app-feedback [message]="error()!" />
 }
 
-<section class="panel panel-pad mb-8">
-  <div class="cap">Record a grade</div>
-
+<section class="panel panel-pad max-w-2xl">
   <label class="field-label" for="promotion">Promotion</label>
-  <select id="promotion" class="input mb-3 max-w-sm" (change)="selectPromotion($any($event.target).value)">
+  <select id="promotion" class="input mb-3" (change)="selectPromotion($any($event.target).value)">
     <option value="">Select a promotion…</option>
     @for (promotion of promotions(); track promotion.id) {
       <option [value]="promotion.id">{{ promotion.name }} ({{ promotion.academicYear }})</option>
@@ -21,7 +19,7 @@
   <label class="field-label" for="course">Course</label>
   <select
     id="course"
-    class="input mb-4 max-w-sm"
+    class="input mb-4"
     [ngModel]="selectedCourseId()"
     (ngModelChange)="selectedCourseId.set($event)"
   >
@@ -32,14 +30,15 @@
   </select>
 
   @if (selectedCourseId()) {
-    <div class="grid max-w-xl grid-cols-2 gap-3">
+    <div class="grid grid-cols-2 gap-3">
       <div class="col-span-2">
-        <label class="field-label">Student ID</label>
-        <input class="input" [ngModel]="gradeStudentId()" (ngModelChange)="gradeStudentId.set($event)" />
+        <label class="field-label" for="student-id">Student ID</label>
+        <input id="student-id" class="input" [ngModel]="gradeStudentId()" (ngModelChange)="gradeStudentId.set($event)" />
       </div>
       <div>
-        <label class="field-label">Score (/20)</label>
+        <label class="field-label" for="score">Score (/20)</label>
         <input
+          id="score"
           type="number"
           min="0"
           max="20"
@@ -50,8 +49,9 @@
         />
       </div>
       <div>
-        <label class="field-label">Coefficient</label>
+        <label class="field-label" for="coefficient">Coefficient</label>
         <input
+          id="coefficient"
           type="number"
           min="0"
           step="0.5"
@@ -61,8 +61,8 @@
         />
       </div>
       <div class="col-span-2">
-        <label class="field-label">Exam ID (optional)</label>
-        <input class="input" [ngModel]="gradeExamId()" (ngModelChange)="gradeExamId.set($event)" />
+        <label class="field-label" for="exam-id">Exam ID (optional)</label>
+        <input id="exam-id" class="input" [ngModel]="gradeExamId()" (ngModelChange)="gradeExamId.set($event)" />
       </div>
     </div>
 
@@ -73,63 +73,5 @@
     @if (recordedMessage()) {
       <p class="mt-2 text-[13px] text-sel-green-tx">{{ recordedMessage() }}</p>
     }
-  }
-</section>
-
-<section class="panel panel-pad">
-  <div class="cap">Look up a student's grades</div>
-  <div class="mb-4 flex max-w-sm gap-2">
-    <input
-      class="input"
-      placeholder="Student ID"
-      [ngModel]="lookupStudentId()"
-      (ngModelChange)="lookupStudentId.set($event)"
-    />
-    <button class="btn-sec" (click)="lookupGradesForStudent()">Search</button>
-  </div>
-
-  @if (lookupGrades().length > 0) {
-    <div class="overflow-auto rounded-md border border-border">
-      <table class="grid-table">
-        <thead>
-          <tr>
-            <th class="gutter">#</th>
-            <th>Course</th>
-            <th class="text-right">Score</th>
-            <th class="text-right">Action</th>
-          </tr>
-        </thead>
-        <tbody>
-          @for (grade of lookupGrades(); track grade.id; let i = $index) {
-            <tr>
-              <td class="gutter">{{ i + 1 }}</td>
-              <td>{{ grade.courseId }}</td>
-              <td class="cell-num">
-                @if (correctingId() === grade.id) {
-                  <input
-                    type="number"
-                    min="0"
-                    max="20"
-                    step="0.5"
-                    class="input w-20 py-1 text-right"
-                    [ngModel]="correctingScore()"
-                    (ngModelChange)="correctingScore.set($event)"
-                  />
-                } @else {
-                  {{ grade.score }} / 20
-                }
-              </td>
-              <td class="text-right">
-                @if (correctingId() === grade.id) {
-                  <button class="btn btn-sm" (click)="submitCorrect(grade.id)">Save</button>
-                } @else {
-                  <button class="btn-sec btn-sm" (click)="startCorrect(grade)">Correct</button>
-                }
-              </td>
-            </tr>
-          }
-        </tbody>
-      </table>
-    </div>
   }
 </section>

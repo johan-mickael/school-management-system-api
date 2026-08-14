@@ -1,0 +1,67 @@
+<a class="mb-4 inline-flex items-center gap-1 text-[13px] text-text-2 hover:text-text" routerLink="/admin/promotions">
+  ← Back to promotions
+</a>
+
+@if (error()) {
+  <app-feedback [message]="error()!" />
+}
+
+@if (loading()) {
+  <p class="text-[13px] text-text-2">Loading…</p>
+} @else {
+  <div class="mb-1 flex items-center justify-between">
+    <h1 class="text-[20px] font-semibold text-text">
+      {{ promotion()?.name }} ({{ promotion()?.academicYear }})
+    </h1>
+    @if (promotion()?.status === 'ACTIVE') {
+      <button class="btn-ghost btn-sm text-sel-red-tx" [disabled]="archiving()" (click)="archive()">
+        {{ archiving() ? 'Archiving…' : 'Archive promotion' }}
+      </button>
+    }
+  </div>
+  <p class="mb-6 flex items-center gap-2 text-[13px] text-text-2">
+    <app-chip [status]="promotion()?.status ?? ''">{{ promotion()?.status }}</app-chip>
+  </p>
+
+  <nav class="mb-6 flex gap-1 border-b border-border" aria-label="Promotion sections">
+    <a
+      [routerLink]="['/admin/promotions', promotionId]"
+      routerLinkActive="border-blue text-text"
+      [routerLinkActiveOptions]="{ exact: true }"
+      #ovRla="routerLinkActive"
+      [attr.aria-current]="ovRla.isActive ? 'page' : null"
+      class="border-b-2 border-transparent px-3 py-2 text-[13px] text-text-2 hover:text-text"
+    >
+      Overview
+    </a>
+    <a
+      [routerLink]="['/admin/promotions', promotionId, 'students']"
+      routerLinkActive="border-blue text-text"
+      #stRla="routerLinkActive"
+      [attr.aria-current]="stRla.isActive ? 'page' : null"
+      class="border-b-2 border-transparent px-3 py-2 text-[13px] text-text-2 hover:text-text"
+    >
+      Students
+    </a>
+    <a
+      [routerLink]="['/admin/promotions', promotionId, 'courses']"
+      routerLinkActive="border-blue text-text"
+      #coRla="routerLinkActive"
+      [attr.aria-current]="coRla.isActive ? 'page' : null"
+      class="border-b-2 border-transparent px-3 py-2 text-[13px] text-text-2 hover:text-text"
+    >
+      Courses
+    </a>
+    <a
+      [routerLink]="['/admin/promotions', promotionId, 'sessions']"
+      routerLinkActive="border-blue text-text"
+      #seRla="routerLinkActive"
+      [attr.aria-current]="seRla.isActive ? 'page' : null"
+      class="border-b-2 border-transparent px-3 py-2 text-[13px] text-text-2 hover:text-text"
+    >
+      Sessions
+    </a>
+  </nav>
+
+  <router-outlet />
+}

@@ -1,17 +1,18 @@
 import { Component, computed, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { RouterLink } from '@angular/router';
 
 import { CoursesApi } from '../../../core/api/courses.api';
 import { GradesApi } from '../../../core/api/grades.api';
 import { PromotionsApi } from '../../../core/api/promotions.api';
 import { AuthService } from '../../../core/auth/auth.service';
-import { CourseResponse, GradeResponse, PromotionResponse } from '../../../core/api-models';
+import { CourseResponse, PromotionResponse } from '../../../core/api-models';
 import { errorMessage } from '../../../shared/api-error';
 import { Feedback } from '../../../shared/ui/feedback';
 
 @Component({
   selector: 'app-teacher-grading',
-  imports: [FormsModule, Feedback],
+  imports: [FormsModule, RouterLink, Feedback],
   templateUrl: './teacher-grading.html',
 })
 export class TeacherGrading {
@@ -39,11 +40,6 @@ export class TeacherGrading {
   readonly gradeExamId = signal('');
   readonly gradeScore = signal(10);
   readonly gradeCoefficient = signal(1);
-
-  readonly lookupStudentId = signal('');
-  readonly lookupGrades = signal<GradeResponse[]>([]);
-  readonly correctingId = signal<string | null>(null);
-  readonly correctingScore = signal(10);
 
   constructor() {
     this.promotionsApi.listActive().subscribe({
@@ -90,31 +86,5 @@ export class TeacherGrading {
           this.error.set(errorMessage(err));
         },
       });
-  }
-
-  lookupGradesForStudent(): void {
-    const studentId = this.lookupStudentId();
-    if (!studentId) {
-      return;
-    }
-    this.gradesApi.getStudentGrades(studentId).subscribe({
-      next: (grades) => this.lookupGrades.set(grades),
-      error: (err) => this.error.set(errorMessage(err)),
-    });
-  }
-
-  startCorrect(grade: GradeResponse): void {
-    this.correctingId.set(grade.id);
-    this.correctingScore.set(grade.score);
-  }
-
-  submitCorrect(gradeId: string): void {
-    this.gradesApi.correct(gradeId, this.correctingScore()).subscribe({
-      next: (updated) => {
-        this.lookupGrades.update((list) => list.map((g) => (g.id === updated.id ? updated : g)));
-        this.correctingId.set(null);
-      },
-      error: (err) => this.error.set(errorMessage(err)),
-    });
   }
 }

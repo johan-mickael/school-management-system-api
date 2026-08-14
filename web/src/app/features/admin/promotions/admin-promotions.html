@@ -11,12 +11,13 @@
   <div class="cap">Create a promotion</div>
   <div class="grid max-w-xl grid-cols-3 gap-3">
     <div class="col-span-2">
-      <label class="field-label">Name</label>
-      <input class="input" [ngModel]="name()" (ngModelChange)="name.set($event)" />
+      <label class="field-label" for="promo-name">Name</label>
+      <input id="promo-name" class="input" [ngModel]="name()" (ngModelChange)="name.set($event)" />
     </div>
     <div>
-      <label class="field-label">Capacity</label>
+      <label class="field-label" for="promo-capacity">Capacity</label>
       <input
+        id="promo-capacity"
         type="number"
         min="1"
         class="input tabular-nums"
@@ -25,8 +26,8 @@
       />
     </div>
     <div class="col-span-3">
-      <label class="field-label">Academic year (e.g. 2025-2026)</label>
-      <input class="input" [ngModel]="academicYear()" (ngModelChange)="academicYear.set($event)" />
+      <label class="field-label" for="promo-year">Academic year (e.g. 2025-2026)</label>
+      <input id="promo-year" class="input" [ngModel]="academicYear()" (ngModelChange)="academicYear.set($event)" />
     </div>
   </div>
   <button class="btn mt-4" [disabled]="creating()" (click)="create()">

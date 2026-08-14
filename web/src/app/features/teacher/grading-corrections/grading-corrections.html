@@ -1,0 +1,68 @@
+<div class="mb-6 flex items-center justify-between">
+  <h1 class="text-[20px] font-semibold text-text">Correct grades</h1>
+  <a routerLink="/teacher/grading" class="text-[13px] text-blue hover:underline">← Record a grade</a>
+</div>
+
+@if (error()) {
+  <app-feedback [message]="error()!" />
+}
+
+<section class="panel panel-pad">
+  <div class="cap">Look up a student's grades</div>
+  <div class="mb-4 flex max-w-sm gap-2">
+    <label class="sr-only" for="lookup-student">Student ID</label>
+    <input id="lookup-student" class="input" placeholder="Student ID" [ngModel]="studentId()" (ngModelChange)="studentId.set($event)" />
+    <button class="btn-sec" (click)="search()">Search</button>
+  </div>
+
+  @if (searched() && grades().length === 0) {
+    <app-empty-state title="No grades found" description="This student has no recorded grades yet." />
+  }
+
+  @if (grades().length > 0) {
+    <div class="overflow-auto rounded-md border border-border">
+      <table class="grid-table">
+        <thead>
+          <tr>
+            <th class="gutter">#</th>
+            <th>Course</th>
+            <th class="text-right">Score</th>
+            <th class="text-right">Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (grade of grades(); track grade.id; let i = $index) {
+            <tr>
+              <td class="gutter">{{ i + 1 }}</td>
+              <td>{{ grade.courseId }}</td>
+              <td class="cell-num">
+                @if (correctingId() === grade.id) {
+                  <label class="sr-only" [attr.for]="'score-' + grade.id">New score for {{ grade.courseId }}</label>
+                  <input
+                    [id]="'score-' + grade.id"
+                    type="number"
+                    min="0"
+                    max="20"
+                    step="0.5"
+                    class="input w-20 py-1 text-right"
+                    [ngModel]="correctingScore()"
+                    (ngModelChange)="correctingScore.set($event)"
+                  />
+                } @else {
+                  {{ grade.score }} / 20
+                }
+              </td>
+              <td class="text-right">
+                @if (correctingId() === grade.id) {
+                  <button class="btn btn-sm" (click)="submitCorrect(grade.id)">Save</button>
+                } @else {
+                  <button class="btn-sec btn-sm" (click)="startCorrect(grade)">Correct</button>
+                }
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</section>

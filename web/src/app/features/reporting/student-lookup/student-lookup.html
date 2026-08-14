@@ -1,0 +1,25 @@
+<div class="mb-6 flex items-center justify-between">
+  <h1 class="text-[20px] font-semibold text-text">Student lookup</h1>
+  <a routerLink="/reporting" class="text-[13px] text-blue hover:underline">← Reporting</a>
+</div>
+
+@if (error()) {
+  <app-feedback [message]="error()!" />
+}
+
+<section class="panel panel-pad max-w-md">
+  <div class="mb-4 flex gap-2">
+    <label class="sr-only" for="student-id">Student ID</label>
+    <input id="student-id" class="input" placeholder="Student ID" [ngModel]="studentId()" (ngModelChange)="studentId.set($event)" />
+    <button class="btn-sec" (click)="search()">Search</button>
+  </div>
+  @if (summary()) {
+    <p class="text-[13px] text-text">
+      Attendance:
+      <span class="tabular-nums">
+        {{ summary()?.attendanceRate != null ? (summary()!.attendanceRate! * 100).toFixed(0) + '%' : '—' }}
+      </span>
+      · Average: <span class="tabular-nums">{{ summary()?.averageGrade ?? '—' }}</span> / 20
+    </p>
+  }
+</section>

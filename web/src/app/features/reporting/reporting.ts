@@ -1,14 +1,10 @@
 import { Component, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { RouterLink } from '@angular/router';
 
 import { PromotionsApi } from '../../core/api/promotions.api';
 import { ReportingApi } from '../../core/api/reporting.api';
-import {
-  AtRiskStudentResponse,
-  PromotionResponse,
-  PromotionSummaryResponse,
-  StudentSummaryResponse,
-} from '../../core/api-models';
+import { AtRiskStudentResponse, PromotionResponse, PromotionSummaryResponse } from '../../core/api-models';
 import { errorMessage } from '../../shared/api-error';
 import { Chip } from '../../shared/ui/chip';
 import { EmptyState } from '../../shared/ui/empty-state';
@@ -16,7 +12,7 @@ import { Feedback } from '../../shared/ui/feedback';
 
 @Component({
   selector: 'app-reporting',
-  imports: [FormsModule, Chip, EmptyState, Feedback],
+  imports: [FormsModule, RouterLink, Chip, EmptyState, Feedback],
   templateUrl: './reporting.html',
 })
 export class Reporting {
@@ -28,9 +24,6 @@ export class Reporting {
   readonly atRisk = signal<AtRiskStudentResponse[]>([]);
   readonly loading = signal(false);
   readonly error = signal<string | null>(null);
-
-  readonly lookupStudentId = signal('');
-  readonly studentSummary = signal<StudentSummaryResponse | null>(null);
 
   constructor() {
     this.promotionsApi.listActive().subscribe({
@@ -58,17 +51,6 @@ export class Reporting {
     });
     this.reportingApi.getAtRiskStudents(promotionId).subscribe({
       next: (students) => this.atRisk.set(students),
-      error: (err) => this.error.set(errorMessage(err)),
-    });
-  }
-
-  lookupStudent(): void {
-    const studentId = this.lookupStudentId();
-    if (!studentId) {
-      return;
-    }
-    this.reportingApi.getStudentSummary(studentId).subscribe({
-      next: (summary) => this.studentSummary.set(summary),
       error: (err) => this.error.set(errorMessage(err)),
     });
   }

@@ -13,26 +13,38 @@
     Link a TEACHER or STUDENT account to its person ID (the ID returned when they were hired / enrolled).
   </p>
   <div class="grid max-w-2xl grid-cols-2 gap-3">
-    <input class="input" placeholder="Username" [ngModel]="username()" (ngModelChange)="username.set($event)" />
-    <input
-      type="password"
-      class="input"
-      placeholder="Password"
-      [ngModel]="password()"
-      (ngModelChange)="password.set($event)"
-    />
-    <select class="input" [ngModel]="role()" (ngModelChange)="role.set($event)">
-      <option value="STUDENT">STUDENT</option>
-      <option value="TEACHER">TEACHER</option>
-      <option value="ADMIN">ADMIN</option>
-    </select>
-    @if (role() !== 'ADMIN') {
+    <div>
+      <label class="field-label" for="user-username">Username</label>
+      <input id="user-username" class="input" [ngModel]="username()" (ngModelChange)="username.set($event)" />
+    </div>
+    <div>
+      <label class="field-label" for="user-password">Password</label>
       <input
+        id="user-password"
+        type="password"
         class="input"
-        placeholder="Person ID (student/teacher ID)"
-        [ngModel]="personId()"
-        (ngModelChange)="personId.set($event)"
+        [ngModel]="password()"
+        (ngModelChange)="password.set($event)"
       />
+    </div>
+    <div>
+      <label class="field-label" for="user-role">Role</label>
+      <select id="user-role" class="input" [ngModel]="role()" (ngModelChange)="role.set($event)">
+        <option value="STUDENT">STUDENT</option>
+        <option value="TEACHER">TEACHER</option>
+        <option value="ADMIN">ADMIN</option>
+      </select>
+    </div>
+    @if (role() !== 'ADMIN') {
+      <div>
+        <label class="field-label" for="user-person-id">Person ID (student/teacher ID)</label>
+        <input
+          id="user-person-id"
+          class="input"
+          [ngModel]="personId()"
+          (ngModelChange)="personId.set($event)"
+        />
+      </div>
     }
   </div>
   <button class="btn mt-3" [disabled]="registering()" (click)="register()">

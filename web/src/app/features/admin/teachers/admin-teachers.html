@@ -10,10 +10,22 @@
 <section class="panel panel-pad mb-8">
   <div class="cap">Hire a teacher</div>
   <div class="grid max-w-2xl grid-cols-2 gap-3">
-    <input class="input" placeholder="Staff number (TCH-YYYY-NNNN)" [ngModel]="staffNumber()" (ngModelChange)="staffNumber.set($event)" />
-    <input class="input" placeholder="Email" [ngModel]="email()" (ngModelChange)="email.set($event)" />
-    <input class="input" placeholder="First name" [ngModel]="firstName()" (ngModelChange)="firstName.set($event)" />
-    <input class="input" placeholder="Last name" [ngModel]="lastName()" (ngModelChange)="lastName.set($event)" />
+    <div>
+      <label class="field-label" for="staff-number">Staff number</label>
+      <input id="staff-number" class="input" placeholder="TCH-YYYY-NNNN" [ngModel]="staffNumber()" (ngModelChange)="staffNumber.set($event)" />
+    </div>
+    <div>
+      <label class="field-label" for="teacher-email">Email</label>
+      <input id="teacher-email" class="input" [ngModel]="email()" (ngModelChange)="email.set($event)" />
+    </div>
+    <div>
+      <label class="field-label" for="teacher-first">First name</label>
+      <input id="teacher-first" class="input" [ngModel]="firstName()" (ngModelChange)="firstName.set($event)" />
+    </div>
+    <div>
+      <label class="field-label" for="teacher-last">Last name</label>
+      <input id="teacher-last" class="input" [ngModel]="lastName()" (ngModelChange)="lastName.set($event)" />
+    </div>
   </div>
   <button class="btn mt-3" [disabled]="hiring()" (click)="hire()">
     {{ hiring() ? 'Hiring…' : 'Hire teacher' }}

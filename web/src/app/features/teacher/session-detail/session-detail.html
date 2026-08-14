@@ -40,7 +40,9 @@
                 }
                 @if (justifyingId() === record.studentId) {
                   <div class="flex items-center justify-end gap-2">
+                    <label class="sr-only" [attr.for]="'reason-' + record.studentId">Justification reason</label>
                     <input
+                      [id]="'reason-' + record.studentId"
                       class="input"
                       style="width: 160px"
                       placeholder="Reason"
