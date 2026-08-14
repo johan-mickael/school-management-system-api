@@ -79,6 +79,23 @@ class PromotionRepositoryAdapterIT extends AbstractIntegrationTest {
   }
 
   @Test
+  @Transactional
+  void finds_only_active_promotions() {
+    Promotion active = Promotion.create(
+        PromotionId.generate(), new PromotionName("MSE 2025"), new AcademicYear("2025-2026"), new Capacity(30));
+    promotions.save(active);
+    Promotion archived = Promotion.create(
+        PromotionId.generate(), new PromotionName("MSE 2024"), new AcademicYear("2024-2025"), new Capacity(30));
+    archived.archive();
+    promotions.save(archived);
+
+    assertThat(promotions.findActive())
+        .extracting(Promotion::id)
+        .contains(active.id())
+        .doesNotContain(archived.id());
+  }
+
+  @Test
   void detects_concurrent_admissions_via_optimistic_locking() {
     Promotion promotion = Promotion.create(
         PromotionId.generate(), new PromotionName("MSE 2025"), new AcademicYear("2025-2026"), new Capacity(30));

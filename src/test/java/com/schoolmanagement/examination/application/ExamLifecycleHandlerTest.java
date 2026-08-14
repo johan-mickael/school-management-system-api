@@ -95,6 +95,11 @@ class ExamLifecycleHandlerTest {
     public List<Promotion> findArchived() {
       return db.values().stream().filter(Promotion::isArchived).toList();
     }
+
+    @Override
+    public List<Promotion> findActive() {
+      return db.values().stream().filter(p -> !p.isArchived()).toList();
+    }
   }
 
   private final InMemoryExams exams = new InMemoryExams();
