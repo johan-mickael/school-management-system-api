@@ -110,6 +110,20 @@ export const routes: Routes = [
         loadComponent: () => import('./features/admin/users/admin-users').then((m) => m.AdminUsers),
       },
       {
+        path: 'admin/archive',
+        title: 'Archive · School Management',
+        canActivate: [roleGuard('ADMIN')],
+        loadComponent: () =>
+          import('./features/admin/archive-promotions/archive-promotions').then((m) => m.ArchivePromotions),
+      },
+      {
+        path: 'admin/archive/:id',
+        title: 'Archived promotion · School Management',
+        canActivate: [roleGuard('ADMIN')],
+        loadComponent: () =>
+          import('./features/admin/archive-detail/archive-detail').then((m) => m.ArchiveDetail),
+      },
+      {
         path: 'reporting',
         title: 'Reporting · School Management',
         canActivate: [roleGuard('ADMIN', 'TEACHER')],

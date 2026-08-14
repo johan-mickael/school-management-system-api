@@ -45,6 +45,7 @@ export class Shell {
         { path: '/admin/teachers', label: 'Teachers', icon: 'teachers' },
         { path: '/admin/users', label: 'Users', icon: 'users' },
         { path: '/reporting', label: 'Reporting', icon: 'reporting' },
+        { path: '/admin/archive', label: 'Archive', icon: 'archive' },
       ];
     }
     return [];

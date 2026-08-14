@@ -7,12 +7,13 @@ import { StudentsApi } from '../../../core/api/students.api';
 import { StudentResponse } from '../../../core/api-models';
 import { errorMessage } from '../../../shared/api-error';
 import { Avatar } from '../../../shared/ui/avatar';
+import { Chip } from '../../../shared/ui/chip';
 import { EmptyState } from '../../../shared/ui/empty-state';
 import { Feedback } from '../../../shared/ui/feedback';
 
 @Component({
   selector: 'app-promotion-students',
-  imports: [FormsModule, Avatar, EmptyState, Feedback],
+  imports: [FormsModule, Avatar, Chip, EmptyState, Feedback],
   templateUrl: './promotion-students.html',
 })
 export class PromotionStudents {
@@ -79,5 +80,12 @@ export class PromotionStudents {
           this.error.set(errorMessage(err));
         },
       });
+  }
+
+  archive(student: StudentResponse): void {
+    this.studentsApi.archive(student.id).subscribe({
+      next: () => this.load(),
+      error: (err) => this.error.set(errorMessage(err)),
+    });
   }
 }

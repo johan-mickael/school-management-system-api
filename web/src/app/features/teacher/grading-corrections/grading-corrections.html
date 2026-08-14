@@ -34,10 +34,10 @@
           @for (grade of grades(); track grade.id; let i = $index) {
             <tr>
               <td class="gutter">{{ i + 1 }}</td>
-              <td>{{ grade.courseId }}</td>
+              <td>{{ courseLabel(grade.courseId) }}</td>
               <td class="cell-num">
                 @if (correctingId() === grade.id) {
-                  <label class="sr-only" [attr.for]="'score-' + grade.id">New score for {{ grade.courseId }}</label>
+                  <label class="sr-only" [attr.for]="'score-' + grade.id">New score for {{ courseLabel(grade.courseId) }}</label>
                   <input
                     [id]="'score-' + grade.id"
                     type="number"

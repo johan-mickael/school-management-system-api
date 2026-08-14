@@ -107,6 +107,7 @@ export class Dashboard {
         { path: '/admin/teachers', label: 'Teachers', description: 'Hire and archive teachers.', icon: 'teachers' },
         { path: '/admin/users', label: 'Users', description: 'Register login accounts.', icon: 'users' },
         { path: '/reporting', label: 'Reporting', description: 'Promotion summary and at-risk students.', icon: 'reporting' },
+        { path: '/admin/archive', label: 'Archive', description: 'Browse archived promotions and their rosters.', icon: 'archive' },
       ];
     }
     return [];

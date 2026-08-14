@@ -10,7 +10,8 @@ export type NavIcon =
   | 'promotions'
   | 'teachers'
   | 'users'
-  | 'reporting';
+  | 'reporting'
+  | 'archive';
 
 @Component({
   selector: 'app-nav-icon',
@@ -57,6 +58,10 @@ export type NavIcon =
         @case ('reporting') {
           <path d="M4 20V8a3 3 0 016 0M5 12h6" />
           <path d="M13 8h5l-2 12" />
+        }
+        @case ('archive') {
+          <rect x="3" y="4" width="18" height="5" rx="1.5" />
+          <path d="M5 9v9a2 2 0 002 2h10a2 2 0 002-2V9M10 13h4" />
         }
       }
     </svg>

@@ -18,6 +18,11 @@
           <app-avatar [name]="student.firstName + ' ' + student.lastName" [size]="20" />
           {{ student.firstName }} {{ student.lastName }}
           <span class="mono-ish text-text-3">{{ student.number }}</span>
+          <app-chip [status]="student.status">{{ student.status }}</app-chip>
+          <span class="flex-1"></span>
+          @if (student.status === 'ACTIVE') {
+            <button class="btn-ghost btn-sm text-sel-red-tx" (click)="archive(student)">Archive</button>
+          }
         </li>
       }
     </ul>

@@ -57,13 +57,46 @@
           @for (student of atRisk(); track student.studentId; let i = $index) {
             <tr>
               <td class="gutter">{{ i + 1 }}</td>
-              <td class="mono-ish text-text-2">{{ student.studentId }}</td>
+              <td>{{ studentLabel(student.studentId) }}</td>
               <td class="cell-num" [class.text-sel-red-tx]="(student.attendanceRate ?? 1) < 0.75">
                 {{ student.attendanceRate != null ? (student.attendanceRate * 100).toFixed(0) + '%' : '—' }}
               </td>
               <td class="cell-num" [class.text-sel-red-tx]="(student.averageGrade ?? 20) < 10">
                 {{ student.averageGrade ?? '—' }} / 20
               </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+
+  <div class="cap mt-8">Rankings</div>
+  @if (rankings().length === 0) {
+    <div class="panel">
+      <app-empty-state title="No rankings yet" description="Rankings appear once students have recorded grades." />
+    </div>
+  } @else {
+    <div class="panel overflow-hidden">
+      <table class="grid-table">
+        <thead>
+          <tr>
+            <th class="gutter">#</th>
+            <th>Student</th>
+            <th class="text-right">Average</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (entry of rankings(); track entry.studentId) {
+            <tr>
+              <td class="gutter">{{ entry.rank }}</td>
+              <td class="flex items-center gap-2">
+                {{ studentLabel(entry.studentId) }}
+                @if (entry.rank === 1) {
+                  <app-chip color="purple">Distinction</app-chip>
+                }
+              </td>
+              <td class="cell-num">{{ entry.average }} / 20</td>
             </tr>
           }
         </tbody>

@@ -21,7 +21,7 @@
       @if (averages()?.courseAverages?.length) {
         <ul class="space-y-1 text-[13px] text-text-2">
           @for (courseAverage of averages()?.courseAverages; track courseAverage.courseId) {
-            <li>Course {{ courseAverage.courseId }}: <span class="tabular-nums">{{ courseAverage.average }}</span> / 20</li>
+            <li>{{ courseLabel(courseAverage.courseId) }}: <span class="tabular-nums">{{ courseAverage.average }}</span> / 20</li>
           }
         </ul>
       }
@@ -50,7 +50,7 @@
               @for (grade of grades(); track grade.id; let i = $index) {
                 <tr>
                   <td class="gutter">{{ i + 1 }}</td>
-                  <td>{{ grade.courseId }}</td>
+                  <td>{{ courseLabel(grade.courseId) }}</td>
                   <td class="cell-num">{{ grade.score }} / 20</td>
                   <td class="cell-num">{{ grade.coefficient }}</td>
                 </tr>

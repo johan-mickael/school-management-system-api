@@ -31,7 +31,7 @@
           @for (record of records(); track record.id; let i = $index) {
             <tr>
               <td class="gutter">{{ i + 1 }}</td>
-              <td class="mono-ish text-text-2">{{ record.studentId }}</td>
+              <td>{{ studentLabel(record.studentId) }}</td>
               <td><app-chip [status]="record.status">{{ record.status }}</app-chip></td>
               <td>{{ record.signedAt ? (record.signedAt | date: 'short') : '—' }}</td>
               <td class="text-right">
@@ -40,7 +40,7 @@
                 }
                 @if (justifyingId() === record.studentId) {
                   <div class="flex items-center justify-end gap-2">
-                    <label class="sr-only" [attr.for]="'reason-' + record.studentId">Justification reason</label>
+                    <label class="sr-only" [attr.for]="'reason-' + record.studentId">Justification reason for {{ studentLabel(record.studentId) }}</label>
                     <input
                       [id]="'reason-' + record.studentId"
                       class="input"

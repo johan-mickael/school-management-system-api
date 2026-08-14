@@ -4,6 +4,7 @@ import { ActivatedRoute, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 
 import { AttendanceApi } from '../../../core/api/attendance.api';
+import { PromotionsApi } from '../../../core/api/promotions.api';
 import { SessionsApi } from '../../../core/api/sessions.api';
 import { AttendanceRecordResponse, SessionResponse } from '../../../core/api-models';
 import { errorMessage } from '../../../shared/api-error';
@@ -19,10 +20,12 @@ export class SessionDetail {
   private readonly route = inject(ActivatedRoute);
   private readonly sessionsApi = inject(SessionsApi);
   private readonly attendanceApi = inject(AttendanceApi);
+  private readonly promotionsApi = inject(PromotionsApi);
 
   readonly sessionId = this.route.snapshot.paramMap.get('id')!;
   readonly session = signal<SessionResponse | null>(null);
   readonly records = signal<AttendanceRecordResponse[]>([]);
+  readonly studentNames = signal<Map<string, string>>(new Map());
   readonly loading = signal(true);
   readonly error = signal<string | null>(null);
   readonly justifyingId = signal<string | null>(null);
@@ -32,9 +35,20 @@ export class SessionDetail {
     this.load();
   }
 
+  studentLabel(studentId: string): string {
+    return this.studentNames().get(studentId) ?? studentId;
+  }
+
   private load(): void {
     this.sessionsApi.getOne(this.sessionId).subscribe({
-      next: (session) => this.session.set(session),
+      next: (session) => {
+        this.session.set(session);
+        this.promotionsApi.getStudents(session.promotionId).subscribe({
+          next: (students) => {
+            this.studentNames.set(new Map(students.map((s) => [s.id, `${s.firstName} ${s.lastName}`])));
+          },
+        });
+      },
       error: (err) => this.error.set(errorMessage(err)),
     });
     this.attendanceApi.getSessionAttendance(this.sessionId).subscribe({
