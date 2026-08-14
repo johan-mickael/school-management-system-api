@@ -12,7 +12,8 @@ public record StudentResponse(
     String lastName,
     String email,
     String status,
-    Instant enrolledAt) {
+    Instant enrolledAt,
+    String promotionId) {
 
   public static StudentResponse from(StudentView v) {
     return new StudentResponse(
@@ -22,6 +23,7 @@ public record StudentResponse(
         v.lastName(),
         v.email(),
         v.status(),
-        v.enrolledAt());
+        v.enrolledAt(),
+        v.promotionId());
   }
 }

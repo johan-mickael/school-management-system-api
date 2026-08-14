@@ -11,7 +11,8 @@ public record StudentView(
     String lastName,
     String email,
     String status,
-    Instant enrolledAt) {
+    Instant enrolledAt,
+    String promotionId) {
 
     public static StudentView from(Student s) {
         return new StudentView(
@@ -21,6 +22,7 @@ public record StudentView(
                 s.name().lastName(),
                 s.email().value(),
                 s.status().name(),
-                s.enrolledAt());
+                s.enrolledAt(),
+                s.promotionId() == null ? null : s.promotionId().toString());
     }
 }
