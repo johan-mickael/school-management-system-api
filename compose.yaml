@@ -45,6 +45,18 @@ services:
       REPORTING_GRADE_RISK_THRESHOLD: ${REPORTING_GRADE_RISK_THRESHOLD}
       TESTCONTAINERS_DOCKER_NETWORK: schoolnet
 
+  web:
+    image: node:22-alpine
+    working_dir: /workspace
+    command: sh -c "npm install && npm start -- --host 0.0.0.0 --port 4200"
+    ports:
+      - "${WEB_HOST_PORT:-4200}:4200"
+    depends_on:
+      - app
+    volumes:
+      - ./web:/workspace
+      - web-node-modules:/workspace/node_modules
+
 networks:
   default:
     name: schoolnet
@@ -52,3 +64,4 @@ networks:
 volumes:
   db-data:
   maven-repo:
+  web-node-modules:
