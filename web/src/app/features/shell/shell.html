@@ -6,7 +6,7 @@
 </a>
 
 <div class="flex min-h-screen bg-canvas">
-  <aside class="flex w-56 flex-none flex-col border-r border-border bg-white">
+  <aside class="flex w-56 flex-none flex-col border-r border-border bg-surface">
     <div class="flex h-12 items-center gap-2 border-b border-border px-4">
       <span class="h-[18px] w-[18px] flex-none rounded-sm bg-base"></span>
       <span class="text-[14px] font-semibold text-text">School Management</span>
@@ -40,6 +40,27 @@
         </a>
       }
     </nav>
+
+    <div class="border-t border-border p-2">
+      <button
+        class="flex w-full items-center gap-2.5 rounded-md px-2.5 py-2 text-[13px] text-text-2 hover:bg-hover hover:text-text"
+        (click)="theme.toggle()"
+        [attr.aria-pressed]="theme.isDark()"
+      >
+        @if (theme.isDark()) {
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="h-[18px] w-[18px]" aria-hidden="true">
+            <circle cx="12" cy="12" r="4" />
+            <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41" />
+          </svg>
+          Light mode
+        } @else {
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="h-[18px] w-[18px]" aria-hidden="true">
+            <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z" />
+          </svg>
+          Dark mode
+        }
+      </button>
+    </div>
 
     @if (claims(); as c) {
       <div class="flex items-center gap-2 border-t border-border p-3">

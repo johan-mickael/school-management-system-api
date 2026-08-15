@@ -1,14 +1,4 @@
-export type ChipColor =
-  | 'blue'
-  | 'cyan'
-  | 'teal'
-  | 'green'
-  | 'yellow'
-  | 'orange'
-  | 'red'
-  | 'pink'
-  | 'purple'
-  | 'gray';
+export type ChipColor = 'blue' | 'green' | 'orange' | 'red' | 'purple' | 'gray';
 
 const STATUS_COLOR: Record<string, ChipColor> = {
   PRESENT: 'green',
@@ -17,16 +7,16 @@ const STATUS_COLOR: Record<string, ChipColor> = {
   EXCUSED: 'blue',
   ACTIVE: 'green',
   ARCHIVED: 'gray',
-  SCHEDULED: 'cyan',
+  SCHEDULED: 'blue',
   SIGNING_OPEN: 'green',
   SIGNING_CLOSED: 'gray',
   CANCELLED: 'red',
   OPEN: 'green',
   CLOSED: 'gray',
   ADMIN: 'purple',
-  TEACHER: 'teal',
+  TEACHER: 'green',
   STUDENT: 'blue',
-  AT_RISK: 'yellow',
+  AT_RISK: 'orange',
   FLAGGED: 'red',
   ON_TRACK: 'green',
 };

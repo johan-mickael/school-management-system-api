@@ -3,6 +3,7 @@ import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 
 import { AuthService } from '../../../core/auth/auth.service';
+import { ThemeService } from '../../../core/theme/theme.service';
 import { Feedback } from '../../../shared/ui/feedback';
 import { errorMessage } from '../../../shared/api-error';
 
@@ -14,6 +15,7 @@ import { errorMessage } from '../../../shared/api-error';
 export class Login {
   private readonly auth = inject(AuthService);
   private readonly router = inject(Router);
+  readonly theme = inject(ThemeService);
 
   readonly username = signal('');
   readonly password = signal('');

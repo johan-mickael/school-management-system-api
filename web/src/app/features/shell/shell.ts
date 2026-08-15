@@ -5,6 +5,7 @@ import { Avatar } from '../../shared/ui/avatar';
 import { Chip } from '../../shared/ui/chip';
 import { NavIcon, NavIconComponent } from '../../shared/ui/nav-icon';
 import { AuthService } from '../../core/auth/auth.service';
+import { ThemeService } from '../../core/theme/theme.service';
 
 interface NavLink {
   path: string;
@@ -20,6 +21,7 @@ interface NavLink {
 export class Shell {
   private readonly auth = inject(AuthService);
   private readonly router = inject(Router);
+  readonly theme = inject(ThemeService);
 
   readonly claims = this.auth.claims;
 
