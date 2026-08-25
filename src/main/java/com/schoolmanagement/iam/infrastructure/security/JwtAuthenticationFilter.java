@@ -6,6 +6,8 @@ import java.util.List;
 
 import javax.crypto.SecretKey;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -25,6 +27,8 @@ import jakarta.servlet.http.HttpServletResponse;
 
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
+  private static final Logger log = LoggerFactory.getLogger(JwtAuthenticationFilter.class);
+
   private final SecretKey key;
 
   public JwtAuthenticationFilter(@Value("${app.security.jwt.secret}") String secret) {
@@ -47,6 +51,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             claims.getSubject(), null, List.of(new SimpleGrantedAuthority("ROLE_" + role)));
         SecurityContextHolder.getContext().setAuthentication(authentication);
       } catch (JwtException | IllegalArgumentException invalidToken) {
+        log.warn("Rejected bearer token on {} {}: {}: {}",
+            request.getMethod(), request.getRequestURI(),
+            invalidToken.getClass().getSimpleName(), invalidToken.getMessage());
         SecurityContextHolder.clearContext();
       }
     }

@@ -13,6 +13,7 @@ import com.schoolmanagement.iam.domain.User;
 import com.schoolmanagement.iam.domain.UserId;
 import com.schoolmanagement.iam.domain.UserRepository;
 import com.schoolmanagement.iam.domain.Username;
+import com.schoolmanagement.iam.domain.exception.InvalidPersonId;
 import com.schoolmanagement.iam.domain.exception.UsernameAlreadyTaken;
 
 @Service
@@ -39,10 +40,18 @@ public class RegisterUserHandler {
         Role.of(command.role()),
         command.personId() == null || command.personId().isBlank()
             ? null
-            : new PersonId(UUID.fromString(command.personId())));
+            : new PersonId(parsePersonId(command.personId())));
 
     users.save(user);
 
     return UserView.from(user);
+  }
+
+  private static UUID parsePersonId(String raw) {
+    try {
+      return UUID.fromString(raw);
+    } catch (IllegalArgumentException malformed) {
+      throw new InvalidPersonId(raw);
+    }
   }
 }
