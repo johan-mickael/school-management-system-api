@@ -1,0 +1,87 @@
+<a
+  href="#main-content"
+  class="sr-only rounded-md bg-blue px-3 py-2 text-white focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-[100]"
+>
+  Skip to content
+</a>
+
+<div class="min-h-screen bg-canvas">
+  <header class="sticky top-0 z-20 flex h-14 flex-none items-center gap-2 border-b border-border bg-surface px-4 sm:px-6">
+    <div class="flex flex-none items-center gap-2">
+      <span class="h-[18px] w-[18px] flex-none rounded-sm bg-base"></span>
+      <span class="hidden text-[14px] font-semibold text-text sm:inline">School Management</span>
+    </div>
+
+    <nav class="ml-2 flex flex-1 items-center gap-1 overflow-x-auto" aria-label="Primary">
+      <a
+        routerLink="/"
+        routerLinkActive="bg-hover text-text"
+        [routerLinkActiveOptions]="{ exact: true }"
+        #dashRla="routerLinkActive"
+        [attr.aria-current]="dashRla.isActive ? 'page' : null"
+        class="flex flex-none items-center gap-1.5 rounded-md px-2.5 py-1.5 text-[13px] font-medium text-text-2 whitespace-nowrap hover:bg-hover hover:text-text"
+      >
+        <app-nav-icon name="dashboard" />
+        Home
+      </a>
+
+      @for (link of links(); track link.path) {
+        <a
+          [routerLink]="link.path"
+          routerLinkActive="bg-hover text-text"
+          #rla="routerLinkActive"
+          [attr.aria-current]="rla.isActive ? 'page' : null"
+          class="flex flex-none items-center gap-1.5 rounded-md px-2.5 py-1.5 text-[13px] font-medium text-text-2 whitespace-nowrap hover:bg-hover hover:text-text"
+        >
+          <app-nav-icon [name]="link.icon" />
+          {{ link.label }}
+        </a>
+      }
+    </nav>
+
+    <div class="flex flex-none items-center gap-1">
+      <button
+        class="rounded-md p-2 text-text-3 hover:bg-hover hover:text-text"
+        (click)="theme.toggle()"
+        [attr.aria-pressed]="theme.isDark()"
+        [attr.aria-label]="theme.isDark() ? 'Switch to light mode' : 'Switch to dark mode'"
+        [title]="theme.isDark() ? 'Light mode' : 'Dark mode'"
+      >
+        @if (theme.isDark()) {
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="h-[18px] w-[18px]" aria-hidden="true">
+            <circle cx="12" cy="12" r="4" />
+            <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41" />
+          </svg>
+        } @else {
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="h-[18px] w-[18px]" aria-hidden="true">
+            <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z" />
+          </svg>
+        }
+      </button>
+
+      @if (claims(); as c) {
+        <div class="ml-1 flex items-center gap-2 border-l border-border pl-3">
+          <app-avatar [name]="c.username" [size]="26" />
+          <div class="hidden min-w-0 leading-tight sm:block">
+            <p class="truncate text-[13px] font-medium text-text">{{ c.username }}</p>
+            <app-chip [status]="c.role" [dot]="false">{{ c.role }}</app-chip>
+          </div>
+          <button
+            class="rounded-md p-1.5 text-text-3 hover:bg-hover hover:text-text"
+            (click)="logout()"
+            aria-label="Sign out"
+            title="Sign out"
+          >
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="h-[18px] w-[18px]" aria-hidden="true">
+              <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9" />
+            </svg>
+          </button>
+        </div>
+      }
+    </div>
+  </header>
+
+  <main id="main-content" class="mx-auto max-w-5xl px-4 py-8 sm:px-6" tabindex="-1">
+    <router-outlet />
+  </main>
+</div>

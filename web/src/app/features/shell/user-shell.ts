@@ -13,12 +13,16 @@ interface NavLink {
   icon: NavIcon;
 }
 
+/**
+ * Plain top-nav app shell for STUDENT/TEACHER — a task-focused workspace,
+ * deliberately lighter than the admin backoffice console (see AdminShell).
+ */
 @Component({
-  selector: 'app-shell',
+  selector: 'app-user-shell',
   imports: [RouterOutlet, RouterLink, RouterLinkActive, Avatar, Chip, NavIconComponent],
-  templateUrl: './shell.html',
+  templateUrl: './user-shell.html',
 })
-export class Shell {
+export class UserShell {
   private readonly auth = inject(AuthService);
   private readonly router = inject(Router);
   readonly theme = inject(ThemeService);
@@ -39,15 +43,6 @@ export class Shell {
         { path: '/teacher/grading', label: 'Record grades', icon: 'grading' },
         { path: '/teacher/grading/corrections', label: 'Correct grades', icon: 'correct' },
         { path: '/reporting', label: 'Reporting', icon: 'reporting' },
-      ];
-    }
-    if (role === 'ADMIN') {
-      return [
-        { path: '/admin/promotions', label: 'Promotions', icon: 'promotions' },
-        { path: '/admin/teachers', label: 'Teachers', icon: 'teachers' },
-        { path: '/admin/users', label: 'Users', icon: 'users' },
-        { path: '/reporting', label: 'Reporting', icon: 'reporting' },
-        { path: '/admin/archive', label: 'Archive', icon: 'archive' },
       ];
     }
     return [];

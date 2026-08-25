@@ -9,15 +9,10 @@
 @if (loading()) {
   <p class="text-[13px] text-text-2">Loading…</p>
 } @else {
-  <div class="mb-1 flex items-center justify-between">
+  <div class="mb-1 flex items-center gap-2">
     <h1 class="text-[20px] font-semibold text-text">
       {{ promotion()?.name }} ({{ promotion()?.academicYear }})
     </h1>
-    @if (promotion()?.status === 'ACTIVE') {
-      <button class="btn-ghost btn-sm text-sel-red-tx" [disabled]="archiving()" (click)="archive()">
-        {{ archiving() ? 'Archiving…' : 'Archive promotion' }}
-      </button>
-    }
   </div>
   <p class="mb-6 flex items-center gap-2 text-[13px] text-text-2">
     <app-chip [status]="promotion()?.status ?? ''">{{ promotion()?.status }}</app-chip>
@@ -64,4 +59,22 @@
   </nav>
 
   <router-outlet />
+
+  @if (promotion()?.status === 'ACTIVE') {
+    <section class="mt-10 rounded-lg border border-sel-red-tx/30 bg-sel-red-bg p-4" aria-labelledby="danger-zone-heading">
+      <h2 id="danger-zone-heading" class="mb-0.5 text-[13px] font-semibold text-sel-red-tx">Danger zone</h2>
+      <div class="flex items-center justify-between gap-4">
+        <p class="max-w-md text-[13px] text-text-2">
+          Archiving locks this promotion — enrollment, courses, and sessions all become read-only. This can't be undone.
+        </p>
+        <button
+          class="btn-sec btn-sm flex-none border-sel-red-tx text-sel-red-tx hover:bg-surface"
+          [disabled]="archiving()"
+          (click)="archive()"
+        >
+          {{ archiving() ? 'Archiving…' : 'Archive promotion' }}
+        </button>
+      </div>
+    </section>
+  }
 }

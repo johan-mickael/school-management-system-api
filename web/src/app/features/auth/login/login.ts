@@ -2,6 +2,7 @@ import { Component, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 
+import { homePath } from '../../../core/auth/auth.guard';
 import { AuthService } from '../../../core/auth/auth.service';
 import { ThemeService } from '../../../core/theme/theme.service';
 import { Feedback } from '../../../shared/ui/feedback';
@@ -28,7 +29,7 @@ export class Login {
     this.auth.login({ username: this.username(), password: this.password() }).subscribe({
       next: () => {
         this.submitting.set(false);
-        this.router.navigateByUrl('/');
+        this.router.navigateByUrl(homePath(this.auth.claims()?.role));
       },
       error: (err) => {
         this.submitting.set(false);

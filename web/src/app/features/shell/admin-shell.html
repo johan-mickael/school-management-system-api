@@ -1,0 +1,118 @@
+<a
+  href="#main-content"
+  class="sr-only rounded-md bg-blue px-3 py-2 text-white focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-[100]"
+>
+  Skip to content
+</a>
+
+<div class="flex h-screen flex-col bg-canvas">
+  <header class="flex h-12 flex-none items-center gap-4 border-b border-border bg-surface px-4">
+    <div class="flex flex-none items-center gap-2">
+      <span class="h-[18px] w-[18px] flex-none rounded-sm bg-base"></span>
+      <span class="text-[14px] font-semibold text-text">School Management</span>
+      <span class="ml-1 rounded-full bg-sel-purple-bg px-2 py-0.5 text-[11px] font-medium text-sel-purple-tx">Admin area</span>
+    </div>
+
+    <a routerLink="/" class="text-[13px] text-text-2 hover:text-text hover:underline">← Back to app</a>
+
+    <div class="flex-1"></div>
+
+    <button
+      class="rounded-md p-2 text-text-3 hover:bg-hover hover:text-text"
+      (click)="theme.toggle()"
+      [attr.aria-pressed]="theme.isDark()"
+      [attr.aria-label]="theme.isDark() ? 'Switch to light mode' : 'Switch to dark mode'"
+      [title]="theme.isDark() ? 'Light mode' : 'Dark mode'"
+    >
+      @if (theme.isDark()) {
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="h-[18px] w-[18px]" aria-hidden="true">
+          <circle cx="12" cy="12" r="4" />
+          <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41" />
+        </svg>
+      } @else {
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="h-[18px] w-[18px]" aria-hidden="true">
+          <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z" />
+        </svg>
+      }
+    </button>
+
+    @if (claims(); as c) {
+      <div class="ml-1 flex items-center gap-2 border-l border-border pl-3">
+        <app-avatar [name]="c.username" [size]="26" />
+        <div class="hidden min-w-0 leading-tight sm:block">
+          <p class="truncate text-[13px] font-medium text-text">{{ c.username }}</p>
+          <app-chip [status]="c.role" [dot]="false">{{ c.role }}</app-chip>
+        </div>
+        <button
+          class="rounded-md p-1.5 text-text-3 hover:bg-hover hover:text-text"
+          (click)="logout()"
+          aria-label="Sign out"
+          title="Sign out"
+        >
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="h-[18px] w-[18px]" aria-hidden="true">
+            <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9" />
+          </svg>
+        </button>
+      </div>
+    }
+  </header>
+
+  <div class="flex min-h-0 flex-1">
+    <nav class="flex w-14 flex-none flex-col items-center gap-1 border-r border-border bg-surface py-3" aria-label="Admin sections">
+      @for (section of sections; track section.key) {
+        <a
+          [routerLink]="section.path"
+          [title]="section.label"
+          [attr.aria-label]="section.label"
+          [attr.aria-current]="activeSection().key === section.key ? 'page' : null"
+          class="flex h-10 w-10 items-center justify-center rounded-md text-text-2 hover:bg-hover hover:text-text"
+          [class.bg-sel-blue-bg]="activeSection().key === section.key"
+          [class.text-sel-blue-tx]="activeSection().key === section.key"
+        >
+          <app-nav-icon [name]="section.icon" />
+        </a>
+      }
+    </nav>
+
+    @if (activeSection().items.length) {
+      <aside class="w-56 flex-none overflow-auto border-r border-border bg-subtle p-3">
+        <div class="cap px-1">{{ activeSection().label }}</div>
+        <div class="space-y-0.5">
+          @for (item of activeSection().items; track item.path) {
+            <a
+              [routerLink]="item.path"
+              routerLinkActive="bg-hover text-text font-medium"
+              #rla="routerLinkActive"
+              [attr.aria-current]="rla.isActive ? 'page' : null"
+              class="flex items-center gap-2.5 rounded-md px-2.5 py-2 text-[13px] text-text-2 hover:bg-hover hover:text-text"
+            >
+              <app-nav-icon [name]="item.icon" />
+              {{ item.label }}
+            </a>
+          }
+        </div>
+      </aside>
+    }
+
+    <div class="flex min-w-0 flex-1 flex-col overflow-auto">
+      <div class="sticky top-0 z-10 flex items-center gap-1.5 border-b border-border bg-canvas/95 px-6 py-2.5 text-[13px] backdrop-blur">
+        @for (crumb of breadcrumbs(); track $index) {
+          @if (!$first) {
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="h-3.5 w-3.5 flex-none text-text-3" aria-hidden="true">
+              <path d="M9 6l6 6-6 6" />
+            </svg>
+          }
+          @if (crumb.path && !$last) {
+            <a [routerLink]="crumb.path" class="text-text-2 hover:text-text hover:underline">{{ crumb.label }}</a>
+          } @else {
+            <span class="font-medium text-text">{{ crumb.label }}</span>
+          }
+        }
+      </div>
+
+      <main id="main-content" class="px-6 py-6" tabindex="-1">
+        <router-outlet />
+      </main>
+    </div>
+  </div>
+</div>

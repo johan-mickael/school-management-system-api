@@ -8,10 +8,12 @@ export const routes: Routes = [
     title: 'Sign in · School Management',
     loadComponent: () => import('./features/auth/login/login').then((m) => m.Login),
   },
+
+  // Plain app shell — STUDENT / TEACHER workspace.
   {
     path: '',
-    loadComponent: () => import('./features/shell/shell').then((m) => m.Shell),
-    canActivate: [authGuard],
+    loadComponent: () => import('./features/shell/user-shell').then((m) => m.UserShell),
+    canActivate: [authGuard, roleGuard('STUDENT', 'TEACHER')],
     children: [
       {
         path: '',
@@ -34,40 +36,65 @@ export const routes: Routes = [
       {
         path: 'teacher/sessions',
         title: 'Sessions · School Management',
-        canActivate: [roleGuard('TEACHER', 'ADMIN')],
+        canActivate: [roleGuard('TEACHER')],
         loadComponent: () =>
           import('./features/teacher/sessions/teacher-sessions').then((m) => m.TeacherSessions),
       },
       {
         path: 'teacher/sessions/:id',
         title: 'Session attendance · School Management',
-        canActivate: [roleGuard('TEACHER', 'ADMIN')],
+        canActivate: [roleGuard('TEACHER')],
         loadComponent: () =>
           import('./features/teacher/session-detail/session-detail').then((m) => m.SessionDetail),
       },
       {
         path: 'teacher/grading',
         title: 'Record grades · School Management',
-        canActivate: [roleGuard('TEACHER', 'ADMIN')],
+        canActivate: [roleGuard('TEACHER')],
         loadComponent: () => import('./features/teacher/grading/teacher-grading').then((m) => m.TeacherGrading),
       },
       {
         path: 'teacher/grading/corrections',
         title: 'Correct grades · School Management',
-        canActivate: [roleGuard('TEACHER', 'ADMIN')],
+        canActivate: [roleGuard('TEACHER')],
         loadComponent: () =>
           import('./features/teacher/grading-corrections/grading-corrections').then((m) => m.GradingCorrections),
       },
       {
-        path: 'admin/promotions',
+        path: 'reporting',
+        title: 'Reporting · School Management',
+        canActivate: [roleGuard('TEACHER')],
+        loadComponent: () => import('./features/reporting/reporting').then((m) => m.Reporting),
+      },
+      {
+        path: 'reporting/student',
+        title: 'Student lookup · School Management',
+        canActivate: [roleGuard('TEACHER')],
+        loadComponent: () =>
+          import('./features/reporting/student-lookup/student-lookup').then((m) => m.StudentLookup),
+      },
+    ],
+  },
+
+  // Admin backoffice — separate console, separate shell, separate visual language.
+  {
+    path: 'admin',
+    loadComponent: () => import('./features/shell/admin-shell').then((m) => m.AdminShell),
+    canActivate: [authGuard, roleGuard('ADMIN')],
+    children: [
+      {
+        path: '',
+        title: 'Admin overview · School Management',
+        loadComponent: () => import('./features/admin/overview/admin-overview').then((m) => m.AdminOverview),
+      },
+      {
+        path: 'promotions',
         title: 'Promotions · School Management',
-        canActivate: [roleGuard('ADMIN')],
         loadComponent: () =>
           import('./features/admin/promotions/admin-promotions').then((m) => m.AdminPromotions),
       },
       {
-        path: 'admin/promotions/:id',
-        canActivate: [roleGuard('ADMIN')],
+        path: 'promotions/:id',
         loadComponent: () =>
           import('./features/admin/promotion-shell/promotion-shell').then((m) => m.PromotionShell),
         children: [
@@ -98,45 +125,40 @@ export const routes: Routes = [
         ],
       },
       {
-        path: 'admin/teachers',
+        path: 'teachers',
         title: 'Teachers · School Management',
-        canActivate: [roleGuard('ADMIN')],
         loadComponent: () => import('./features/admin/teachers/admin-teachers').then((m) => m.AdminTeachers),
       },
       {
-        path: 'admin/users',
+        path: 'users',
         title: 'Users · School Management',
-        canActivate: [roleGuard('ADMIN')],
         loadComponent: () => import('./features/admin/users/admin-users').then((m) => m.AdminUsers),
       },
       {
-        path: 'admin/archive',
+        path: 'archive',
         title: 'Archive · School Management',
-        canActivate: [roleGuard('ADMIN')],
         loadComponent: () =>
           import('./features/admin/archive-promotions/archive-promotions').then((m) => m.ArchivePromotions),
       },
       {
-        path: 'admin/archive/:id',
+        path: 'archive/:id',
         title: 'Archived promotion · School Management',
-        canActivate: [roleGuard('ADMIN')],
         loadComponent: () =>
           import('./features/admin/archive-detail/archive-detail').then((m) => m.ArchiveDetail),
       },
       {
         path: 'reporting',
         title: 'Reporting · School Management',
-        canActivate: [roleGuard('ADMIN', 'TEACHER')],
         loadComponent: () => import('./features/reporting/reporting').then((m) => m.Reporting),
       },
       {
         path: 'reporting/student',
         title: 'Student lookup · School Management',
-        canActivate: [roleGuard('ADMIN', 'TEACHER')],
         loadComponent: () =>
           import('./features/reporting/student-lookup/student-lookup').then((m) => m.StudentLookup),
       },
     ],
   },
+
   { path: '**', redirectTo: '' },
 ];

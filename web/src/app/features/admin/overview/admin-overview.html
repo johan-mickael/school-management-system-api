@@ -1,0 +1,39 @@
+<h1 class="mb-1 text-[20px] font-semibold text-text">Overview</h1>
+<p class="mb-6 text-[13px] text-text-2">Backoffice snapshot across the school.</p>
+
+@if (error()) {
+  <app-feedback [message]="error()!" />
+}
+
+@if (!loading()) {
+  <div class="mb-8 grid grid-cols-2 gap-4 sm:grid-cols-3">
+    <div class="panel panel-pad">
+      <p class="cap mb-1">Active promotions</p>
+      <p class="text-xl font-semibold tabular-nums text-text">{{ activePromotions() ?? '—' }}</p>
+    </div>
+    <div class="panel panel-pad">
+      <p class="cap mb-1">Enrolled students</p>
+      <p class="text-xl font-semibold tabular-nums text-text">{{ totalEnrolled() ?? '—' }}</p>
+    </div>
+    <div class="panel panel-pad">
+      <p class="cap mb-1">Active teachers</p>
+      <p class="text-xl font-semibold tabular-nums text-text">{{ activeTeachers() ?? '—' }}</p>
+    </div>
+  </div>
+}
+
+<div class="cap">Sections</div>
+<div class="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+  @for (link of quickLinks; track link.path) {
+    <a
+      [routerLink]="link.path"
+      class="panel panel-pad flex flex-col gap-2 transition-colors hover:border-border-strong hover:bg-sunk"
+    >
+      <span class="flex items-center gap-2 font-medium text-text">
+        <app-nav-icon [name]="link.icon" />
+        {{ link.label }}
+      </span>
+      <span class="text-[13px] text-text-2">{{ link.description }}</span>
+    </a>
+  }
+</div>

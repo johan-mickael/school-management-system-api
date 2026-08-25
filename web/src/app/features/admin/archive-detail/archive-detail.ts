@@ -1,8 +1,9 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, DestroyRef, inject, signal } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { forkJoin } from 'rxjs';
 
 import { ArchiveApi } from '../../../core/api/archive.api';
+import { BreadcrumbService } from '../../../core/breadcrumb.service';
 import { PromotionsApi } from '../../../core/api/promotions.api';
 import { PromotionResponse, StudentResponse } from '../../../core/api-models';
 import { errorMessage } from '../../../shared/api-error';
@@ -20,6 +21,7 @@ export class ArchiveDetail {
   private readonly route = inject(ActivatedRoute);
   private readonly archiveApi = inject(ArchiveApi);
   private readonly promotionsApi = inject(PromotionsApi);
+  private readonly breadcrumb = inject(BreadcrumbService);
 
   readonly promotionId = this.route.snapshot.paramMap.get('id')!;
   readonly promotion = signal<PromotionResponse | null>(null);
@@ -28,12 +30,14 @@ export class ArchiveDetail {
   readonly error = signal<string | null>(null);
 
   constructor() {
+    inject(DestroyRef).onDestroy(() => this.breadcrumb.clear());
     forkJoin({
       promotion: this.archiveApi.getPromotion(this.promotionId),
       students: this.promotionsApi.getStudents(this.promotionId),
     }).subscribe({
       next: ({ promotion, students }) => {
         this.promotion.set(promotion);
+        this.breadcrumb.set(promotion.name);
         this.students.set(students);
         this.loading.set(false);
       },

@@ -14,23 +14,6 @@
       </div>
     </div>
   }
-
-  @if (role === 'ADMIN') {
-    <div class="mb-8 grid grid-cols-2 gap-4 sm:grid-cols-3">
-      <div class="panel panel-pad">
-        <p class="cap mb-1">Active promotions</p>
-        <p class="text-xl font-semibold tabular-nums text-text">{{ activePromotions() ?? '—' }}</p>
-      </div>
-      <div class="panel panel-pad">
-        <p class="cap mb-1">Enrolled students</p>
-        <p class="text-xl font-semibold tabular-nums text-text">{{ totalEnrolled() ?? '—' }}</p>
-      </div>
-      <div class="panel panel-pad">
-        <p class="cap mb-1">Active teachers</p>
-        <p class="text-xl font-semibold tabular-nums text-text">{{ activeTeachers() ?? '—' }}</p>
-      </div>
-    </div>
-  }
 }
 
 <div class="cap">Quick links</div>

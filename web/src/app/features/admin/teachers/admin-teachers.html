@@ -64,7 +64,14 @@
               <td><app-chip [status]="teacher.status">{{ teacher.status }}</app-chip></td>
               <td class="text-right">
                 @if (teacher.status === 'ACTIVE') {
-                  <button class="btn-ghost btn-sm text-sel-red-tx" (click)="archive(teacher)">Archive</button>
+                  <button
+                    class="rounded-md p-1.5 text-text-3 transition-colors hover:bg-sel-red-bg hover:text-sel-red-tx"
+                    (click)="archive(teacher)"
+                    [attr.aria-label]="'Archive ' + teacher.firstName + ' ' + teacher.lastName"
+                    title="Archive"
+                  >
+                    <app-nav-icon name="archive" />
+                  </button>
                 }
               </td>
             </tr>

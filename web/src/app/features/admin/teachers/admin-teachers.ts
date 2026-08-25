@@ -6,16 +6,19 @@ import { TeacherResponse } from '../../../core/api-models';
 import { errorMessage } from '../../../shared/api-error';
 import { Avatar } from '../../../shared/ui/avatar';
 import { Chip } from '../../../shared/ui/chip';
+import { ConfirmDialogService } from '../../../shared/ui/confirm-dialog.service';
 import { EmptyState } from '../../../shared/ui/empty-state';
 import { Feedback } from '../../../shared/ui/feedback';
+import { NavIconComponent } from '../../../shared/ui/nav-icon';
 
 @Component({
   selector: 'app-admin-teachers',
-  imports: [FormsModule, Avatar, Chip, EmptyState, Feedback],
+  imports: [FormsModule, Avatar, Chip, EmptyState, Feedback, NavIconComponent],
   templateUrl: './admin-teachers.html',
 })
 export class AdminTeachers {
   private readonly api = inject(TeachersApi);
+  private readonly confirm = inject(ConfirmDialogService);
 
   readonly teachers = signal<TeacherResponse[]>([]);
   readonly loading = signal(true);
@@ -69,7 +72,16 @@ export class AdminTeachers {
       });
   }
 
-  archive(teacher: TeacherResponse): void {
+  async archive(teacher: TeacherResponse): Promise<void> {
+    const ok = await this.confirm.ask({
+      title: 'Archive teacher?',
+      message: `${teacher.firstName} ${teacher.lastName} will no longer be assignable to courses. This can't be undone.`,
+      confirmLabel: 'Archive',
+      destructive: true,
+    });
+    if (!ok) {
+      return;
+    }
     this.api.archive(teacher.id).subscribe({
       next: () => this.load(),
       error: (err) => this.error.set(errorMessage(err)),

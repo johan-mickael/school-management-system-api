@@ -8,16 +8,19 @@ import { StudentResponse } from '../../../core/api-models';
 import { errorMessage } from '../../../shared/api-error';
 import { Avatar } from '../../../shared/ui/avatar';
 import { Chip } from '../../../shared/ui/chip';
+import { ConfirmDialogService } from '../../../shared/ui/confirm-dialog.service';
 import { EmptyState } from '../../../shared/ui/empty-state';
 import { Feedback } from '../../../shared/ui/feedback';
+import { NavIconComponent } from '../../../shared/ui/nav-icon';
 
 @Component({
   selector: 'app-promotion-students',
-  imports: [FormsModule, Avatar, Chip, EmptyState, Feedback],
+  imports: [FormsModule, Avatar, Chip, EmptyState, Feedback, NavIconComponent],
   templateUrl: './promotion-students.html',
 })
 export class PromotionStudents {
   private readonly route = inject(ActivatedRoute);
+  private readonly confirm = inject(ConfirmDialogService);
   private readonly promotionsApi = inject(PromotionsApi);
   private readonly studentsApi = inject(StudentsApi);
 
@@ -82,7 +85,16 @@ export class PromotionStudents {
       });
   }
 
-  archive(student: StudentResponse): void {
+  async archive(student: StudentResponse): Promise<void> {
+    const ok = await this.confirm.ask({
+      title: 'Archive student?',
+      message: `${student.firstName} ${student.lastName} will be removed from this promotion's active roster. This can't be undone.`,
+      confirmLabel: 'Archive',
+      destructive: true,
+    });
+    if (!ok) {
+      return;
+    }
     this.studentsApi.archive(student.id).subscribe({
       next: () => this.load(),
       error: (err) => this.error.set(errorMessage(err)),

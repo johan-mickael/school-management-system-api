@@ -21,7 +21,14 @@
           <app-chip [status]="student.status">{{ student.status }}</app-chip>
           <span class="flex-1"></span>
           @if (student.status === 'ACTIVE') {
-            <button class="btn-ghost btn-sm text-sel-red-tx" (click)="archive(student)">Archive</button>
+            <button
+              class="rounded-md p-1.5 text-text-3 transition-colors hover:bg-sel-red-bg hover:text-sel-red-tx"
+              (click)="archive(student)"
+              [attr.aria-label]="'Archive ' + student.firstName + ' ' + student.lastName"
+              title="Archive"
+            >
+              <app-nav-icon name="archive" />
+            </button>
           }
         </li>
       }
