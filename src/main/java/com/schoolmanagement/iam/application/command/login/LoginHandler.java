@@ -10,7 +10,7 @@ import com.schoolmanagement.iam.domain.User;
 import com.schoolmanagement.iam.domain.UserRepository;
 import com.schoolmanagement.iam.domain.Username;
 import com.schoolmanagement.iam.domain.exception.InvalidCredentials;
-
+  
 @Service
 public class LoginHandler {
   private final UserRepository users;
