@@ -1,0 +1,73 @@
+<div class="mb-6 flex items-baseline gap-3">
+  <span class="text-xs font-semibold text-text-3">01</span>
+  <h1 class="text-[20px] font-semibold text-text">Promotions</h1>
+</div>
+
+@if (error()) {
+  <app-feedback [message]="error()!" />
+}
+
+<section class="panel panel-pad mb-8">
+  <div class="cap">Create a promotion</div>
+  <div class="grid max-w-xl grid-cols-3 gap-3">
+    <div class="col-span-2">
+      <label class="field-label" for="promo-name">Name</label>
+      <input id="promo-name" class="input" [ngModel]="name()" (ngModelChange)="name.set($event)" />
+    </div>
+    <div>
+      <label class="field-label" for="promo-capacity">Capacity</label>
+      <input
+        id="promo-capacity"
+        type="number"
+        min="1"
+        class="input tabular-nums"
+        [ngModel]="capacity()"
+        (ngModelChange)="capacity.set($event)"
+      />
+    </div>
+    <div class="col-span-3">
+      <label class="field-label" for="promo-year">Academic year (e.g. 2025-2026)</label>
+      <input id="promo-year" class="input" [ngModel]="academicYear()" (ngModelChange)="academicYear.set($event)" />
+    </div>
+  </div>
+  <button class="btn mt-4" [disabled]="creating()" (click)="create()">
+    {{ creating() ? 'Creating…' : 'Create promotion' }}
+  </button>
+</section>
+
+@if (loading()) {
+  <p class="text-[13px] text-text-2">Loading…</p>
+} @else if (promotions().length === 0) {
+  <div class="panel">
+    <app-empty-state title="No promotions yet" description="Create one above to start enrolling students." />
+  </div>
+} @else {
+  <div class="panel overflow-hidden">
+    <div class="overflow-auto">
+      <table class="grid-table">
+        <thead>
+          <tr>
+            <th class="gutter">#</th>
+            <th>Name</th>
+            <th>Status</th>
+            <th class="text-right">Occupancy</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (promotion of promotions(); track promotion.id; let i = $index) {
+            <tr>
+              <td class="gutter">{{ i + 1 }}</td>
+              <td>
+                <a class="text-blue hover:underline" [routerLink]="['/admin/promotions', promotion.id]">
+                  {{ promotion.name }} ({{ promotion.academicYear }})
+                </a>
+              </td>
+              <td><app-chip [status]="promotion.status">{{ promotion.status }}</app-chip></td>
+              <td class="cell-num">{{ promotion.occupancy }} / {{ promotion.capacity }}</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </div>
+}

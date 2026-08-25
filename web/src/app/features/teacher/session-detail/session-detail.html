@@ -1,0 +1,62 @@
+<a class="mb-4 inline-flex items-center gap-1 text-[13px] text-text-2 hover:text-text" routerLink="/teacher/sessions">
+  ← Back to sessions
+</a>
+
+<h1 class="mb-6 text-[20px] font-semibold text-text">
+  Session {{ session()?.start | date: 'medium' }}
+</h1>
+
+@if (error()) {
+  <app-feedback [message]="error()!" />
+}
+
+@if (loading()) {
+  <p class="text-[13px] text-text-2">Loading…</p>
+} @else if (records().length === 0) {
+  <p class="text-[13px] text-text-2">No attendance recorded yet.</p>
+} @else {
+  <div class="panel overflow-hidden">
+    <div class="overflow-auto">
+      <table class="grid-table">
+        <thead>
+          <tr>
+            <th class="gutter">#</th>
+            <th>Student</th>
+            <th>Status</th>
+            <th>Signed at</th>
+            <th class="text-right">Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (record of records(); track record.id; let i = $index) {
+            <tr>
+              <td class="gutter">{{ i + 1 }}</td>
+              <td>{{ studentLabel(record.studentId) }}</td>
+              <td><app-chip [status]="record.status">{{ record.status }}</app-chip></td>
+              <td>{{ record.signedAt ? (record.signedAt | date: 'short') : '—' }}</td>
+              <td class="text-right">
+                @if (record.status === 'ABSENT' && justifyingId() !== record.studentId) {
+                  <button class="btn-sec btn-sm" (click)="startJustify(record.studentId)">Justify</button>
+                }
+                @if (justifyingId() === record.studentId) {
+                  <div class="flex items-center justify-end gap-2">
+                    <label class="sr-only" [attr.for]="'reason-' + record.studentId">Justification reason for {{ studentLabel(record.studentId) }}</label>
+                    <input
+                      [id]="'reason-' + record.studentId"
+                      class="input"
+                      style="width: 160px"
+                      placeholder="Reason"
+                      [ngModel]="justification()"
+                      (ngModelChange)="justification.set($event)"
+                    />
+                    <button class="btn btn-sm" (click)="submitJustify(record.studentId)">Save</button>
+                  </div>
+                }
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </div>
+}

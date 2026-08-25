@@ -20,6 +20,8 @@ import com.schoolmanagement.promotion.application.command.createpromotion.Create
 import com.schoolmanagement.promotion.application.command.createpromotion.CreatePromotionHandler;
 import com.schoolmanagement.promotion.application.query.getpromotion.GetPromotionHandler;
 import com.schoolmanagement.promotion.application.query.getpromotion.GetPromotionQuery;
+import com.schoolmanagement.promotion.application.query.listactivepromotions.ListActivePromotionsHandler;
+import com.schoolmanagement.promotion.application.query.listactivepromotions.ListActivePromotionsQuery;
 import com.schoolmanagement.promotion.application.query.listpromotionstudents.ListPromotionStudentsHandler;
 import com.schoolmanagement.promotion.application.query.listpromotionstudents.ListPromotionStudentsQuery;
 import com.schoolmanagement.promotion.application.view.PromotionView;
@@ -39,6 +41,7 @@ public class PromotionController {
 
   private final CreatePromotionHandler create;
   private final GetPromotionHandler get;
+  private final ListActivePromotionsHandler listActive;
   private final ListPromotionStudentsHandler listStudents;
   private final AssignStudentToPromotionHandler assignStudent;
   private final ArchivePromotionHandler archive;
@@ -46,11 +49,13 @@ public class PromotionController {
   public PromotionController(
       CreatePromotionHandler create,
       GetPromotionHandler get,
+      ListActivePromotionsHandler listActive,
       ListPromotionStudentsHandler listStudents,
       AssignStudentToPromotionHandler assignStudent,
       ArchivePromotionHandler archive) {
     this.create = create;
     this.get = get;
+    this.listActive = listActive;
     this.listStudents = listStudents;
     this.assignStudent = assignStudent;
     this.archive = archive;
@@ -73,6 +78,13 @@ public class PromotionController {
   @GetMapping("/{id}")
   public PromotionResponse getOne(@PathVariable String id) {
     return PromotionResponse.from(get.handle(new GetPromotionQuery(id)));
+  }
+
+  @GetMapping
+  public List<PromotionResponse> getActive() {
+    return listActive.handle(new ListActivePromotionsQuery()).stream()
+        .map(PromotionResponse::from)
+        .toList();
   }
 
   @GetMapping("/{id}/students")

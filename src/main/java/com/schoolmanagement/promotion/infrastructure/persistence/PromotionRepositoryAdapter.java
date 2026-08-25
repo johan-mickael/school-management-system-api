@@ -38,4 +38,11 @@ public class PromotionRepositoryAdapter implements PromotionRepository {
         .map(promotionMapper::toDomain)
         .toList();
   }
+
+  @Override
+  public List<Promotion> findActive() {
+    return promotionRepository.findByStatus(PromotionStatus.ACTIVE).stream()
+        .map(promotionMapper::toDomain)
+        .toList();
+  }
 }

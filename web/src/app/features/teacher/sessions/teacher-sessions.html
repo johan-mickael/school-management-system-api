@@ -1,0 +1,79 @@
+<div class="mb-6 flex items-baseline gap-3">
+  <span class="text-xs font-semibold text-text-3">01</span>
+  <h1 class="text-[20px] font-semibold text-text">Sessions</h1>
+</div>
+
+@if (error()) {
+  <app-feedback [message]="error()!" />
+}
+
+<label class="field-label" for="promotion">Promotion</label>
+<select
+  id="promotion"
+  class="input mb-6 max-w-sm"
+  (change)="selectPromotion($any($event.target).value)"
+>
+  <option value="">Select a promotion…</option>
+  @for (promotion of promotions(); track promotion.id) {
+    <option [value]="promotion.id">{{ promotion.name }} ({{ promotion.academicYear }})</option>
+  }
+</select>
+
+@if (loading()) {
+  <p class="text-[13px] text-text-2">Loading…</p>
+} @else if (selectedPromotionId() && visibleSessions().length === 0) {
+  <div class="panel">
+    <app-empty-state title="No sessions" description="No sessions found for this promotion yet." />
+  </div>
+} @else if (visibleSessions().length > 0) {
+  <div class="panel overflow-hidden">
+    <div class="overflow-auto">
+      <table class="grid-table">
+        <thead>
+          <tr>
+            <th class="gutter">#</th>
+            <th>Start</th>
+            <th>Status</th>
+            <th class="text-right">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (session of visibleSessions(); track session.id; let i = $index) {
+            <tr>
+              <td class="gutter">{{ i + 1 }}</td>
+              <td>
+                <a class="text-blue hover:underline" [routerLink]="['/teacher/sessions', session.id]">
+                  {{ session.start | date: 'medium' }}
+                </a>
+              </td>
+              <td><app-chip [status]="session.status">{{ session.status }}</app-chip></td>
+              <td class="text-right">
+                <div class="flex justify-end gap-2">
+                  @if (session.status === 'SCHEDULED') {
+                    <button class="btn-sec btn-sm" [disabled]="actingOn() === session.id" (click)="act(session, 'open')">
+                      Open signing
+                    </button>
+                  }
+                  @if (session.status === 'SIGNING_OPEN') {
+                    <button class="btn-sec btn-sm" [disabled]="actingOn() === session.id" (click)="act(session, 'close')">
+                      Close signing
+                    </button>
+                  }
+                  @if (session.status === 'SCHEDULED' || session.status === 'SIGNING_OPEN') {
+                    <button
+                      class="btn-ghost btn-sm text-sel-red-tx"
+                      [disabled]="actingOn() === session.id"
+                      (click)="act(session, 'cancel')"
+                    >
+                      Cancel
+                    </button>
+                  }
+                </div>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </div>
+}

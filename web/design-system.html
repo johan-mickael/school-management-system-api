@@ -1,0 +1,1318 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Pajamas — GitLab-style Design System</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* =====================================================================
+   PAJAMAS-STYLE DESIGN TOKENS
+   Values sourced from GitLab's Pajamas design system (design.gitlab.com).
+   Constant tokens (raw scales) → semantic tokens (intent) → components.
+   ===================================================================== */
+:root {
+  /* ---- COLOR · BLUE (active / progress / links) ---- */
+  --blue-50:#e9f3fc; --blue-100:#cbe2f9; --blue-200:#9dc7f1; --blue-300:#63a6e9;
+  --blue-400:#428fdc; --blue-500:#1f75cb; --blue-600:#2f68b4; --blue-700:#2f5ca0;
+  --blue-800:#284779; --blue-900:#213454; --blue-950:#1d283e;
+
+  /* ---- COLOR · GREEN (success / create / approved) ---- */
+  --green-50:#ecf4ee; --green-100:#c3e6cd; --green-200:#91d4a8; --green-300:#52b87a;
+  --green-400:#2da160; --green-500:#108548; --green-600:#2f7549; --green-700:#306440;
+  --green-800:#225131; --green-900:#1e3e28; --green-950:#17291c;
+
+  /* ---- COLOR · ORANGE (warning / pending / attention) ---- */
+  --orange-50:#fdf1dd; --orange-100:#f5d9a8; --orange-200:#e9be74; --orange-300:#d99530;
+  --orange-400:#c17d10; --orange-500:#ab6100; --orange-600:#995715; --orange-700:#894b16;
+  --orange-800:#693c14; --orange-900:#532e16; --orange-950:#382315;
+
+  /* ---- COLOR · RED (danger / error / destructive) ---- */
+  --red-50:#fcf1ef; --red-100:#fdd4cd; --red-200:#fcb5aa; --red-300:#f6806d;
+  --red-400:#ec5941; --red-500:#dd2b0e; --red-600:#c02f12; --red-700:#a32c12;
+  --red-800:#812713; --red-900:#582014; --red-950:#3e1a14;
+
+  /* ---- COLOR · PURPLE (brand) ---- */
+  --purple-50:#f4f0ff; --purple-100:#e1d8f9; --purple-200:#cbbbf2; --purple-300:#ac93e6;
+  --purple-400:#9475db; --purple-500:#7b58cf; --purple-600:#6a4fb4; --purple-700:#5c47a6;
+  --purple-800:#493c83; --purple-900:#342d59; --purple-950:#27243e;
+
+  /* ---- COLOR · NEUTRAL (surfaces / hierarchy) ---- */
+  --neutral-0:#ffffff; --neutral-10:#fbfafd; --neutral-50:#ececef; --neutral-100:#dcdcde;
+  --neutral-200:#bfbfc3; --neutral-300:#a4a3a8; --neutral-400:#89888d; --neutral-500:#737278;
+  --neutral-600:#626168; --neutral-700:#4c4b51; --neutral-800:#3a383f; --neutral-900:#28272d;
+  --neutral-950:#18171d; --neutral-1000:#050506;
+
+  /* ---- ALPHA (shade against a surface) ---- */
+  --alpha-dark-2:rgba(5,5,6,.02); --alpha-dark-4:rgba(5,5,6,.04); --alpha-dark-6:rgba(5,5,6,.06);
+  --alpha-dark-8:rgba(5,5,6,.08); --alpha-dark-16:rgba(5,5,6,.16); --alpha-dark-24:rgba(5,5,6,.24);
+  --alpha-dark-40:rgba(5,5,6,.40);
+  --alpha-light-2:rgba(255,255,255,.02); --alpha-light-4:rgba(255,255,255,.04);
+  --alpha-light-8:rgba(255,255,255,.08); --alpha-light-16:rgba(255,255,255,.16);
+  --alpha-light-24:rgba(255,255,255,.24); --alpha-light-40:rgba(255,255,255,.40);
+
+  /* ---- TYPOGRAPHY ---- */
+  --font-sans:'GitLab Sans','Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Noto Sans',Ubuntu,Cantarell,'Helvetica Neue',sans-serif;
+  --font-mono:'GitLab Mono','JetBrains Mono','Menlo','DejaVu Sans Mono','Liberation Mono','Consolas','Ubuntu Mono','Courier New',monospace;
+  --fs-100:.75rem;   /* 12px meta / small labels */
+  --fs-200:.8125rem; /* 13px h6 */
+  --fs-300:.875rem;  /* 14px body / h5 / labels */
+  --fs-400:1rem;     /* 16px large body / h4 */
+  --fs-500:1.125rem; /* 18px h3 */
+  --fs-600:1.3125rem;/* 21px h2 */
+  --fs-700:1.5rem;   /* 24px h1 */
+  --fs-800:1.75rem;  /* 28px display */
+  --fw-regular:400; --fw-medium:500; --fw-semibold:600;
+  --lh-tight:1.25; --lh-normal:1.5; --lh-loose:1.625;
+
+  /* ---- SPACING (8px system · geometric progression) ---- */
+  --space-0:0; --space-px:1px; --space-1:.125rem; --space-2:.25rem; --space-2-5:.375rem;
+  --space-3:.5rem; --space-4:.75rem; --space-5:1rem; --space-6:1.5rem; --space-7:2rem;
+  --space-8:2.5rem; --space-9:3rem; --space-10:3.5rem; --space-11:4rem; --space-11-5:4.5rem;
+  --space-12:5rem; --space-13:6rem; --space-15:7.5rem; --space-18:9rem; --space-20:10rem;
+
+  /* ---- BORDER RADIUS ---- */
+  --radius-none:0; --radius-xs:1px; --radius-sm:.125rem; --radius-md:.25rem; /* default */
+  --radius-lg:.5rem; --radius-xl:.75rem; --radius-2xl:1rem; --radius-3xl:1.5rem; --radius-full:9999px;
+  --radius-default:var(--radius-md);
+  --border-width:1px; --border-width-emphasis:2px;
+
+  /* ---- MOTION ---- */
+  --ease-linear:linear;
+  --ease-default:ease;                             /* hover */
+  --ease-out-cubic:cubic-bezier(.22,.61,.36,1);    /* focus & action */
+  --duration-fast:100ms;   /* list item hover */
+  --duration-base:200ms;   /* interactive hover / focus */
+  --duration-slow:500ms;   /* action feedback */
+  --duration-slower:600ms; /* position / complex */
+}
+
+/* =====================================================================
+   SEMANTIC TOKENS · LIGHT (default)
+   ===================================================================== */
+:root, [data-theme="light"] {
+  --bg-default:var(--neutral-0);
+  --bg-subtle:var(--neutral-10);
+  --bg-strong:var(--neutral-50);
+  --bg-overlap:var(--neutral-0);
+  --bg-section:var(--neutral-10);
+  --bg-inverted:var(--neutral-900);
+
+  --text-default:var(--neutral-800);
+  --text-heading:var(--neutral-950);
+  --text-strong:var(--neutral-950);
+  --text-subtle:var(--neutral-600);
+  --text-disabled:var(--neutral-400);
+  --text-link:var(--blue-700);
+  --text-danger:var(--red-600);
+  --text-success:var(--green-600);
+  --text-warning:var(--orange-600);
+  --text-on-inverted:var(--neutral-0);
+
+  --border-default:var(--neutral-100);
+  --border-subtle:var(--neutral-50);
+  --border-strong:var(--neutral-200);
+
+  --status-neutral:var(--neutral-500);
+  --feedback-info:var(--blue-500);
+  --feedback-success:var(--green-500);
+  --feedback-warning:var(--orange-500);
+  --feedback-danger:var(--red-500);
+
+  --shadow-sm:0 1px 2px 0 rgba(31,30,36,.10), 0 1px 3px 0 rgba(31,30,36,.06);
+  --shadow-md:0 2px 8px 0 rgba(31,30,36,.10), 0 1px 4px 0 rgba(31,30,36,.08);
+  --shadow-lg:0 8px 24px 0 rgba(31,30,36,.16), 0 4px 8px 0 rgba(31,30,36,.10);
+  --focus-ring:0 0 0 1px var(--bg-default), 0 0 0 3px var(--blue-400);
+  --skeleton-base:var(--neutral-50);
+  --skeleton-shine:var(--neutral-100);
+  --code-bg:var(--neutral-10);
+}
+
+/* =====================================================================
+   SEMANTIC TOKENS · DARK
+   ===================================================================== */
+[data-theme="dark"] {
+  --bg-default:var(--neutral-950);
+  --bg-subtle:var(--neutral-900);
+  --bg-strong:var(--neutral-800);
+  --bg-overlap:var(--neutral-900);
+  --bg-section:var(--neutral-950);
+  --bg-inverted:var(--neutral-50);
+
+  --text-default:var(--neutral-50);
+  --text-heading:var(--neutral-0);
+  --text-strong:var(--neutral-0);
+  --text-subtle:var(--neutral-200);
+  --text-disabled:var(--neutral-400);
+  --text-link:var(--blue-200);
+  --text-danger:var(--red-300);
+  --text-success:var(--green-300);
+  --text-warning:var(--orange-300);
+  --text-on-inverted:var(--neutral-950);
+
+  --border-default:var(--neutral-700);
+  --border-subtle:var(--neutral-800);
+  --border-strong:var(--neutral-600);
+
+  --feedback-info:var(--blue-400);
+  --feedback-success:var(--green-400);
+  --feedback-warning:var(--orange-400);
+  --feedback-danger:var(--red-400);
+
+  --shadow-sm:0 1px 2px 0 rgba(0,0,0,.4), 0 1px 3px 0 rgba(0,0,0,.3);
+  --shadow-md:0 2px 8px 0 rgba(0,0,0,.5), 0 1px 4px 0 rgba(0,0,0,.4);
+  --shadow-lg:0 8px 24px 0 rgba(0,0,0,.6), 0 4px 8px 0 rgba(0,0,0,.5);
+  --focus-ring:0 0 0 1px var(--bg-default), 0 0 0 3px var(--blue-400);
+  --skeleton-base:var(--neutral-800);
+  --skeleton-shine:var(--neutral-700);
+  --code-bg:var(--neutral-900);
+}
+
+/* =====================================================================
+   RESET & BASE
+   ===================================================================== */
+*,*::before,*::after{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0; font-family:var(--font-sans); font-size:var(--fs-300);
+  line-height:var(--lh-normal); color:var(--text-default);
+  background:var(--bg-subtle);
+  -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility;
+}
+h1,h2,h3,h4,h5,h6{color:var(--text-heading); font-weight:var(--fw-semibold); line-height:var(--lh-tight); margin:0}
+a{color:var(--text-link); text-decoration:none}
+a:hover{text-decoration:underline}
+code,kbd{font-family:var(--font-mono)}
+:focus-visible{outline:none; box-shadow:var(--focus-ring); border-radius:var(--radius-sm)}
+
+/* =====================================================================
+   APP SHELL
+   ===================================================================== */
+.app{display:grid; grid-template-columns:264px 1fr; min-height:100vh}
+
+.sidebar{
+  position:sticky; top:0; align-self:start; height:100vh; overflow-y:auto;
+  background:var(--bg-default); border-right:var(--border-width) solid var(--border-default);
+  padding:var(--space-6) 0; display:flex; flex-direction:column;
+}
+.brand{display:flex; align-items:center; gap:var(--space-3); padding:0 var(--space-6) var(--space-6)}
+.brand__mark{width:28px; height:28px; border-radius:var(--radius-md); flex:none;
+  background:linear-gradient(135deg,var(--purple-500),var(--blue-500)); display:grid; place-items:center;
+  color:#fff; font-weight:var(--fw-semibold); font-size:var(--fs-200)}
+.brand__name{font-weight:var(--fw-semibold); color:var(--text-heading); font-size:var(--fs-400); line-height:1.1}
+.brand__sub{font-size:var(--fs-100); color:var(--text-subtle)}
+.nav{padding:0 var(--space-3); flex:1}
+.nav__group{margin-bottom:var(--space-5)}
+.nav__label{font-size:var(--fs-100); text-transform:uppercase; letter-spacing:.06em;
+  color:var(--text-subtle); font-weight:var(--fw-semibold); padding:0 var(--space-3) var(--space-2)}
+.nav__link{display:block; padding:var(--space-2-5) var(--space-3); border-radius:var(--radius-md);
+  color:var(--text-default); font-size:var(--fs-300); transition:background var(--duration-fast) var(--ease-default)}
+.nav__link:hover{background:var(--bg-strong); text-decoration:none}
+.nav__link.is-active{background:var(--blue-50); color:var(--blue-700); font-weight:var(--fw-semibold)}
+[data-theme="dark"] .nav__link.is-active{background:var(--blue-950); color:var(--blue-200)}
+
+.main{min-width:0}
+.topbar{
+  position:sticky; top:0; z-index:20; display:flex; align-items:center; justify-content:space-between;
+  gap:var(--space-4); padding:var(--space-4) var(--space-8);
+  background:color-mix(in srgb,var(--bg-default) 88%, transparent);
+  backdrop-filter:blur(8px); border-bottom:var(--border-width) solid var(--border-default);
+}
+.topbar__title{font-size:var(--fs-400); font-weight:var(--fw-semibold); color:var(--text-heading)}
+.topbar__meta{font-size:var(--fs-100); color:var(--text-subtle)}
+.content{padding:var(--space-8); max-width:1080px}
+.section{margin-bottom:var(--space-12); scroll-margin-top:72px}
+.section__head{margin-bottom:var(--space-6); padding-bottom:var(--space-4); border-bottom:var(--border-width) solid var(--border-default)}
+.section__eyebrow{font-size:var(--fs-100); text-transform:uppercase; letter-spacing:.08em; color:var(--blue-500); font-weight:var(--fw-semibold)}
+.section h2{font-size:var(--fs-700); margin:var(--space-2) 0}
+.section__desc{color:var(--text-subtle); max-width:64ch}
+.subhead{font-size:var(--fs-500); margin:var(--space-7) 0 var(--space-4)}
+.subhead:first-of-type{margin-top:var(--space-2)}
+.hint{font-size:var(--fs-100); color:var(--text-subtle); margin-top:var(--space-2)}
+
+/* card container used across demos */
+.panel{background:var(--bg-overlap); border:var(--border-width) solid var(--border-default);
+  border-radius:var(--radius-lg); padding:var(--space-6)}
+.demo{display:flex; flex-wrap:wrap; gap:var(--space-4); align-items:center}
+.grid{display:grid; gap:var(--space-4)}
+.grid--auto{grid-template-columns:repeat(auto-fill,minmax(150px,1fr))}
+
+/* =====================================================================
+   COLOR SWATCHES
+   ===================================================================== */
+.ramp{margin-bottom:var(--space-6)}
+.ramp__name{font-weight:var(--fw-semibold); color:var(--text-heading); margin-bottom:var(--space-3); text-transform:capitalize}
+.ramp__row{display:grid; grid-template-columns:repeat(11,1fr); gap:var(--space-2)}
+.ramp__row--neutral{grid-template-columns:repeat(14,1fr)}
+.swatch{border:0; padding:0; background:none; cursor:pointer; text-align:left; font:inherit}
+.swatch__chip{height:56px; border-radius:var(--radius-md); border:var(--border-width) solid var(--alpha-dark-8);
+  box-shadow:inset 0 0 0 1px var(--alpha-dark-2); transition:transform var(--duration-fast) var(--ease-out-cubic)}
+.swatch:hover .swatch__chip{transform:translateY(-2px); box-shadow:var(--shadow-sm)}
+.swatch__step{font-size:var(--fs-100); color:var(--text-subtle); margin-top:var(--space-2); font-family:var(--font-mono)}
+.swatch__hex{font-size:var(--fs-100); color:var(--text-default); font-family:var(--font-mono); text-transform:uppercase}
+
+.semantic-grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(220px,1fr)); gap:var(--space-4)}
+.sem{display:flex; gap:var(--space-3); align-items:center; padding:var(--space-3);
+  border:var(--border-width) solid var(--border-default); border-radius:var(--radius-md); background:var(--bg-default)}
+.sem__chip{width:36px; height:36px; border-radius:var(--radius-md); flex:none; border:var(--border-width) solid var(--alpha-dark-8)}
+.sem__name{font-family:var(--font-mono); font-size:var(--fs-100); color:var(--text-strong)}
+.sem__val{font-size:var(--fs-100); color:var(--text-subtle)}
+
+/* =====================================================================
+   TYPOGRAPHY SPECIMENS
+   ===================================================================== */
+.type-row{display:grid; grid-template-columns:120px 1fr; gap:var(--space-5); align-items:baseline;
+  padding:var(--space-4) 0; border-bottom:var(--border-width) solid var(--border-subtle)}
+.type-row:last-child{border-bottom:0}
+.type-row__meta{font-family:var(--font-mono); font-size:var(--fs-100); color:var(--text-subtle)}
+.type-sample{color:var(--text-heading); font-weight:var(--fw-semibold)}
+.weights{display:flex; gap:var(--space-6); flex-wrap:wrap}
+.weight-demo{font-size:var(--fs-500)}
+
+/* =====================================================================
+   SPACING SCALE
+   ===================================================================== */
+.space-row{display:grid; grid-template-columns:110px 90px 1fr; gap:var(--space-4); align-items:center;
+  padding:var(--space-2-5) 0; border-bottom:var(--border-width) solid var(--border-subtle)}
+.space-row:last-child{border-bottom:0}
+.space-row__token{font-family:var(--font-mono); font-size:var(--fs-100); color:var(--text-strong)}
+.space-row__px{font-family:var(--font-mono); font-size:var(--fs-100); color:var(--text-subtle)}
+.space-bar{height:16px; background:var(--blue-400); border-radius:var(--radius-xs)}
+
+/* =====================================================================
+   RADIUS / SHADOW / MOTION
+   ===================================================================== */
+.radius-grid,.shadow-grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(140px,1fr)); gap:var(--space-5)}
+.radius-demo{aspect-ratio:1.4; background:var(--blue-50); border:var(--border-width-emphasis) solid var(--blue-500); display:grid; place-items:end center; padding:var(--space-2)}
+[data-theme="dark"] .radius-demo{background:var(--blue-950)}
+.radius-demo span,.shadow-demo span{font-family:var(--font-mono); font-size:var(--fs-100); color:var(--text-subtle)}
+.shadow-demo{aspect-ratio:1.4; background:var(--bg-overlap); border-radius:var(--radius-lg); display:grid; place-items:end center; padding:var(--space-3)}
+.motion-grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(200px,1fr)); gap:var(--space-4)}
+.motion-demo{padding:var(--space-4); border:var(--border-width) solid var(--border-default); border-radius:var(--radius-md); background:var(--bg-default); cursor:pointer; overflow:hidden}
+.motion-demo__track{height:10px; background:var(--bg-strong); border-radius:var(--radius-full); margin-bottom:var(--space-3); position:relative}
+.motion-demo__dot{position:absolute; top:-3px; left:0; width:16px; height:16px; border-radius:var(--radius-full); background:var(--blue-500)}
+.motion-demo.run .motion-demo__dot{left:calc(100% - 16px)}
+.motion-demo__name{font-family:var(--font-mono); font-size:var(--fs-100); color:var(--text-strong)}
+.motion-demo__val{font-size:var(--fs-100); color:var(--text-subtle)}
+
+/* =====================================================================
+   BUTTONS
+   ===================================================================== */
+.btn{
+  --btn-bg:var(--neutral-0); --btn-fg:var(--text-default); --btn-bd:var(--border-strong);
+  --btn-bg-hover:var(--bg-strong); --btn-bd-hover:var(--neutral-300);
+  display:inline-flex; align-items:center; justify-content:center; gap:var(--space-2);
+  font-family:inherit; font-size:var(--fs-300); font-weight:var(--fw-semibold); line-height:1;
+  padding:var(--space-3) var(--space-4); min-height:32px;
+  background:var(--btn-bg); color:var(--btn-fg);
+  border:var(--border-width) solid var(--btn-bd); border-radius:var(--radius-md);
+  cursor:pointer; transition:background var(--duration-base) var(--ease-default),
+    border-color var(--duration-base) var(--ease-default), color var(--duration-base) var(--ease-default);
+}
+.btn:hover{background:var(--btn-bg-hover); border-color:var(--btn-bd-hover); text-decoration:none}
+.btn:active{transform:translateY(.5px)}
+.btn:disabled{opacity:.65; cursor:not-allowed}
+.btn:disabled:hover{background:var(--btn-bg); border-color:var(--btn-bd)}
+.btn--sm{min-height:24px; padding:var(--space-2) var(--space-3); font-size:var(--fs-200)}
+.btn--block{width:100%}
+
+/* confirm (blue) */
+.btn--confirm{--btn-bg:var(--blue-500); --btn-fg:#fff; --btn-bd:var(--blue-500);
+  --btn-bg-hover:var(--blue-600); --btn-bd-hover:var(--blue-600)}
+.btn--confirm.btn--secondary{--btn-bg:transparent; --btn-fg:var(--text-link); --btn-bd:var(--blue-500);
+  --btn-bg-hover:var(--blue-50); --btn-bd-hover:var(--blue-600)}
+.btn--confirm.btn--tertiary{--btn-bg:transparent; --btn-fg:var(--text-link); --btn-bd:transparent;
+  --btn-bg-hover:var(--blue-50); --btn-bd-hover:transparent}
+
+/* danger (red) */
+.btn--danger{--btn-bg:var(--red-500); --btn-fg:#fff; --btn-bd:var(--red-500);
+  --btn-bg-hover:var(--red-600); --btn-bd-hover:var(--red-600)}
+.btn--danger.btn--secondary{--btn-bg:transparent; --btn-fg:var(--text-danger); --btn-bd:var(--red-500);
+  --btn-bg-hover:var(--red-50); --btn-bd-hover:var(--red-600)}
+.btn--danger.btn--tertiary{--btn-bg:transparent; --btn-fg:var(--text-danger); --btn-bd:transparent;
+  --btn-bg-hover:var(--red-50); --btn-bd-hover:transparent}
+
+/* default tertiary */
+.btn--default.btn--tertiary{--btn-bg:transparent; --btn-bd:transparent; --btn-bg-hover:var(--bg-strong); --btn-bd-hover:transparent}
+[data-theme="dark"] .btn--confirm.btn--secondary{--btn-bg-hover:var(--blue-950)}
+[data-theme="dark"] .btn--confirm.btn--tertiary{--btn-bg-hover:var(--blue-950)}
+[data-theme="dark"] .btn--danger.btn--secondary{--btn-bg-hover:var(--red-950)}
+[data-theme="dark"] .btn--danger.btn--tertiary{--btn-bg-hover:var(--red-950)}
+[data-theme="dark"] .btn--default{--btn-bg:var(--neutral-900)}
+
+.btn-matrix{display:grid; grid-template-columns:80px repeat(3,1fr); gap:var(--space-3); align-items:center; max-width:520px}
+.btn-matrix__h{font-size:var(--fs-100); color:var(--text-subtle); font-weight:var(--fw-semibold); text-transform:uppercase; letter-spacing:.05em}
+.btn-matrix__r{font-size:var(--fs-100); color:var(--text-subtle); font-weight:var(--fw-semibold)}
+
+/* spinner inside button */
+.spinner{width:14px; height:14px; border-radius:var(--radius-full);
+  border:2px solid currentColor; border-right-color:transparent; animation:spin .8s var(--ease-linear) infinite; display:inline-block}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* =====================================================================
+   BADGES & LABELS
+   ===================================================================== */
+.badge{display:inline-flex; align-items:center; gap:var(--space-2); padding:var(--space-1) var(--space-3);
+  font-size:var(--fs-100); font-weight:var(--fw-semibold); border-radius:var(--radius-full); line-height:1.4;
+  background:var(--bg-strong); color:var(--text-default)}
+.badge::before{content:""; width:6px; height:6px; border-radius:var(--radius-full); background:currentColor}
+.badge--info{background:var(--blue-50); color:var(--blue-700)}
+.badge--success{background:var(--green-50); color:var(--green-700)}
+.badge--warning{background:var(--orange-50); color:var(--orange-700)}
+.badge--danger{background:var(--red-50); color:var(--red-700)}
+.badge--muted{background:var(--bg-strong); color:var(--text-subtle)}
+[data-theme="dark"] .badge--info{background:var(--blue-950); color:var(--blue-200)}
+[data-theme="dark"] .badge--success{background:var(--green-950); color:var(--green-300)}
+[data-theme="dark"] .badge--warning{background:var(--orange-950); color:var(--orange-300)}
+[data-theme="dark"] .badge--danger{background:var(--red-950); color:var(--red-300)}
+
+.label{display:inline-flex; align-items:center; padding:var(--space-1) var(--space-3);
+  font-size:var(--fs-100); font-weight:var(--fw-semibold); border-radius:var(--radius-full); color:#fff}
+.label--scoped{border-radius:var(--radius-full); padding:0; overflow:hidden}
+.label--scoped span{padding:var(--space-1) var(--space-3)}
+.label--scoped .k{background:var(--neutral-700)} .label--scoped .v{background:var(--purple-500)}
+
+/* =====================================================================
+   ALERTS / BANNERS
+   ===================================================================== */
+.alert{display:grid; grid-template-columns:auto 1fr auto; gap:var(--space-3); align-items:start;
+  padding:var(--space-4) var(--space-5); border-radius:var(--radius-md); border:var(--border-width) solid transparent;
+  background:var(--blue-50); border-color:var(--blue-100)}
+.alert__icon{width:16px; height:16px; border-radius:var(--radius-full); background:var(--blue-500); margin-top:2px; flex:none}
+.alert__title{font-weight:var(--fw-semibold); color:var(--text-heading); margin-bottom:2px}
+.alert__body{color:var(--text-default); font-size:var(--fs-300)}
+.alert__close{border:0; background:none; color:var(--text-subtle); cursor:pointer; font-size:16px; line-height:1; padding:2px}
+.alert--success{background:var(--green-50); border-color:var(--green-100)} .alert--success .alert__icon{background:var(--green-500)}
+.alert--warning{background:var(--orange-50); border-color:var(--orange-100)} .alert--warning .alert__icon{background:var(--orange-500)}
+.alert--danger{background:var(--red-50); border-color:var(--red-100)} .alert--danger .alert__icon{background:var(--red-500)}
+[data-theme="dark"] .alert{background:var(--blue-950); border-color:var(--blue-800)}
+[data-theme="dark"] .alert--success{background:var(--green-950); border-color:var(--green-800)}
+[data-theme="dark"] .alert--warning{background:var(--orange-950); border-color:var(--orange-800)}
+[data-theme="dark"] .alert--danger{background:var(--red-950); border-color:var(--red-800)}
+
+/* =====================================================================
+   CARDS
+   ===================================================================== */
+.card{background:var(--bg-overlap); border:var(--border-width) solid var(--border-default);
+  border-radius:var(--radius-lg); box-shadow:var(--shadow-sm); overflow:hidden; max-width:320px}
+.card__head{padding:var(--space-4) var(--space-5); border-bottom:var(--border-width) solid var(--border-default);
+  display:flex; align-items:center; justify-content:space-between; background:var(--bg-subtle)}
+.card__title{font-weight:var(--fw-semibold); color:var(--text-heading); font-size:var(--fs-400)}
+.card__body{padding:var(--space-5)}
+.card__foot{padding:var(--space-4) var(--space-5); border-top:var(--border-width) solid var(--border-default); display:flex; gap:var(--space-3); justify-content:flex-end}
+
+/* =====================================================================
+   FORMS
+   ===================================================================== */
+.field{margin-bottom:var(--space-5); max-width:360px}
+.field__label{display:block; font-weight:var(--fw-semibold); color:var(--text-heading); font-size:var(--fs-300); margin-bottom:var(--space-2)}
+.field__help{font-size:var(--fs-100); color:var(--text-subtle); margin-top:var(--space-2)}
+.field__help--error{color:var(--text-danger)}
+.input,.select,.textarea{width:100%; font-family:inherit; font-size:var(--fs-300); color:var(--text-default);
+  padding:var(--space-3) var(--space-4); background:var(--bg-default);
+  border:var(--border-width) solid var(--border-strong); border-radius:var(--radius-md);
+  transition:border-color var(--duration-base) var(--ease-default), box-shadow var(--duration-base) var(--ease-default)}
+.input::placeholder{color:var(--text-disabled)}
+.input:focus,.select:focus,.textarea:focus{outline:none; border-color:var(--blue-400); box-shadow:var(--focus-ring)}
+.input--error{border-color:var(--red-500)}
+.input:disabled{background:var(--bg-strong); color:var(--text-disabled); cursor:not-allowed}
+.textarea{min-height:88px; resize:vertical}
+
+/* checkbox / radio */
+.choice{display:flex; align-items:center; gap:var(--space-3); margin-bottom:var(--space-3); cursor:pointer; font-size:var(--fs-300)}
+.choice input{position:absolute; opacity:0; width:0; height:0}
+.box{width:16px; height:16px; border:var(--border-width) solid var(--border-strong); border-radius:var(--radius-sm);
+  background:var(--bg-default); display:grid; place-items:center; flex:none; transition:all var(--duration-base) var(--ease-default)}
+.box--radio{border-radius:var(--radius-full)}
+.box::after{content:""; opacity:0; transition:opacity var(--duration-fast) var(--ease-default)}
+.box:not(.box--radio)::after{width:9px; height:5px; border-left:2px solid #fff; border-bottom:2px solid #fff; transform:rotate(-45deg) translateY(-1px)}
+.box--radio::after{width:6px; height:6px; border-radius:var(--radius-full); background:#fff}
+.choice input:checked + .box{background:var(--blue-500); border-color:var(--blue-500)}
+.choice input:checked + .box::after{opacity:1}
+.choice input:focus-visible + .box{box-shadow:var(--focus-ring)}
+
+/* toggle */
+.toggle{position:relative; display:inline-flex; align-items:center; gap:var(--space-3); cursor:pointer}
+.toggle input{position:absolute; opacity:0}
+.toggle__track{width:40px; height:22px; border-radius:var(--radius-full); background:var(--neutral-300); position:relative; transition:background var(--duration-base) var(--ease-out-cubic)}
+.toggle__track::after{content:""; position:absolute; top:2px; left:2px; width:18px; height:18px; border-radius:var(--radius-full);
+  background:#fff; box-shadow:var(--shadow-sm); transition:left var(--duration-base) var(--ease-out-cubic)}
+.toggle input:checked + .toggle__track{background:var(--green-500)}
+.toggle input:checked + .toggle__track::after{left:20px}
+.toggle input:focus-visible + .toggle__track{box-shadow:var(--focus-ring)}
+
+/* search */
+.search{position:relative; max-width:360px}
+.search .input{padding-left:36px}
+.search__icon{position:absolute; left:12px; top:50%; transform:translateY(-50%); color:var(--text-subtle)}
+
+/* =====================================================================
+   TABS
+   ===================================================================== */
+.tabs{border-bottom:var(--border-width) solid var(--border-default); display:flex; gap:var(--space-2)}
+.tab{border:0; background:none; font-family:inherit; font-size:var(--fs-300); color:var(--text-subtle); font-weight:var(--fw-semibold);
+  padding:var(--space-3) var(--space-4); cursor:pointer; border-bottom:2px solid transparent; margin-bottom:-1px;
+  transition:color var(--duration-base) var(--ease-default), border-color var(--duration-base) var(--ease-default)}
+.tab:hover{color:var(--text-default)}
+.tab.is-active{color:var(--text-link); border-bottom-color:var(--blue-500)}
+.tabpanel{padding:var(--space-5) 0; color:var(--text-default)}
+
+/* =====================================================================
+   TABLE
+   ===================================================================== */
+.table-wrap{border:var(--border-width) solid var(--border-default); border-radius:var(--radius-lg); overflow:hidden}
+table.tbl{width:100%; border-collapse:collapse; font-size:var(--fs-300)}
+.tbl thead th{text-align:left; font-size:var(--fs-100); text-transform:uppercase; letter-spacing:.04em;
+  color:var(--text-subtle); font-weight:var(--fw-semibold); padding:var(--space-3) var(--space-5); background:var(--bg-subtle);
+  border-bottom:var(--border-width) solid var(--border-default)}
+.tbl tbody td{padding:var(--space-3) var(--space-5); border-bottom:var(--border-width) solid var(--border-subtle); color:var(--text-default)}
+.tbl tbody tr:last-child td{border-bottom:0}
+.tbl tbody tr:hover{background:var(--bg-subtle)}
+
+/* =====================================================================
+   AVATAR
+   ===================================================================== */
+.avatar{width:32px; height:32px; border-radius:var(--radius-full); display:grid; place-items:center; color:#fff;
+  font-weight:var(--fw-semibold); font-size:var(--fs-200); flex:none; border:var(--border-width) solid var(--alpha-dark-8)}
+.avatar--sq{border-radius:var(--radius-md)}
+.avatar--lg{width:48px; height:48px; font-size:var(--fs-400)}
+.avatar-group{display:flex}
+.avatar-group .avatar{margin-left:-8px; box-shadow:0 0 0 2px var(--bg-overlap)}
+.avatar-group .avatar:first-child{margin-left:0}
+
+/* =====================================================================
+   PROGRESS
+   ===================================================================== */
+.progress{height:8px; background:var(--bg-strong); border-radius:var(--radius-full); overflow:hidden; max-width:360px}
+.progress__fill{height:100%; background:var(--blue-500); border-radius:var(--radius-full);
+  transition:width var(--duration-slower) var(--ease-out-cubic)}
+.progress--success .progress__fill{background:var(--green-500)}
+
+/* =====================================================================
+   PAGINATION / BREADCRUMB
+   ===================================================================== */
+.pager{display:inline-flex; gap:var(--space-2); align-items:center}
+.pager button{min-width:32px; height:32px; border:var(--border-width) solid var(--border-strong); background:var(--bg-default);
+  color:var(--text-default); border-radius:var(--radius-md); cursor:pointer; font-family:inherit; font-size:var(--fs-300)}
+.pager button:hover{background:var(--bg-strong)}
+.pager button.is-active{background:var(--blue-500); border-color:var(--blue-500); color:#fff}
+.pager button:disabled{opacity:.5; cursor:not-allowed}
+.crumbs{display:flex; align-items:center; gap:var(--space-2); font-size:var(--fs-300); color:var(--text-subtle)}
+.crumbs a{color:var(--text-subtle)} .crumbs a:hover{color:var(--text-link)}
+.crumbs .sep{color:var(--text-disabled)}
+.crumbs .current{color:var(--text-heading); font-weight:var(--fw-semibold)}
+
+/* =====================================================================
+   DROPDOWN / TOOLTIP / POPOVER
+   ===================================================================== */
+.dd{position:relative; display:inline-block}
+.dd__menu{position:absolute; top:calc(100% + 6px); left:0; min-width:200px; background:var(--bg-overlap);
+  border:var(--border-width) solid var(--border-default); border-radius:var(--radius-md); box-shadow:var(--shadow-md);
+  padding:var(--space-2); opacity:0; transform:translateY(-4px); pointer-events:none;
+  transition:opacity var(--duration-base) var(--ease-out-cubic), transform var(--duration-base) var(--ease-out-cubic); z-index:30}
+.dd.open .dd__menu{opacity:1; transform:translateY(0); pointer-events:auto}
+.dd__item{display:block; width:100%; text-align:left; border:0; background:none; font-family:inherit; font-size:var(--fs-300);
+  color:var(--text-default); padding:var(--space-2-5) var(--space-3); border-radius:var(--radius-sm); cursor:pointer}
+.dd__item:hover{background:var(--bg-strong)}
+.dd__sep{height:1px; background:var(--border-default); margin:var(--space-2) 0}
+
+.tip-wrap{position:relative; display:inline-block}
+.tip{position:absolute; bottom:calc(100% + 8px); left:50%; transform:translateX(-50%) scale(.96);
+  background:var(--neutral-900); color:var(--neutral-0); font-size:var(--fs-100); padding:var(--space-2) var(--space-3);
+  border-radius:var(--radius-sm); white-space:nowrap; opacity:0; pointer-events:none;
+  transition:opacity var(--duration-base) var(--ease-default), transform var(--duration-base) var(--ease-out-cubic)}
+.tip::after{content:""; position:absolute; top:100%; left:50%; transform:translateX(-50%);
+  border:5px solid transparent; border-top-color:var(--neutral-900)}
+.tip-wrap:hover .tip,.tip-wrap:focus-within .tip{opacity:1; transform:translateX(-50%) scale(1)}
+[data-theme="dark"] .tip{background:var(--neutral-50); color:var(--neutral-950)}
+[data-theme="dark"] .tip::after{border-top-color:var(--neutral-50)}
+
+.popover{max-width:280px; background:var(--bg-overlap); border:var(--border-width) solid var(--border-default);
+  border-radius:var(--radius-md); box-shadow:var(--shadow-md); padding:var(--space-4)}
+.popover__title{font-weight:var(--fw-semibold); color:var(--text-heading); margin-bottom:var(--space-2)}
+
+/* =====================================================================
+   MODAL / DRAWER
+   ===================================================================== */
+.overlay{position:fixed; inset:0; background:var(--alpha-dark-40); display:grid; place-items:center; z-index:100;
+  opacity:0; pointer-events:none; transition:opacity var(--duration-base) var(--ease-default)}
+.overlay.open{opacity:1; pointer-events:auto}
+.modal{width:min(480px,92vw); background:var(--bg-overlap); border-radius:var(--radius-lg); box-shadow:var(--shadow-lg);
+  transform:translateY(8px) scale(.98); transition:transform var(--duration-base) var(--ease-out-cubic); overflow:hidden}
+.overlay.open .modal{transform:none}
+.modal__head{padding:var(--space-5) var(--space-6); border-bottom:var(--border-width) solid var(--border-default);
+  display:flex; align-items:center; justify-content:space-between}
+.modal__title{font-size:var(--fs-500); font-weight:var(--fw-semibold); color:var(--text-heading)}
+.modal__body{padding:var(--space-6); color:var(--text-default)}
+.modal__foot{padding:var(--space-4) var(--space-6); border-top:var(--border-width) solid var(--border-default);
+  display:flex; gap:var(--space-3); justify-content:flex-end}
+
+/* =====================================================================
+   TOAST / NOTIFICATIONS
+   ===================================================================== */
+.toast-region{position:fixed; bottom:var(--space-6); right:var(--space-6); display:flex; flex-direction:column;
+  gap:var(--space-3); z-index:120; width:min(360px,90vw)}
+.toast{display:grid; grid-template-columns:auto 1fr auto; gap:var(--space-3); align-items:center;
+  background:var(--bg-inverted); color:var(--text-on-inverted); padding:var(--space-4) var(--space-5);
+  border-radius:var(--radius-md); box-shadow:var(--shadow-lg);
+  animation:toast-in var(--duration-slow) var(--ease-out-cubic)}
+.toast.out{animation:toast-out var(--duration-base) var(--ease-default) forwards}
+.toast__dot{width:8px; height:8px; border-radius:var(--radius-full); background:var(--green-400)}
+.toast__action{border:0; background:none; color:inherit; font-weight:var(--fw-semibold); cursor:pointer; text-decoration:underline; font-size:var(--fs-200)}
+@keyframes toast-in{from{opacity:0; transform:translateY(16px)} to{opacity:1; transform:none}}
+@keyframes toast-out{to{opacity:0; transform:translateX(24px)}}
+
+/* =====================================================================
+   LOADERS · SPINNER / SKELETON / DOTS
+   ===================================================================== */
+.spinner--lg{width:32px; height:32px; border-width:3px; color:var(--blue-500)}
+.spinner--md{width:24px; height:24px; color:var(--blue-500)}
+.spinner--sm{width:16px; height:16px; color:var(--blue-500)}
+
+.skeleton{background:var(--skeleton-base); border-radius:var(--radius-sm); position:relative; overflow:hidden}
+.skeleton::after{content:""; position:absolute; inset:0;
+  background:linear-gradient(90deg, transparent, var(--skeleton-shine), transparent);
+  transform:translateX(-100%); animation:shimmer 1s var(--ease-linear) infinite}
+@keyframes shimmer{100%{transform:translateX(100%)}}
+.sk-line{height:12px; margin-bottom:var(--space-3)}
+.sk-line.w-40{width:40%} .sk-line.w-60{width:60%} .sk-line.w-80{width:80%} .sk-line.w-100{width:100%}
+.sk-circle{width:40px; height:40px; border-radius:var(--radius-full)}
+.sk-card{display:flex; gap:var(--space-4); align-items:flex-start; max-width:360px}
+
+.dots{display:inline-flex; gap:6px}
+.dots span{width:8px; height:8px; border-radius:var(--radius-full); background:var(--blue-500); animation:bounce 1.2s var(--ease-default) infinite}
+.dots span:nth-child(2){animation-delay:.15s} .dots span:nth-child(3){animation-delay:.3s}
+@keyframes bounce{0%,80%,100%{transform:scale(.5); opacity:.5} 40%{transform:scale(1); opacity:1}}
+
+/* =====================================================================
+   MISC
+   ===================================================================== */
+.switch-btn{display:inline-flex; align-items:center; gap:var(--space-2); border:var(--border-width) solid var(--border-strong);
+  background:var(--bg-default); color:var(--text-default); border-radius:var(--radius-md); padding:var(--space-2) var(--space-3);
+  cursor:pointer; font-family:inherit; font-size:var(--fs-200); font-weight:var(--fw-semibold)}
+.switch-btn:hover{background:var(--bg-strong)}
+.copied-toast{position:fixed; bottom:var(--space-6); left:50%; transform:translateX(-50%) translateY(20px);
+  background:var(--neutral-900); color:#fff; padding:var(--space-2) var(--space-5); border-radius:var(--radius-full);
+  font-size:var(--fs-200); opacity:0; transition:all var(--duration-base) var(--ease-out-cubic); z-index:200}
+.copied-toast.show{opacity:1; transform:translateX(-50%) translateY(0)}
+.codeblock{background:var(--code-bg); border:var(--border-width) solid var(--border-default); border-radius:var(--radius-md);
+  padding:var(--space-4); font-family:var(--font-mono); font-size:var(--fs-200); color:var(--text-default);
+  overflow-x:auto; white-space:pre}
+
+@media (max-width:900px){
+  .app{grid-template-columns:1fr}
+  .sidebar{display:none}
+  .content{padding:var(--space-5)}
+  .ramp__row,.ramp__row--neutral{grid-template-columns:repeat(4,1fr)}
+}
+@media (prefers-reduced-motion:reduce){
+  *{animation-duration:.001ms !important; animation-iteration-count:1 !important; transition-duration:.001ms !important; scroll-behavior:auto !important}
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <!-- ============ SIDEBAR ============ -->
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="brand__mark">P</div>
+      <div>
+        <div class="brand__name">Pajamas</div>
+        <div class="brand__sub">GitLab-style system</div>
+      </div>
+    </div>
+    <nav class="nav" id="nav">
+      <div class="nav__group">
+        <div class="nav__label">Foundations</div>
+        <a class="nav__link" href="#color">Color</a>
+        <a class="nav__link" href="#semantic">Semantic tokens</a>
+        <a class="nav__link" href="#type">Typography</a>
+        <a class="nav__link" href="#spacing">Spacing</a>
+        <a class="nav__link" href="#radius">Border &amp; radius</a>
+        <a class="nav__link" href="#elevation">Elevation</a>
+        <a class="nav__link" href="#motion">Motion</a>
+      </div>
+      <div class="nav__group">
+        <div class="nav__label">Components</div>
+        <a class="nav__link" href="#buttons">Buttons</a>
+        <a class="nav__link" href="#badges">Badges &amp; labels</a>
+        <a class="nav__link" href="#alerts">Alerts</a>
+        <a class="nav__link" href="#cards">Cards</a>
+        <a class="nav__link" href="#forms">Form elements</a>
+        <a class="nav__link" href="#tabs">Tabs</a>
+        <a class="nav__link" href="#table">Table</a>
+        <a class="nav__link" href="#avatars">Avatars</a>
+        <a class="nav__link" href="#progress">Progress</a>
+        <a class="nav__link" href="#nav-controls">Pagination &amp; breadcrumb</a>
+        <a class="nav__link" href="#overlays">Dropdown, tooltip, modal</a>
+        <a class="nav__link" href="#toasts">Toasts / notifications</a>
+      </div>
+      <div class="nav__group">
+        <div class="nav__label">Feedback</div>
+        <a class="nav__link" href="#loaders">Loaders &amp; spinners</a>
+        <a class="nav__link" href="#skeleton">Skeletons</a>
+      </div>
+    </nav>
+  </aside>
+
+  <!-- ============ MAIN ============ -->
+  <div class="main">
+    <header class="topbar">
+      <div>
+        <div class="topbar__title">Design System Reference</div>
+        <div class="topbar__meta">Tokens &amp; components · click any color or token to copy the CSS variable</div>
+      </div>
+      <button class="switch-btn" id="theme-toggle" aria-label="Toggle color mode">
+        <span id="theme-icon">🌙</span><span id="theme-text">Dark</span>
+      </button>
+    </header>
+
+    <main class="content">
+
+      <!-- ========== COLOR ========== -->
+      <section class="section" id="color">
+        <div class="section__head">
+          <div class="section__eyebrow">Foundations</div>
+          <h2>Color</h2>
+          <p class="section__desc">Five chromatic ramps plus a 14-step neutral ramp. Each hue carries meaning — blue for active state, green for success, orange for attention, red for problems, purple for brand. The same palette drives both light and dark modes; only the mapping changes.</p>
+        </div>
+        <div id="ramps"></div>
+        <h3 class="subhead">Alpha</h3>
+        <p class="hint">Transparent overlays used to shade an element against whatever surface sits below it.</p>
+        <div class="grid grid--auto" id="alpha" style="margin-top:12px"></div>
+      </section>
+
+      <!-- ========== SEMANTIC ========== -->
+      <section class="section" id="semantic">
+        <div class="section__head">
+          <div class="section__eyebrow">Foundations</div>
+          <h2>Semantic tokens</h2>
+          <p class="section__desc">Raw scale values are never used directly in components. Instead, intent-named tokens (text, border, background, feedback) point at scale steps and re-map per color mode. This is what makes dark mode a one-attribute switch.</p>
+        </div>
+        <h3 class="subhead">Text</h3>
+        <div class="semantic-grid" id="sem-text"></div>
+        <h3 class="subhead">Border &amp; background</h3>
+        <div class="semantic-grid" id="sem-surface"></div>
+        <h3 class="subhead">Feedback</h3>
+        <div class="semantic-grid" id="sem-feedback"></div>
+      </section>
+
+      <!-- ========== TYPOGRAPHY ========== -->
+      <section class="section" id="type">
+        <div class="section__head">
+          <div class="section__eyebrow">Foundations</div>
+          <h2>Typography</h2>
+          <p class="section__desc">GitLab Sans (an Inter derivative) for UI, GitLab Mono (a JetBrains Mono derivative) for code. A single dynamic scale from 12px meta text up to a 28px display size. Two weights carry the whole hierarchy: 400 for body, 600 for emphasis.</p>
+        </div>
+        <div class="panel">
+          <div class="type-row"><div class="type-row__meta">font.size.800<br>28px · display</div><div class="type-sample" style="font-size:var(--fs-800)">Deploy with confidence</div></div>
+          <div class="type-row"><div class="type-row__meta">font.size.700<br>24px · h1</div><div class="type-sample" style="font-size:var(--fs-700)">Deploy with confidence</div></div>
+          <div class="type-row"><div class="type-row__meta">font.size.600<br>21px · h2</div><div class="type-sample" style="font-size:var(--fs-600)">Deploy with confidence</div></div>
+          <div class="type-row"><div class="type-row__meta">font.size.500<br>18px · h3</div><div class="type-sample" style="font-size:var(--fs-500)">Deploy with confidence</div></div>
+          <div class="type-row"><div class="type-row__meta">font.size.400<br>16px · h4</div><div class="type-sample" style="font-size:var(--fs-400)">Deploy with confidence</div></div>
+          <div class="type-row"><div class="type-row__meta">font.size.300<br>14px · body</div><div class="type-sample" style="font-size:var(--fs-300); font-weight:400">The quick orange tanuki jumps over the lazy dog.</div></div>
+          <div class="type-row"><div class="type-row__meta">font.size.200<br>13px · h6</div><div class="type-sample" style="font-size:var(--fs-200); font-weight:400">The quick orange tanuki jumps over the lazy dog.</div></div>
+          <div class="type-row"><div class="type-row__meta">font.size.100<br>12px · meta</div><div class="type-sample" style="font-size:var(--fs-100); font-weight:400; color:var(--text-subtle)">The quick orange tanuki jumps over the lazy dog.</div></div>
+        </div>
+        <h3 class="subhead">Weights &amp; monospace</h3>
+        <div class="panel">
+          <div class="weights" style="margin-bottom:20px">
+            <div class="weight-demo" style="font-weight:400">Regular · 400</div>
+            <div class="weight-demo" style="font-weight:500">Medium · 500</div>
+            <div class="weight-demo" style="font-weight:600">Semibold · 600</div>
+          </div>
+          <div style="font-family:var(--font-mono); font-size:var(--fs-400); color:var(--text-strong)">git commit -m "feat: ship it" · 0xA1B2C3 · #4821</div>
+        </div>
+      </section>
+
+      <!-- ========== SPACING ========== -->
+      <section class="section" id="spacing">
+        <div class="section__head">
+          <div class="section__eyebrow">Foundations</div>
+          <h2>Spacing</h2>
+          <p class="section__desc">An 8px base system. Geometric progression through 16px, then <code>n × 1.5</code> for larger steps. 2–4px lives inside a component, 8px separates related elements, 16px separates unrelated ones, 24–32px separates sections.</p>
+        </div>
+        <div class="panel" id="spacing-scale"></div>
+      </section>
+
+      <!-- ========== BORDER / RADIUS ========== -->
+      <section class="section" id="radius">
+        <div class="section__head">
+          <div class="section__eyebrow">Foundations</div>
+          <h2>Border &amp; radius</h2>
+          <p class="section__desc">Borders are 1px by default (2px for emphasis). Radius runs from a 1px hairline to a full pill, tied to the spacing scale. Nest concentrically: <code>outer radius − padding = inner radius</code>.</p>
+        </div>
+        <h3 class="subhead">Radius</h3>
+        <div class="radius-grid" id="radius-grid"></div>
+        <h3 class="subhead">Border colors</h3>
+        <div class="semantic-grid" id="border-colors"></div>
+      </section>
+
+      <!-- ========== ELEVATION ========== -->
+      <section class="section" id="elevation">
+        <div class="section__head">
+          <div class="section__eyebrow">Foundations</div>
+          <h2>Elevation</h2>
+          <p class="section__desc">Three shadow levels. Small defines an interactive surface at rest; medium lifts hover surfaces, dropdowns, and popovers; large carries modals and drawers that sit well above the page.</p>
+        </div>
+        <div class="shadow-grid">
+          <div class="shadow-demo" style="box-shadow:var(--shadow-sm)"><span>shadow-sm</span></div>
+          <div class="shadow-demo" style="box-shadow:var(--shadow-md)"><span>shadow-md</span></div>
+          <div class="shadow-demo" style="box-shadow:var(--shadow-lg)"><span>shadow-lg</span></div>
+        </div>
+      </section>
+
+      <!-- ========== MOTION ========== -->
+      <section class="section" id="motion">
+        <div class="section__head">
+          <div class="section__eyebrow">Foundations</div>
+          <h2>Motion</h2>
+          <p class="section__desc">Animation is used sparingly and always respects <code>prefers-reduced-motion</code>. Three easing curves and four durations cover the system. Click a card to replay.</p>
+        </div>
+        <h3 class="subhead">Easing</h3>
+        <div class="motion-grid" id="easing-grid"></div>
+        <h3 class="subhead">Duration</h3>
+        <div class="motion-grid" id="duration-grid"></div>
+      </section>
+
+      <!-- ========== BUTTONS ========== -->
+      <section class="section" id="buttons">
+        <div class="section__head">
+          <div class="section__eyebrow">Components</div>
+          <h2>Buttons</h2>
+          <p class="section__desc">Three categories (primary, secondary, tertiary) across three variants (default, confirm, danger). Category sets visual weight; variant sets meaning. One primary action per view.</p>
+        </div>
+        <div class="panel">
+          <div class="btn-matrix">
+            <div class="btn-matrix__h"></div>
+            <div class="btn-matrix__h">Primary</div>
+            <div class="btn-matrix__h">Secondary</div>
+            <div class="btn-matrix__h">Tertiary</div>
+
+            <div class="btn-matrix__r">Default</div>
+            <button class="btn btn--default">Default</button>
+            <button class="btn btn--default btn--secondary">Default</button>
+            <button class="btn btn--default btn--tertiary">Default</button>
+
+            <div class="btn-matrix__r">Confirm</div>
+            <button class="btn btn--confirm">Confirm</button>
+            <button class="btn btn--confirm btn--secondary">Confirm</button>
+            <button class="btn btn--confirm btn--tertiary">Confirm</button>
+
+            <div class="btn-matrix__r">Danger</div>
+            <button class="btn btn--danger">Delete</button>
+            <button class="btn btn--danger btn--secondary">Delete</button>
+            <button class="btn btn--danger btn--tertiary">Delete</button>
+          </div>
+        </div>
+        <h3 class="subhead">Sizes &amp; states</h3>
+        <div class="panel demo">
+          <button class="btn btn--confirm btn--sm">Small</button>
+          <button class="btn btn--confirm">Medium</button>
+          <button class="btn btn--confirm" disabled>Disabled</button>
+          <button class="btn btn--confirm"><span class="spinner"></span> Loading</button>
+          <button class="btn btn--default">With icon ↗</button>
+        </div>
+      </section>
+
+      <!-- ========== BADGES ========== -->
+      <section class="section" id="badges">
+        <div class="section__head">
+          <div class="section__eyebrow">Components</div>
+          <h2>Badges &amp; labels</h2>
+          <p class="section__desc">Badges communicate status with a colored pill. Labels categorize objects — scoped labels pair a key and value in one pill.</p>
+        </div>
+        <div class="panel">
+          <div class="demo" style="margin-bottom:20px">
+            <span class="badge badge--muted">Neutral</span>
+            <span class="badge badge--info">Info</span>
+            <span class="badge badge--success">Success</span>
+            <span class="badge badge--warning">Warning</span>
+            <span class="badge badge--danger">Danger</span>
+          </div>
+          <div class="demo">
+            <span class="label" style="background:var(--blue-500)">frontend</span>
+            <span class="label" style="background:var(--green-500)">backend</span>
+            <span class="label" style="background:var(--orange-500)">needs review</span>
+            <span class="label" style="background:var(--red-500)">bug</span>
+            <span class="label label--scoped"><span class="k">priority</span><span class="v">high</span></span>
+          </div>
+        </div>
+      </section>
+
+      <!-- ========== ALERTS ========== -->
+      <section class="section" id="alerts">
+        <div class="section__head">
+          <div class="section__eyebrow">Components</div>
+          <h2>Alerts</h2>
+          <p class="section__desc">Contextual, dismissible messages. Info for neutral context, success on completion, warning when attention is needed, danger for errors.</p>
+        </div>
+        <div class="grid" style="gap:12px">
+          <div class="alert"><div class="alert__icon"></div><div><div class="alert__title">Pipeline running</div><div class="alert__body">Your changes are being validated across 12 jobs.</div></div><button class="alert__close" onclick="this.closest('.alert').remove()">×</button></div>
+          <div class="alert alert--success"><div class="alert__icon"></div><div><div class="alert__title">Merge request approved</div><div class="alert__body">Two of two required approvals received.</div></div><button class="alert__close" onclick="this.closest('.alert').remove()">×</button></div>
+          <div class="alert alert--warning"><div class="alert__icon"></div><div><div class="alert__title">Runner offline</div><div class="alert__body">Jobs will queue until a runner reconnects.</div></div><button class="alert__close" onclick="this.closest('.alert').remove()">×</button></div>
+          <div class="alert alert--danger"><div class="alert__icon"></div><div><div class="alert__title">Build failed</div><div class="alert__body">Step "test:unit" exited with code 1. Review the log to continue.</div></div><button class="alert__close" onclick="this.closest('.alert').remove()">×</button></div>
+        </div>
+      </section>
+
+      <!-- ========== CARDS ========== -->
+      <section class="section" id="cards">
+        <div class="section__head">
+          <div class="section__eyebrow">Components</div>
+          <h2>Cards</h2>
+          <p class="section__desc">A bounded surface for a single unit of content, with an optional header and footer for actions.</p>
+        </div>
+        <div class="demo" style="align-items:flex-start">
+          <div class="card">
+            <div class="card__head"><span class="card__title">Deployment</span><span class="badge badge--success">Live</span></div>
+            <div class="card__body">Production · <code>v4.8.2</code><br><span style="color:var(--text-subtle)">Deployed 4 minutes ago by the release bot.</span></div>
+            <div class="card__foot"><button class="btn btn--default btn--sm">Rollback</button><button class="btn btn--confirm btn--sm">View</button></div>
+          </div>
+          <div class="card">
+            <div class="card__head"><span class="card__title">Storage</span></div>
+            <div class="card__body"><div style="font-size:var(--fs-700); font-weight:600; color:var(--text-heading)">68%</div><div style="color:var(--text-subtle); margin-bottom:12px">6.8 GB of 10 GB used</div><div class="progress"><div class="progress__fill" style="width:68%"></div></div></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ========== FORMS ========== -->
+      <section class="section" id="forms">
+        <div class="section__head">
+          <div class="section__eyebrow">Components</div>
+          <h2>Form elements</h2>
+          <p class="section__desc">Inputs, selects, textareas, checkboxes, radios, and toggles — all sharing one focus ring and one set of border tokens.</p>
+        </div>
+        <div class="panel" style="display:grid; grid-template-columns:1fr 1fr; gap:32px">
+          <div>
+            <div class="field">
+              <label class="field__label" for="i1">Project name</label>
+              <input class="input" id="i1" placeholder="my-awesome-project" value="tanuki-dashboard">
+              <div class="field__help">Lowercase letters, numbers and dashes.</div>
+            </div>
+            <div class="field">
+              <label class="field__label" for="i2">Slug</label>
+              <input class="input input--error" id="i2" value="Invalid Slug!">
+              <div class="field__help field__help--error">Slug can't contain spaces or capitals.</div>
+            </div>
+            <div class="field">
+              <label class="field__label" for="s1">Visibility</label>
+              <select class="select" id="s1"><option>Private</option><option>Internal</option><option>Public</option></select>
+            </div>
+            <div class="field search">
+              <span class="search__icon">⌕</span>
+              <input class="input" placeholder="Search projects…">
+            </div>
+          </div>
+          <div>
+            <div class="field">
+              <label class="field__label">Notifications</label>
+              <label class="choice"><input type="checkbox" checked><span class="box"></span> Email on pipeline failure</label>
+              <label class="choice"><input type="checkbox"><span class="box"></span> Email on approval</label>
+              <label class="choice"><input type="checkbox" checked><span class="box"></span> Mention alerts</label>
+            </div>
+            <div class="field">
+              <label class="field__label">Default branch strategy</label>
+              <label class="choice"><input type="radio" name="br" checked><span class="box box--radio"></span> Merge commit</label>
+              <label class="choice"><input type="radio" name="br"><span class="box box--radio"></span> Fast-forward</label>
+              <label class="choice"><input type="radio" name="br"><span class="box box--radio"></span> Rebase</label>
+            </div>
+            <div class="field">
+              <label class="field__label">Toggles</label>
+              <label class="toggle" style="margin-bottom:12px"><input type="checkbox" checked><span class="toggle__track"></span> Auto-DevOps</label><br>
+              <label class="toggle"><input type="checkbox"><span class="toggle__track"></span> Require 2FA</label>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ========== TABS ========== -->
+      <section class="section" id="tabs">
+        <div class="section__head">
+          <div class="section__eyebrow">Components</div>
+          <h2>Tabs</h2>
+          <p class="section__desc">Switch between related views inside the same context.</p>
+        </div>
+        <div class="panel">
+          <div class="tabs" id="tabs">
+            <button class="tab is-active" data-tab="0">Overview</button>
+            <button class="tab" data-tab="1">Activity</button>
+            <button class="tab" data-tab="2">Settings</button>
+          </div>
+          <div class="tabpanel" data-panel="0">Repository overview: 4 branches, 12 open merge requests, last commit 2 hours ago.</div>
+          <div class="tabpanel" data-panel="1" hidden>Recent activity: 8 pushes, 3 comments, 1 approval in the last day.</div>
+          <div class="tabpanel" data-panel="2" hidden>Settings: visibility, integrations, protected branches, and webhooks.</div>
+        </div>
+      </section>
+
+      <!-- ========== TABLE ========== -->
+      <section class="section" id="table">
+        <div class="section__head">
+          <div class="section__eyebrow">Components</div>
+          <h2>Table</h2>
+          <p class="section__desc">Dense, scannable rows with a quiet header and subtle row dividers.</p>
+        </div>
+        <div class="table-wrap">
+          <table class="tbl">
+            <thead><tr><th>Pipeline</th><th>Branch</th><th>Status</th><th>Duration</th></tr></thead>
+            <tbody>
+              <tr><td>#4821</td><td><code>main</code></td><td><span class="badge badge--success">Passed</span></td><td>3m 12s</td></tr>
+              <tr><td>#4820</td><td><code>feat/tokens</code></td><td><span class="badge badge--warning">Running</span></td><td>1m 40s</td></tr>
+              <tr><td>#4819</td><td><code>fix/auth</code></td><td><span class="badge badge--danger">Failed</span></td><td>2m 05s</td></tr>
+              <tr><td>#4818</td><td><code>chore/deps</code></td><td><span class="badge badge--muted">Canceled</span></td><td>0m 18s</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- ========== AVATARS ========== -->
+      <section class="section" id="avatars">
+        <div class="section__head">
+          <div class="section__eyebrow">Components</div>
+          <h2>Avatars</h2>
+          <p class="section__desc">Round for people, square for projects and groups. Overlapping groups collapse a set of collaborators.</p>
+        </div>
+        <div class="panel demo">
+          <div class="avatar avatar--lg" style="background:var(--purple-500)">JR</div>
+          <div class="avatar" style="background:var(--blue-500)">AM</div>
+          <div class="avatar avatar--sq" style="background:var(--orange-500)">P</div>
+          <div class="avatar-group">
+            <div class="avatar" style="background:var(--blue-500)">A</div>
+            <div class="avatar" style="background:var(--green-500)">B</div>
+            <div class="avatar" style="background:var(--purple-500)">C</div>
+            <div class="avatar" style="background:var(--neutral-500)">+5</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ========== PROGRESS ========== -->
+      <section class="section" id="progress">
+        <div class="section__head">
+          <div class="section__eyebrow">Components</div>
+          <h2>Progress</h2>
+          <p class="section__desc">Determinate progress toward a known total. Click to animate.</p>
+        </div>
+        <div class="panel">
+          <div style="margin-bottom:16px"><div class="progress"><div class="progress__fill" id="p1" style="width:35%"></div></div></div>
+          <div style="margin-bottom:16px"><div class="progress progress--success"><div class="progress__fill" style="width:100%"></div></div></div>
+          <button class="btn btn--default btn--sm" id="animate-progress">Animate</button>
+        </div>
+      </section>
+
+      <!-- ========== PAGINATION / BREADCRUMB ========== -->
+      <section class="section" id="nav-controls">
+        <div class="section__head">
+          <div class="section__eyebrow">Components</div>
+          <h2>Pagination &amp; breadcrumb</h2>
+          <p class="section__desc">Move through paged results and show location within a hierarchy.</p>
+        </div>
+        <div class="panel" style="display:flex; flex-direction:column; gap:20px; align-items:flex-start">
+          <div class="crumbs">
+            <a href="#">Group</a><span class="sep">/</span>
+            <a href="#">tanuki-dashboard</a><span class="sep">/</span>
+            <a href="#">Pipelines</a><span class="sep">/</span>
+            <span class="current">#4821</span>
+          </div>
+          <div class="pager" id="pager">
+            <button disabled>‹</button>
+            <button class="is-active">1</button>
+            <button>2</button>
+            <button>3</button>
+            <button>…</button>
+            <button>9</button>
+            <button>›</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ========== OVERLAYS ========== -->
+      <section class="section" id="overlays">
+        <div class="section__head">
+          <div class="section__eyebrow">Components</div>
+          <h2>Dropdown, tooltip &amp; modal</h2>
+          <p class="section__desc">Layered surfaces. Dropdowns and popovers use the medium shadow; modals use the large shadow over a dimming overlay.</p>
+        </div>
+        <div class="panel demo" style="align-items:flex-start">
+          <div class="dd" id="dd">
+            <button class="btn btn--default" id="dd-btn">Actions ▾</button>
+            <div class="dd__menu">
+              <button class="dd__item">Edit</button>
+              <button class="dd__item">Duplicate</button>
+              <button class="dd__item">Move to…</button>
+              <div class="dd__sep"></div>
+              <button class="dd__item" style="color:var(--text-danger)">Delete</button>
+            </div>
+          </div>
+
+          <span class="tip-wrap"><button class="btn btn--default">Hover me<span class="tip">Runs the full test suite</span></button></span>
+
+          <div class="popover">
+            <div class="popover__title">Protected branch</div>
+            <div style="color:var(--text-subtle); font-size:var(--fs-300)">Only maintainers can push or merge. Force-push is disabled.</div>
+          </div>
+
+          <button class="btn btn--confirm" id="open-modal">Open modal</button>
+        </div>
+      </section>
+
+      <!-- ========== TOASTS ========== -->
+      <section class="section" id="toasts">
+        <div class="section__head">
+          <div class="section__eyebrow">Components</div>
+          <h2>Toasts / notifications</h2>
+          <p class="section__desc">Brief, self-dismissing confirmations anchored bottom-right, with an optional single action. They slide in on an out-cubic curve and never block the interface.</p>
+        </div>
+        <div class="panel demo">
+          <button class="btn btn--confirm" data-toast="Changes saved" data-color="var(--green-400)">Save</button>
+          <button class="btn btn--default" data-toast="Copied link to clipboard" data-color="var(--blue-400)">Copy link</button>
+          <button class="btn btn--danger btn--secondary" data-toast="Project archived" data-color="var(--orange-400)" data-action="Undo">Archive</button>
+        </div>
+      </section>
+
+      <!-- ========== LOADERS ========== -->
+      <section class="section" id="loaders">
+        <div class="section__head">
+          <div class="section__eyebrow">Feedback</div>
+          <h2>Loaders &amp; spinners</h2>
+          <p class="section__desc">Indeterminate waiting states. The spinner uses a linear rotation; the dots pulse in sequence for inline "thinking" moments.</p>
+        </div>
+        <div class="panel demo" style="gap:40px">
+          <div style="display:flex; gap:20px; align-items:center">
+            <span class="spinner spinner--sm"></span>
+            <span class="spinner spinner--md"></span>
+            <span class="spinner spinner--lg"></span>
+          </div>
+          <div class="dots"><span></span><span></span><span></span></div>
+        </div>
+      </section>
+
+      <!-- ========== SKELETON ========== -->
+      <section class="section" id="skeleton">
+        <div class="section__head">
+          <div class="section__eyebrow">Feedback</div>
+          <h2>Skeletons</h2>
+          <p class="section__desc">Placeholder geometry for content that hasn't loaded, using a 1s linear shimmer. Match the skeleton's shape to the real content to avoid layout shift.</p>
+        </div>
+        <div class="panel">
+          <div class="sk-card" style="margin-bottom:24px">
+            <div class="skeleton sk-circle"></div>
+            <div style="flex:1">
+              <div class="skeleton sk-line w-40"></div>
+              <div class="skeleton sk-line w-80"></div>
+              <div class="skeleton sk-line w-60" style="margin-bottom:0"></div>
+            </div>
+          </div>
+          <div class="skeleton sk-line w-100"></div>
+          <div class="skeleton sk-line w-100"></div>
+          <div class="skeleton sk-line w-60" style="margin-bottom:0"></div>
+        </div>
+      </section>
+
+      <p class="hint" style="margin-top:48px; padding-top:24px; border-top:1px solid var(--border-default)">
+        Token values sourced from GitLab's Pajamas design system (design.gitlab.com). This is an independent reference implementation for learning — not affiliated with or endorsed by GitLab.
+      </p>
+    </main>
+  </div>
+</div>
+
+<!-- MODAL -->
+<div class="overlay" id="modal-overlay">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+    <div class="modal__head"><span class="modal__title" id="modal-title">Delete project</span><button class="alert__close" id="modal-x">×</button></div>
+    <div class="modal__body">This permanently removes <strong>tanuki-dashboard</strong>, its repositories, issues, and pipelines. This action can't be undone.</div>
+    <div class="modal__foot"><button class="btn btn--default" id="modal-cancel">Cancel</button><button class="btn btn--danger" id="modal-confirm">Delete project</button></div>
+  </div>
+</div>
+
+<div class="toast-region" id="toast-region"></div>
+<div class="copied-toast" id="copied">Copied</div>
+
+<script>
+(function(){
+  "use strict";
+
+  /* ---------- data ---------- */
+  var ramps = {
+    blue:[50,100,200,300,400,500,600,700,800,900,950],
+    green:[50,100,200,300,400,500,600,700,800,900,950],
+    orange:[50,100,200,300,400,500,600,700,800,900,950],
+    red:[50,100,200,300,400,500,600,700,800,900,950],
+    purple:[50,100,200,300,400,500,600,700,800,900,950],
+    neutral:[0,10,50,100,200,300,400,500,600,700,800,900,950,1000]
+  };
+  var css = getComputedStyle(document.documentElement);
+  function val(name){ return css.getPropertyValue(name).trim(); }
+
+  function copy(text){
+    var ok = function(){ var t=document.getElementById('copied'); t.textContent='Copied  '+text; t.classList.add('show'); setTimeout(function(){t.classList.remove('show');},1200); };
+    if(navigator.clipboard && navigator.clipboard.writeText){ navigator.clipboard.writeText(text).then(ok).catch(ok); }
+    else { ok(); }
+  }
+
+  /* ---------- render color ramps ---------- */
+  var rampsHost = document.getElementById('ramps');
+  Object.keys(ramps).forEach(function(hue){
+    var wrap = document.createElement('div'); wrap.className='ramp';
+    var name = document.createElement('div'); name.className='ramp__name'; name.textContent=hue; wrap.appendChild(name);
+    var row = document.createElement('div'); row.className='ramp__row'+(hue==='neutral'?' ramp__row--neutral':'');
+    ramps[hue].forEach(function(step){
+      var varName='--'+hue+'-'+step;
+      var hex=val(varName);
+      var b=document.createElement('button'); b.className='swatch'; b.type='button';
+      b.title='Copy var('+varName+')';
+      b.innerHTML='<div class="swatch__chip" style="background:'+hex+'"></div>'+
+                  '<div class="swatch__step">'+step+'</div>'+
+                  '<div class="swatch__hex">'+hex+'</div>';
+      b.addEventListener('click', function(){ copy('var('+varName+')'); });
+      row.appendChild(b);
+    });
+    wrap.appendChild(row); rampsHost.appendChild(wrap);
+  });
+
+  /* ---------- alpha ---------- */
+  var alphas=['--alpha-dark-8','--alpha-dark-16','--alpha-dark-24','--alpha-dark-40','--alpha-light-16','--alpha-light-40'];
+  var alphaHost=document.getElementById('alpha');
+  alphas.forEach(function(a){
+    var d=document.createElement('div');
+    d.style.cssText='border:1px solid var(--border-default); border-radius:var(--radius-md); overflow:hidden';
+    d.innerHTML='<div style="height:48px; background:'+(a.indexOf('light')>-1?'var(--neutral-800)':'var(--neutral-0)')+'"><div style="height:100%; background:var('+a+')"></div></div>'+
+                '<div style="padding:8px; font-family:var(--font-mono); font-size:var(--fs-100); color:var(--text-subtle)">'+a.replace('--','')+'</div>';
+    alphaHost.appendChild(d);
+  });
+
+  /* ---------- semantic tokens ---------- */
+  function semRow(host, token, mapNote){
+    var el=document.createElement('button'); el.className='sem swatch'; el.type='button'; el.style.cssText='width:100%';
+    el.innerHTML='<div class="sem__chip" style="background:var('+token+')"></div>'+
+                 '<div><div class="sem__name">'+token.replace('--','')+'</div><div class="sem__val">'+mapNote+'</div></div>';
+    el.addEventListener('click', function(){ copy('var('+token+')'); });
+    document.getElementById(host).appendChild(el);
+  }
+  [['--text-heading','neutral-950 / 0'],['--text-default','neutral-800 / 50'],['--text-subtle','neutral-600 / 200'],
+   ['--text-disabled','neutral-400'],['--text-link','blue-700 / 200'],['--text-danger','red-600 / 300'],
+   ['--text-success','green-600 / 300'],['--text-warning','orange-600 / 300']].forEach(function(r){semRow('sem-text',r[0],r[1]);});
+  [['--bg-default','neutral-0 / 950'],['--bg-subtle','neutral-10 / 900'],['--bg-strong','neutral-50 / 800'],
+   ['--border-default','neutral-100 / 700'],['--border-strong','neutral-200 / 600'],['--border-subtle','neutral-50 / 800']].forEach(function(r){semRow('sem-surface',r[0],r[1]);});
+  [['--feedback-info','blue-500 / 400'],['--feedback-success','green-500 / 400'],
+   ['--feedback-warning','orange-500 / 400'],['--feedback-danger','red-500 / 400']].forEach(function(r){semRow('sem-feedback',r[0],r[1]);});
+  [['--border-default','neutral-100 / 700'],['--border-strong','neutral-200 / 600'],['--border-subtle','neutral-50 / 800']].forEach(function(r){semRow('border-colors',r[0],r[1]);});
+
+  /* ---------- spacing ---------- */
+  var spaces=[['0','0','0'],['px','1px','1px'],['1','2px','.125rem'],['2','4px','.25rem'],['2-5','6px','.375rem'],
+    ['3','8px','.5rem'],['4','12px','.75rem'],['5','16px','1rem'],['6','24px','1.5rem'],['7','32px','2rem'],
+    ['8','40px','2.5rem'],['9','48px','3rem'],['10','56px','3.5rem'],['11','64px','4rem'],['12','80px','5rem'],
+    ['13','96px','6rem'],['15','120px','7.5rem']];
+  var spHost=document.getElementById('spacing-scale');
+  spaces.forEach(function(s){
+    var r=document.createElement('div'); r.className='space-row';
+    r.innerHTML='<span class="space-row__token">spacing-scale.'+s[0]+'</span>'+
+                '<span class="space-row__px">'+s[1]+'</span>'+
+                '<div class="space-bar" style="width:'+s[1]+'"></div>';
+    spHost.appendChild(r);
+  });
+
+  /* ---------- radius ---------- */
+  var radii=[['none','0'],['xs','1px'],['sm','2px'],['md','4px'],['lg','8px'],['xl','12px'],['2xl','16px'],['3xl','24px'],['full','pill']];
+  var rHost=document.getElementById('radius-grid');
+  radii.forEach(function(r){
+    var v=r[0]==='full'?'var(--radius-full)':'var(--radius-'+r[0]+')';
+    var d=document.createElement('div'); d.className='radius-demo'; d.style.borderRadius=v;
+    d.innerHTML='<span>'+r[0]+' · '+r[1]+'</span>'; rHost.appendChild(d);
+  });
+
+  /* ---------- motion demos ---------- */
+  function motionCard(host, name, valLabel, style){
+    var d=document.createElement('div'); d.className='motion-demo';
+    d.innerHTML='<div class="motion-demo__track"><div class="motion-demo__dot" style="'+style+'"></div></div>'+
+                '<div class="motion-demo__name">'+name+'</div><div class="motion-demo__val">'+valLabel+'</div>';
+    var run=function(){ d.classList.remove('run'); void d.offsetWidth; d.classList.add('run'); };
+    d.addEventListener('click',run); document.getElementById(host).appendChild(d); setTimeout(run,300);
+  }
+  motionCard('easing-grid','ease-linear','linear','transition:left 1s linear');
+  motionCard('easing-grid','ease-default','ease · hover','transition:left 1s ease');
+  motionCard('easing-grid','ease-out-cubic','cubic-bezier(.22,.61,.36,1)','transition:left 1s cubic-bezier(.22,.61,.36,1)');
+  motionCard('duration-grid','duration-fast','100ms','transition:left .1s var(--ease-out-cubic)');
+  motionCard('duration-grid','duration-base','200ms','transition:left .2s var(--ease-out-cubic)');
+  motionCard('duration-grid','duration-slow','500ms','transition:left .5s var(--ease-out-cubic)');
+  motionCard('duration-grid','duration-slower','600ms','transition:left .6s var(--ease-out-cubic)');
+
+  /* ---------- theme toggle ---------- */
+  var root=document.documentElement, tt=document.getElementById('theme-toggle');
+  tt.addEventListener('click',function(){
+    var dark = root.getAttribute('data-theme')==='dark';
+    root.setAttribute('data-theme', dark?'light':'dark');
+    document.getElementById('theme-icon').textContent = dark?'🌙':'☀️';
+    document.getElementById('theme-text').textContent = dark?'Dark':'Light';
+    // refresh cached hex values shown in swatches
+    css = getComputedStyle(root);
+  });
+
+  /* ---------- scroll-spy nav ---------- */
+  var links=[].slice.call(document.querySelectorAll('.nav__link'));
+  var map={}; links.forEach(function(l){ map[l.getAttribute('href').slice(1)]=l; });
+  var obs=new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
+      if(e.isIntersecting){ links.forEach(function(l){l.classList.remove('is-active');}); if(map[e.target.id]) map[e.target.id].classList.add('is-active'); }
+    });
+  },{rootMargin:'-40% 0px -55% 0px'});
+  document.querySelectorAll('.section').forEach(function(s){obs.observe(s);});
+
+  /* ---------- tabs ---------- */
+  document.querySelectorAll('#tabs .tab').forEach(function(t){
+    t.addEventListener('click',function(){
+      document.querySelectorAll('#tabs .tab').forEach(function(x){x.classList.remove('is-active');});
+      t.classList.add('is-active');
+      document.querySelectorAll('[data-panel]').forEach(function(p){ p.hidden = p.getAttribute('data-panel')!==t.getAttribute('data-tab'); });
+    });
+  });
+
+  /* ---------- pager ---------- */
+  document.querySelectorAll('#pager button').forEach(function(b){
+    b.addEventListener('click',function(){
+      if(b.disabled||b.textContent==='‹'||b.textContent==='›'||b.textContent==='…')return;
+      document.querySelectorAll('#pager button').forEach(function(x){x.classList.remove('is-active');});
+      b.classList.add('is-active');
+    });
+  });
+
+  /* ---------- dropdown ---------- */
+  var dd=document.getElementById('dd'), ddBtn=document.getElementById('dd-btn');
+  ddBtn.addEventListener('click',function(e){ e.stopPropagation(); dd.classList.toggle('open'); });
+  document.addEventListener('click',function(){ dd.classList.remove('open'); });
+
+  /* ---------- modal ---------- */
+  var ov=document.getElementById('modal-overlay');
+  function closeModal(){ ov.classList.remove('open'); }
+  document.getElementById('open-modal').addEventListener('click',function(){ ov.classList.add('open'); });
+  ['modal-x','modal-cancel','modal-confirm'].forEach(function(id){ document.getElementById(id).addEventListener('click',closeModal); });
+  ov.addEventListener('click',function(e){ if(e.target===ov) closeModal(); });
+  document.addEventListener('keydown',function(e){ if(e.key==='Escape') closeModal(); });
+
+  /* ---------- toasts ---------- */
+  var region=document.getElementById('toast-region');
+  document.querySelectorAll('[data-toast]').forEach(function(b){
+    b.addEventListener('click',function(){
+      var t=document.createElement('div'); t.className='toast';
+      var action=b.getAttribute('data-action');
+      t.innerHTML='<div class="toast__dot" style="background:'+(b.getAttribute('data-color')||'var(--green-400)')+'"></div>'+
+                  '<div>'+b.getAttribute('data-toast')+'</div>'+
+                  (action?'<button class="toast__action">'+action+'</button>':'<span></span>');
+      region.appendChild(t);
+      var kill=function(){ t.classList.add('out'); setTimeout(function(){ t.remove(); },200); };
+      var timer=setTimeout(kill,3200);
+      var act=t.querySelector('.toast__action');
+      if(act) act.addEventListener('click',function(){ clearTimeout(timer); kill(); });
+    });
+  });
+
+  /* ---------- progress animate ---------- */
+  document.getElementById('animate-progress').addEventListener('click',function(){
+    var p=document.getElementById('p1'); p.style.width='35%';
+    void p.offsetWidth; p.style.width=(20+Math.floor(Math.random()*75))+'%';
+  });
+
+})();
+</script>
+</body>
+</html>

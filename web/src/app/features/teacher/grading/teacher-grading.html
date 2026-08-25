@@ -1,0 +1,77 @@
+<div class="mb-6 flex items-center justify-between">
+  <h1 class="text-[20px] font-semibold text-text">Record grades</h1>
+  <a routerLink="/teacher/grading/corrections" class="text-[13px] text-blue hover:underline">Correct a grade →</a>
+</div>
+
+@if (error()) {
+  <app-feedback [message]="error()!" />
+}
+
+<section class="panel panel-pad max-w-2xl">
+  <label class="field-label" for="promotion">Promotion</label>
+  <select id="promotion" class="input mb-3" (change)="selectPromotion($any($event.target).value)">
+    <option value="">Select a promotion…</option>
+    @for (promotion of promotions(); track promotion.id) {
+      <option [value]="promotion.id">{{ promotion.name }} ({{ promotion.academicYear }})</option>
+    }
+  </select>
+
+  <label class="field-label" for="course">Course</label>
+  <select
+    id="course"
+    class="input mb-4"
+    [ngModel]="selectedCourseId()"
+    (ngModelChange)="selectedCourseId.set($event)"
+  >
+    <option [ngValue]="null">Select a course…</option>
+    @for (course of visibleCourses(); track course.id) {
+      <option [ngValue]="course.id">{{ course.code }} — {{ course.title }}</option>
+    }
+  </select>
+
+  @if (selectedCourseId()) {
+    <div class="grid grid-cols-2 gap-3">
+      <div class="col-span-2">
+        <label class="field-label" for="student-id">Student ID</label>
+        <input id="student-id" class="input" [ngModel]="gradeStudentId()" (ngModelChange)="gradeStudentId.set($event)" />
+      </div>
+      <div>
+        <label class="field-label" for="score">Score (/20)</label>
+        <input
+          id="score"
+          type="number"
+          min="0"
+          max="20"
+          step="0.5"
+          class="input tabular-nums"
+          [ngModel]="gradeScore()"
+          (ngModelChange)="gradeScore.set($event)"
+        />
+      </div>
+      <div>
+        <label class="field-label" for="coefficient">Coefficient</label>
+        <input
+          id="coefficient"
+          type="number"
+          min="0"
+          step="0.5"
+          class="input tabular-nums"
+          [ngModel]="gradeCoefficient()"
+          (ngModelChange)="gradeCoefficient.set($event)"
+        />
+      </div>
+      <div class="col-span-2">
+        <label class="field-label" for="exam-id">Exam ID (optional)</label>
+        <input id="exam-id" class="input" [ngModel]="gradeExamId()" (ngModelChange)="gradeExamId.set($event)" />
+      </div>
+    </div>
+
+    <button class="btn mt-4" [disabled]="recording()" (click)="recordGrade()">
+      {{ recording() ? 'Recording…' : 'Record grade' }}
+    </button>
+
+    @if (recordedMessage()) {
+      <p class="mt-2 text-[13px] text-sel-green-tx">{{ recordedMessage() }}</p>
+    }
+  }
+</section>

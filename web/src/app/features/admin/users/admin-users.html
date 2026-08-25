@@ -1,0 +1,67 @@
+<div class="mb-6 flex items-baseline gap-3">
+  <span class="text-xs font-semibold text-text-3">03</span>
+  <h1 class="text-[20px] font-semibold text-text">Users</h1>
+</div>
+
+@if (error()) {
+  <app-feedback [message]="error()!" />
+}
+
+<section class="panel panel-pad mb-8">
+  <div class="cap">Register a login</div>
+  <p class="mb-3 text-xs text-text-3">
+    Link a TEACHER or STUDENT account to its person ID (the ID returned when they were hired / enrolled).
+  </p>
+  <div class="grid max-w-2xl grid-cols-2 gap-3">
+    <div>
+      <label class="field-label" for="user-username">Username</label>
+      <input id="user-username" class="input" [ngModel]="username()" (ngModelChange)="username.set($event)" />
+    </div>
+    <div>
+      <label class="field-label" for="user-password">Password</label>
+      <input
+        id="user-password"
+        type="password"
+        class="input"
+        [ngModel]="password()"
+        (ngModelChange)="password.set($event)"
+      />
+    </div>
+    <div>
+      <label class="field-label" for="user-role">Role</label>
+      <select id="user-role" class="input" [ngModel]="role()" (ngModelChange)="role.set($event)">
+        <option value="STUDENT">STUDENT</option>
+        <option value="TEACHER">TEACHER</option>
+        <option value="ADMIN">ADMIN</option>
+      </select>
+    </div>
+    @if (role() !== 'ADMIN') {
+      <div>
+        <label class="field-label" for="user-person-id">Person ID (student/teacher ID)</label>
+        <input
+          id="user-person-id"
+          class="input"
+          [ngModel]="personId()"
+          (ngModelChange)="personId.set($event)"
+        />
+      </div>
+    }
+  </div>
+  <button class="btn mt-3" [disabled]="registering()" (click)="register()">
+    {{ registering() ? 'Registering…' : 'Register user' }}
+  </button>
+</section>
+
+@if (registered().length > 0) {
+  <div class="cap">Registered this session</div>
+  <div class="panel overflow-hidden">
+    <ul class="divide-y divide-border">
+      @for (user of registered(); track user.id) {
+        <li class="flex items-center gap-2 px-3 py-2.5 text-[13px]">
+          {{ user.username }}
+          <app-chip [status]="user.role" [dot]="false">{{ user.role }}</app-chip>
+        </li>
+      }
+    </ul>
+  </div>
+}

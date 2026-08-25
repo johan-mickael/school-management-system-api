@@ -1,0 +1,62 @@
+<h2 class="mb-4 text-[15px] font-semibold text-text">Students</h2>
+
+@if (error()) {
+  <app-feedback [message]="error()!" />
+}
+
+@if (loading()) {
+  <p class="text-[13px] text-text-2">Loading…</p>
+} @else if (students().length === 0) {
+  <div class="panel mb-6">
+    <app-empty-state title="No students yet" description="Enroll and admit a student below." />
+  </div>
+} @else {
+  <div class="panel mb-6 overflow-hidden">
+    <ul class="divide-y divide-border">
+      @for (student of students(); track student.id) {
+        <li class="flex items-center gap-2 px-3 py-2.5 text-[13px]">
+          <app-avatar [name]="student.firstName + ' ' + student.lastName" [size]="20" />
+          {{ student.firstName }} {{ student.lastName }}
+          <span class="mono-ish text-text-3">{{ student.number }}</span>
+          <app-chip [status]="student.status">{{ student.status }}</app-chip>
+          <span class="flex-1"></span>
+          @if (student.status === 'ACTIVE') {
+            <button
+              class="rounded-md p-1.5 text-text-3 transition-colors hover:bg-sel-red-bg hover:text-sel-red-tx"
+              (click)="archive(student)"
+              [attr.aria-label]="'Archive ' + student.firstName + ' ' + student.lastName"
+              title="Archive"
+            >
+              <app-nav-icon name="archive" />
+            </button>
+          }
+        </li>
+      }
+    </ul>
+  </div>
+}
+
+<section class="panel panel-pad">
+  <div class="cap">Enroll &amp; admit a student</div>
+  <div class="grid max-w-2xl grid-cols-2 gap-3">
+    <div>
+      <label class="field-label" for="student-number">Student number</label>
+      <input id="student-number" class="input" [ngModel]="studentNumber()" (ngModelChange)="studentNumber.set($event)" />
+    </div>
+    <div>
+      <label class="field-label" for="student-email">Email</label>
+      <input id="student-email" class="input" [ngModel]="studentEmail()" (ngModelChange)="studentEmail.set($event)" />
+    </div>
+    <div>
+      <label class="field-label" for="student-first">First name</label>
+      <input id="student-first" class="input" [ngModel]="studentFirstName()" (ngModelChange)="studentFirstName.set($event)" />
+    </div>
+    <div>
+      <label class="field-label" for="student-last">Last name</label>
+      <input id="student-last" class="input" [ngModel]="studentLastName()" (ngModelChange)="studentLastName.set($event)" />
+    </div>
+  </div>
+  <button class="btn mt-3" [disabled]="enrolling()" (click)="enrollAndAdmit()">
+    {{ enrolling() ? 'Enrolling…' : 'Enroll & admit' }}
+  </button>
+</section>

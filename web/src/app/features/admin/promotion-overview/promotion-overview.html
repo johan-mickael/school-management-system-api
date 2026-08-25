@@ -1,0 +1,47 @@
+@if (error()) {
+  <app-feedback [message]="error()!" />
+}
+
+@if (loading()) {
+  <p class="text-[13px] text-text-2">Loading…</p>
+} @else {
+  <div class="mb-8 grid grid-cols-2 gap-4 sm:grid-cols-3">
+    <div class="panel panel-pad">
+      <p class="cap mb-1">Occupancy</p>
+      <p class="text-xl font-semibold tabular-nums text-text">{{ occupancy() }} / {{ capacity() }}</p>
+    </div>
+    <div class="panel panel-pad">
+      <p class="cap mb-1">Courses</p>
+      <p class="text-xl font-semibold tabular-nums text-text">{{ courseCount() }}</p>
+    </div>
+    <div class="panel panel-pad">
+      <p class="cap mb-1">Sessions</p>
+      <p class="text-xl font-semibold tabular-nums text-text">{{ sessionCount() }}</p>
+    </div>
+  </div>
+
+  <div class="cap">Manage</div>
+  <div class="grid grid-cols-1 gap-3 sm:grid-cols-3">
+    <a
+      [routerLink]="['/admin/promotions', promotionId, 'students']"
+      class="panel panel-pad flex flex-col gap-1 transition-colors hover:border-border-strong hover:bg-sunk"
+    >
+      <span class="font-medium text-text">Students</span>
+      <span class="text-[13px] text-text-2">Enroll and admit students to this promotion.</span>
+    </a>
+    <a
+      [routerLink]="['/admin/promotions', promotionId, 'courses']"
+      class="panel panel-pad flex flex-col gap-1 transition-colors hover:border-border-strong hover:bg-sunk"
+    >
+      <span class="font-medium text-text">Courses</span>
+      <span class="text-[13px] text-text-2">Create courses and assign teachers.</span>
+    </a>
+    <a
+      [routerLink]="['/admin/promotions', promotionId, 'sessions']"
+      class="panel panel-pad flex flex-col gap-1 transition-colors hover:border-border-strong hover:bg-sunk"
+    >
+      <span class="font-medium text-text">Sessions</span>
+      <span class="text-[13px] text-text-2">Schedule class sessions and manage signing.</span>
+    </a>
+  </div>
+}

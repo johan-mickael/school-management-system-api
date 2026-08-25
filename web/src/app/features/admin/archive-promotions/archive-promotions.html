@@ -1,0 +1,46 @@
+<div class="mb-6 flex items-baseline gap-3">
+  <span class="text-xs font-semibold text-text-3">04</span>
+  <h1 class="text-[20px] font-semibold text-text">Archive</h1>
+</div>
+<p class="mb-6 text-[13px] text-text-2">Read-only. Archived promotions and their students reject further changes.</p>
+
+@if (error()) {
+  <app-feedback [message]="error()!" />
+}
+
+@if (loading()) {
+  <p class="text-[13px] text-text-2">Loading…</p>
+} @else if (promotions().length === 0) {
+  <div class="panel">
+    <app-empty-state title="Nothing archived yet" description="Archived promotions will show up here." />
+  </div>
+} @else {
+  <div class="panel overflow-hidden">
+    <div class="overflow-auto">
+      <table class="grid-table">
+        <thead>
+          <tr>
+            <th class="gutter">#</th>
+            <th>Name</th>
+            <th>Status</th>
+            <th class="text-right">Occupancy</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (promotion of promotions(); track promotion.id; let i = $index) {
+            <tr class="opacity-70">
+              <td class="gutter">{{ i + 1 }}</td>
+              <td>
+                <a class="text-blue hover:underline" [routerLink]="['/admin/archive', promotion.id]">
+                  {{ promotion.name }} ({{ promotion.academicYear }})
+                </a>
+              </td>
+              <td><app-chip [status]="promotion.status">{{ promotion.status }}</app-chip></td>
+              <td class="cell-num">{{ promotion.occupancy }} / {{ promotion.capacity }}</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </div>
+}

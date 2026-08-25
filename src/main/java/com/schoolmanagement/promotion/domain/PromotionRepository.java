@@ -13,4 +13,6 @@ public interface PromotionRepository {
     Promotion getById(PromotionId id);
 
     List<Promotion> findArchived();
+
+    List<Promotion> findActive();
 }

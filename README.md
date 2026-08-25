@@ -1,11 +1,11 @@
 # School Management System
 
-A RESTful backend for a school management platform: student and teacher
-records, courses and promotions, class scheduling, Edusign-style attendance
-signing, grades and rankings, exams with virtual proctoring / anti-cheat, and
-year-end archiving.
+A school management platform: student and teacher records, courses and
+promotions, class scheduling, Edusign-style attendance signing, grades and
+rankings, exams with virtual proctoring / anti-cheat, and year-end archiving —
+a Spring Boot REST API plus an Angular web client.
 
-Java 25 · Spring Boot 4.1 · PostgreSQL · Flyway · Docker.
+Java 25 · Spring Boot 4.1 · PostgreSQL · Flyway · Angular · Tailwind CSS · Docker.
 
 ## Contents
 
@@ -14,6 +14,7 @@ Java 25 · Spring Boot 4.1 · PostgreSQL · Flyway · Docker.
 - [Running the app](#running-the-app)
 - [Configuration](#configuration)
 - [API docs](#api-docs)
+- [Frontend (web/)](#frontend-web)
 - [Testing](#testing)
 - [Project layout](#project-layout)
 
@@ -82,12 +83,16 @@ Requires Docker and Docker Compose.
 cp .env.example .env
 # edit .env — at minimum change JWT_SECRET before anything but local dev
 
-docker compose up app
+docker compose up
 ```
 
-This starts Postgres (`db`) and the app (`app`) — the app image runs
-`mvn spring-boot:run` against the mounted source, applying Flyway migrations
-on boot. The API is served on `http://localhost:${APP_HOST_PORT:-8080}`.
+This starts Postgres (`db`), the API (`app`), and the Angular dev server
+(`web`) together. The `app` image runs `mvn spring-boot:run` against the
+mounted source, applying Flyway migrations on boot — the API is served on
+`http://localhost:${APP_HOST_PORT:-8080}`. The `web` container runs
+`npm install && npm start`, serving the UI on
+`http://localhost:${WEB_HOST_PORT:-4200}`. Run `docker compose up app` alone
+to start only the API.
 
 To seed an initial admin user on startup, set `SEED_ADMIN_ENABLED=true` plus
 `SEED_ADMIN_USERNAME` / `SEED_ADMIN_PASSWORD` in `.env` — dev/local only.
@@ -140,6 +145,7 @@ Auth is stateless JWT (`Authorization: Bearer <token>`), obtained via
 | `GET /api/v1/courses`, `GET /api/v1/courses/{id}` | authenticated | filter with `?promotionId=` |
 | `POST /api/v1/courses/{id}/assign-teacher` | ADMIN | |
 | `POST /api/v1/promotions` | ADMIN | |
+| `GET /api/v1/promotions` | authenticated | list active promotions |
 | `GET /api/v1/promotions/{id}`, `GET /api/v1/promotions/{id}/students` | authenticated | |
 | `POST /api/v1/promotions/{id}/students` | ADMIN | admit a student |
 | `POST /api/v1/promotions/{id}/archive` | ADMIN | year-end archiving |
@@ -171,6 +177,44 @@ Standard error responses use a shared `ApiError` body: 400 for bean-validation
 and invalid value objects, 404 for not-found, 409 for invariant/conflict
 violations, 401/403 for auth failures.
 
+## Frontend (web/)
+
+An Angular (standalone components, signals) + Tailwind CSS client lives in
+`web/`, covering the day-to-day flows for each role:
+
+- **Auth** — JWT login, stored client-side; an `HttpInterceptor` attaches the
+  token to API calls and logs out on 401. The JWT carries `personId` (the
+  linked student/teacher id) alongside `username`/`role` so the app knows
+  "who am I" without an extra round trip.
+- **Student** — sign attendance for today's open sessions, view attendance
+  history, view grades and averages.
+- **Teacher** — manage sessions in a promotion (open/close/cancel signing),
+  view a session's attendance and justify absences, record and correct
+  grades for own courses.
+- **Admin** — create promotions/teachers/courses/sessions, enroll and admit
+  students to a promotion, assign teachers to courses, register user
+  accounts, and the reporting dashboard.
+- **Reporting** — promotion summary, at-risk student list, and a per-student
+  lookup (shared by ADMIN and TEACHER).
+
+Routing is guarded per role (`authGuard` / `roleGuard`) and the nav in the
+shell adapts to the signed-in role. The API base URL is a constant in
+`web/src/app/core/config.ts` (`http://localhost:8080/api/v1` by default).
+
+Run it via `docker compose up web` (starts `app` and `db` as dependencies
+too), or standalone:
+
+```bash
+cd web
+npm install
+npm start          # serves on http://localhost:4200
+```
+
+`CORS_ALLOWED_ORIGINS` in `.env` must include the web app's origin
+(`http://localhost:4200` by default) — the API enforces CORS inside the
+Spring Security filter chain, not at the web-server level, so preflight
+(`OPTIONS`) requests are permitted before the auth check runs.
+
 ## Testing
 
 - **Unit tests** — domain invariants and application handlers against
@@ -199,4 +243,15 @@ src/main/java/com/schoolmanagement/
 src/main/resources/
   application.yaml
   db/migration/                Flyway migrations, V<n>__<desc>.sql
+
+web/src/app/
+  core/                        auth (JWT service, guard, interceptor), API services, config
+  shared/                      cross-cutting UI helpers (API error parsing)
+  features/
+    auth/login/
+    shell/                     app shell, role-based nav, role home redirect
+    student/                   attendance, grades
+    teacher/                   sessions, session attendance, grading
+    admin/                     promotions, promotion detail, teachers, users
+    reporting/
 ```

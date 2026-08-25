@@ -1,0 +1,38 @@
+<a class="mb-4 inline-flex items-center gap-1 text-[13px] text-text-2 hover:text-text" routerLink="/admin/archive">
+  ← Back to archive
+</a>
+
+@if (error()) {
+  <app-feedback [message]="error()!" />
+}
+
+@if (loading()) {
+  <p class="text-[13px] text-text-2">Loading…</p>
+} @else {
+  <div class="mb-1 flex items-center gap-2">
+    <h1 class="text-[20px] font-semibold text-text">
+      {{ promotion()?.name }} ({{ promotion()?.academicYear }})
+    </h1>
+    <app-chip [status]="promotion()?.status ?? ''">{{ promotion()?.status }}</app-chip>
+  </div>
+  <p class="mb-6 text-[13px] text-text-2">Read-only — this promotion no longer accepts changes.</p>
+
+  <div class="cap">Students at archiving</div>
+  @if (students().length === 0) {
+    <div class="panel">
+      <app-empty-state title="No students" />
+    </div>
+  } @else {
+    <div class="panel overflow-hidden">
+      <ul class="divide-y divide-border">
+        @for (student of students(); track student.id) {
+          <li class="flex items-center gap-2 px-3 py-2.5 text-[13px] opacity-80">
+            <app-avatar [name]="student.firstName + ' ' + student.lastName" [size]="20" />
+            {{ student.firstName }} {{ student.lastName }}
+            <span class="mono-ish text-text-3">{{ student.number }}</span>
+          </li>
+        }
+      </ul>
+    </div>
+  }
+}

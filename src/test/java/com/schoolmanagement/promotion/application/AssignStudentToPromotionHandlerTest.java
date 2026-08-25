@@ -46,6 +46,11 @@ class AssignStudentToPromotionHandlerTest {
     public List<Promotion> findArchived() {
       return db.values().stream().filter(Promotion::isArchived).toList();
     }
+
+    @Override
+    public List<Promotion> findActive() {
+      return db.values().stream().filter(p -> !p.isArchived()).toList();
+    }
   }
 
   static class InMemoryStudents implements StudentRepository {

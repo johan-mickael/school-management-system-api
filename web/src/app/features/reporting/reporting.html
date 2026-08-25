@@ -1,0 +1,106 @@
+<div class="mb-6 flex items-center justify-between">
+  <h1 class="text-[20px] font-semibold text-text">Reporting</h1>
+  <a routerLink="student" class="text-[13px] text-blue hover:underline">Look up a student →</a>
+</div>
+
+@if (error()) {
+  <app-feedback [message]="error()!" />
+}
+
+<label class="field-label" for="promotion">Promotion</label>
+<select id="promotion" class="input mb-6 max-w-sm" (change)="selectPromotion($any($event.target).value)">
+  <option value="">Select a promotion…</option>
+  @for (promotion of promotions(); track promotion.id) {
+    <option [value]="promotion.id">{{ promotion.name }} ({{ promotion.academicYear }})</option>
+  }
+</select>
+
+@if (loading()) {
+  <p class="text-[13px] text-text-2">Loading…</p>
+} @else if (summary()) {
+  <div class="mb-6 grid grid-cols-3 gap-4">
+    <div class="panel panel-pad">
+      <p class="cap mb-1">Students</p>
+      <p class="text-xl font-semibold tabular-nums text-text">{{ summary()?.studentCount }}</p>
+    </div>
+    <div class="panel panel-pad">
+      <p class="cap mb-1">Avg. attendance</p>
+      <p class="text-xl font-semibold tabular-nums text-text">
+        {{ summary()?.averageAttendanceRate != null ? (summary()!.averageAttendanceRate! * 100).toFixed(0) + '%' : '—' }}
+      </p>
+    </div>
+    <div class="panel panel-pad">
+      <p class="cap mb-1">Avg. grade</p>
+      <p class="text-xl font-semibold tabular-nums text-text">{{ summary()?.averageGrade ?? '—' }} / 20</p>
+    </div>
+  </div>
+
+  <div class="cap">At-risk students</div>
+  @if (atRisk().length === 0) {
+    <div class="panel">
+      <app-empty-state title="No students at risk" description="Attendance and average both look healthy for this promotion." />
+    </div>
+  } @else {
+    <div class="panel overflow-hidden">
+      <table class="grid-table">
+        <thead>
+          <tr>
+            <td class="bg-sunk px-2 py-2 text-xs font-semibold text-text-2" colspan="10">
+              <span class="inline-flex items-center gap-2">
+                <app-chip color="orange">At-risk</app-chip>
+                <span class="text-text-3 tabular-nums">{{ atRisk().length }} records · attendance &lt; 75% and average &lt; 10</span>
+              </span>
+            </td>
+          </tr>
+        </thead>
+        <tbody>
+          @for (student of atRisk(); track student.studentId; let i = $index) {
+            <tr>
+              <td class="gutter">{{ i + 1 }}</td>
+              <td>{{ studentLabel(student.studentId) }}</td>
+              <td class="cell-num" [class.text-sel-red-tx]="(student.attendanceRate ?? 1) < 0.75">
+                {{ student.attendanceRate != null ? (student.attendanceRate * 100).toFixed(0) + '%' : '—' }}
+              </td>
+              <td class="cell-num" [class.text-sel-red-tx]="(student.averageGrade ?? 20) < 10">
+                {{ student.averageGrade ?? '—' }} / 20
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+
+  <div class="cap mt-8">Rankings</div>
+  @if (rankings().length === 0) {
+    <div class="panel">
+      <app-empty-state title="No rankings yet" description="Rankings appear once students have recorded grades." />
+    </div>
+  } @else {
+    <div class="panel overflow-hidden">
+      <table class="grid-table">
+        <thead>
+          <tr>
+            <th class="gutter">#</th>
+            <th>Student</th>
+            <th class="text-right">Average</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (entry of rankings(); track entry.studentId) {
+            <tr>
+              <td class="gutter">{{ entry.rank }}</td>
+              <td class="flex items-center gap-2">
+                {{ studentLabel(entry.studentId) }}
+                @if (entry.rank === 1) {
+                  <app-chip color="purple">Distinction</app-chip>
+                }
+              </td>
+              <td class="cell-num">{{ entry.average }} / 20</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+}
